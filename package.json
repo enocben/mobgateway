@@ -1,0 +1,133 @@
+{
+  "name": "mmg-new",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "start": "node bin/server.js",
+    "build": "node ace build",
+    "dev": "node ace serve --hmr",
+    "test": "node ace test",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit && tsc --noEmit --project inertia/tsconfig.json"
+  },
+  "imports": {
+    "#controllers/*": "./app/controllers/*.js",
+    "#exceptions/*": "./app/exceptions/*.js",
+    "#models/*": "./app/models/*.js",
+    "#mails/*": "./app/mails/*.js",
+    "#services/*": "./app/services/*.js",
+    "#listeners/*": "./app/listeners/*.js",
+    "#events/*": "./app/events/*.js",
+    "#generated/*": "./.adonisjs/server/*.js",
+    "#middleware/*": "./app/middleware/*.js",
+    "#transformers/*": "./app/transformers/*.js",
+    "#validators/*": "./app/validators/*.js",
+    "#providers/*": "./providers/*.js",
+    "#policies/*": "./app/policies/*.js",
+    "#abilities/*": "./app/abilities/*.js",
+    "#database/*": "./database/*.js",
+    "#tests/*": "./tests/*.js",
+    "#start/*": "./start/*.js",
+    "#config/*": "./config/*.js"
+  },
+  "devDependencies": {
+    "@adonisjs/assembler": "^8.4.0",
+    "@adonisjs/eslint-config": "^3.1.0",
+    "@adonisjs/prettier-config": "^1.5.0",
+    "@adonisjs/tsconfig": "^2.0.0",
+    "@japa/assert": "^4.2.0",
+    "@japa/browser-client": "^2.3.0",
+    "@japa/plugin-adonisjs": "^5.2.0",
+    "@japa/runner": "^5.3.0",
+    "@poppinss/ts-exec": "^1.4.4",
+    "@types/luxon": "^3.7.1",
+    "@types/node": "~25.9.1",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.2.0",
+    "eslint": "^10.4.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "hot-hook": "^1.0.0",
+    "pino-pretty": "^13.1.3",
+    "prettier": "^3.8.3",
+    "typescript": "~6.0.3",
+    "vite": "^7.3.3",
+    "youch": "^4.1.1"
+  },
+  "dependencies": {
+    "@adonisjs/auth": "^10.1.0",
+    "@adonisjs/core": "^7.3.3",
+    "@adonisjs/cors": "^3.0.0",
+    "@adonisjs/inertia": "^4.2.0",
+    "@adonisjs/lucid": "^22.4.2",
+    "@adonisjs/session": "^8.1.0",
+    "@adonisjs/shield": "^9.0.0",
+    "@adonisjs/static": "^2.0.1",
+    "@adonisjs/vite": "^5.1.1",
+    "@fontsource-variable/space-grotesk": "^5.2.10",
+    "@inertiajs/react": "^2.3.24",
+    "@radix-ui/react-accordion": "^1.2.16",
+    "@radix-ui/react-alert-dialog": "^1.1.19",
+    "@radix-ui/react-avatar": "^1.2.2",
+    "@radix-ui/react-checkbox": "^1.3.7",
+    "@radix-ui/react-collapsible": "^1.1.16",
+    "@radix-ui/react-dialog": "^1.1.19",
+    "@radix-ui/react-dropdown-menu": "^2.1.20",
+    "@radix-ui/react-label": "^2.1.11",
+    "@radix-ui/react-popover": "^1.1.19",
+    "@radix-ui/react-progress": "^1.1.12",
+    "@radix-ui/react-scroll-area": "^1.2.14",
+    "@radix-ui/react-select": "^2.3.3",
+    "@radix-ui/react-separator": "^1.1.11",
+    "@radix-ui/react-slot": "^1.3.0",
+    "@radix-ui/react-switch": "^1.3.3",
+    "@radix-ui/react-tabs": "^1.1.17",
+    "@radix-ui/react-tooltip": "^1.2.12",
+    "@tailwindcss/vite": "^4.3.2",
+    "@tuyau/core": "^1.2.2",
+    "@vinejs/vine": "^4.4.0",
+    "better-sqlite3": "^12.10.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.4.0",
+    "edge.js": "^6.5.1",
+    "framer-motion": "^12.42.2",
+    "lucide-react": "^1.23.0",
+    "luxon": "^3.7.2",
+    "pg": "^8.22.0",
+    "radix-ui": "^1.6.2",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "recharts": "^3.9.2",
+    "reflect-metadata": "^0.2.2",
+    "shadcn": "^4.13.0",
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "^4.3.2",
+    "tw-animate-css": "^1.4.0"
+  },
+  "hotHook": {
+    "boundaries": [
+      "./app/controllers/**/*.ts",
+      "./app/middleware/*.ts"
+    ]
+  },
+  "overrides": {
+    "eslint-plugin-react": {
+      "eslint": "$eslint"
+    }
+  },
+  "pnpm": {
+    "overrides": {
+      "eslint-plugin-react>eslint": "$eslint"
+    }
+  },
+  "prettier": "@adonisjs/prettier-config"
+}
