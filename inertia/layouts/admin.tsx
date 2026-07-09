@@ -1,10 +1,7 @@
-import { type ReactElement } from 'react'
+import { type ReactElement, useCallback, useEffect, useMemo } from 'react'
 import { Link, usePage } from '@inertiajs/react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Button } from '~/components/ui/button'
-import { ScrollArea } from '~/components/ui/scroll-area'
-import { Avatar, AvatarFallback } from '~/components/ui/avatar'
-import { Toaster } from 'sonner'
+import { AnimatePresence, motion } from 'framer-motion'
+import { toast, Toaster } from 'sonner'
 import {
   Sidebar,
   SidebarContent,
@@ -17,27 +14,41 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
-  SidebarTrigger,
   SidebarSeparator,
+  SidebarTrigger,
 } from '~/components/ui/sidebar'
 import {
-  LayoutDashboard,
-  Wallet,
-  Users,
-  Globe,
-  Smartphone,
   ArrowLeftRight,
-  Webhook,
+  Building2,
+  Calculator,
+  Coins,
+  FileText,
+  Globe,
+  LayoutDashboard,
   Percent,
   Route,
-  FileText,
-  Settings,
-  Building2,
-  Coins,
-  Calculator,
   Scale,
+  Settings,
+  Smartphone,
+  Users,
+  Wallet,
+  Webhook,
 } from 'lucide-react'
 import { Data } from '@generated/data'
+import { Label } from '~/components/ui/label'
+import { client, urlFor } from '~/client'
+import { ScrollArea } from '~/components/ui/scroll-area'
+import { Avatar, AvatarFallback } from '~/components/ui/avatar'
+import { useApplicationStore } from '~/context/application_context'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '~/components/ui/select'
+import { Spinner } from '~/components/ui/spinner'
 
 const sidebarSections = [
   {
@@ -82,6 +93,34 @@ interface AdminLayoutProps {
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const { url } = usePage()
   const user = children.props.user
+  const { setApplications, setApplication, applications, applicationId } = useApplicationStore()
+
+  useEffect(() => {
+    ;(async () => {
+      const [data, error] = await client.api.admin.applications({}).safe()
+      if (error) {
+        toast.error(error.message)
+        return
+      }
+      if (data.applications.length !== 0) {
+        setApplications(data.applications as unknown as Data.Application[])
+      }
+    })()
+  }, [])
+
+  const application = useMemo(
+    () => applications.find((a) => a.id === applicationId),
+    [applications, applicationId]
+  )
+
+  const apps = useCallback(
+    () =>
+      applications.map((app) => ({
+        value: app.id,
+        label: app.name,
+      })),
+    [applications]
+  )
 
   const isActive = (href: string) => {
     if (href === '/admin/dashboard') return url === href
@@ -92,40 +131,53 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     <SidebarProvider>
       <Sidebar collapsible="icon">
         <SidebarHeader className="flex h-16 items-center border-b px-4">
-          <Link href="/admin/dashboard" className="flex items-center gap-2">
-            <div className="flex size-8 items-center justify-center rounded-lg bg-primary">
-              <Wallet className="size-4 text-primary-foreground" />
-            </div>
-            <span className="font-semibold text-lg group-data-[collapsible=icon]:hidden">
-              MM Gateway
-            </span>
-          </Link>
+          <Select value={application?.id} onValueChange={setApplication} disabled={applications.length === 0}>
+            <SelectTrigger className="w-full max-w-48">
+              <SelectValue />
+            </SelectTrigger>
+
+            <SelectContent>
+              <SelectGroup>
+                {apps().map((item) => (
+                  <SelectItem key={item.value} value={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </SidebarHeader>
 
         <SidebarContent>
-          <ScrollArea className="flex-1">
-            {sidebarSections.map((section) => (
-              <SidebarGroup key={section.section}>
-                <SidebarGroupLabel>{section.section}</SidebarGroupLabel>
-                <SidebarMenu>
-                  {section.items.map((item) => (
-                    <SidebarMenuItem key={item.href}>
-                      <SidebarMenuButton
-                        asChild
-                        isActive={isActive(item.href)}
-                        tooltip={item.label}
-                      >
-                        <Link href={item.href}>
-                          <item.icon className="size-5" />
-                          <span>{item.label}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroup>
-            ))}
-          </ScrollArea>
+          {application ? (
+            <ScrollArea className="flex-1">
+              {sidebarSections.map((section) => (
+                <SidebarGroup key={section.section}>
+                  <SidebarGroupLabel>{section.section}</SidebarGroupLabel>
+                  <SidebarMenu>
+                    {section.items.map((item) => (
+                      <SidebarMenuItem key={item.href}>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={isActive(item.href)}
+                          tooltip={item.label}
+                        >
+                          <Link href={item.href}>
+                            <item.icon className="size-5" />
+                            <span>{item.label}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
+                  </SidebarMenu>
+                </SidebarGroup>
+              ))}
+            </ScrollArea>
+          ) : (
+            <div className="flex h-full items-center justify-center">
+              <Spinner className="size-2/6" />
+            </div>
+          )}
         </SidebarContent>
 
         <SidebarSeparator />
@@ -146,24 +198,36 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
       <SidebarInset>
         <header className="top-0 z-30 flex h-16 items-center gap-4 border-b px-6">
-          <SidebarTrigger />
+          <div>
+            <SidebarTrigger />
+          </div>
           <div className="flex-1" />
-          <Link href="/">
-            <Button variant="destructive" size="sm">
-              Logout
-            </Button>
-          </Link>
+          {user && (
+            <>
+              <Label>{user.name}</Label>
+              <Link href={urlFor('admin.settings')}>
+                <Settings />
+              </Link>
+            </>
+          )}
         </header>
 
-        <main className="p-6">
+        <main className="p-6 h-full">
           <AnimatePresence mode="wait">
             <motion.div
               key={url}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
+              className="h-full"
             >
-              {children}
+              {application ? (
+                children
+              ) : (
+                <div className="flex h-full items-center justify-center">
+                  <Spinner className="size-2/6" />
+                </div>
+              )}
             </motion.div>
           </AnimatePresence>
         </main>
