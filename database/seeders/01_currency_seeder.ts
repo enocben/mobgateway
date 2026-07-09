@@ -1,8 +1,14 @@
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
+import Application from '#models/application'
 import Currency from '#models/currency'
 
 export default class CurrencySeeder extends BaseSeeder {
   async run() {
+    const app = await Application.firstOrCreate(
+      { slug: 'default' },
+      { name: 'Default Application', slug: 'default', environment: 'sandbox', status: 'active' }
+    )
+
     const currencies = [
       { code: 'CDF', name: 'Franc Congolais', symbol: 'FC', decimals: 2, isActive: true },
       { code: 'XAF', name: 'Franc CFA (BEAC)', symbol: 'FCFA', decimals: 0, isActive: true },
@@ -20,7 +26,7 @@ export default class CurrencySeeder extends BaseSeeder {
     ]
 
     for (const currency of currencies) {
-      await Currency.firstOrCreate({ code: currency.code }, currency)
+      await Currency.firstOrCreate({ code: currency.code, applicationId: app.id }, { ...currency, applicationId: app.id })
     }
   }
 }

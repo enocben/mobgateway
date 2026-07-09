@@ -1,8 +1,14 @@
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
+import Application from '#models/application'
 import Country from '#models/country'
 
 export default class CountrySeeder extends BaseSeeder {
   async run() {
+    const app = await Application.firstOrCreate(
+      { slug: 'default' },
+      { name: 'Default Application', slug: 'default', environment: 'sandbox', status: 'active' }
+    )
+
     const countries = [
       { code: 'CD', name: 'RDC', currencyCode: 'CDF', phonePrefix: '+243' },
       { code: 'SN', name: 'Sénégal', currencyCode: 'XOF', phonePrefix: '+221' },
@@ -24,7 +30,10 @@ export default class CountrySeeder extends BaseSeeder {
     ]
 
     for (const country of countries) {
-      await Country.firstOrCreate({ code: country.code }, country)
+      await Country.firstOrCreate(
+        { code: country.code, applicationId: app.id },
+        { ...country, applicationId: app.id }
+      )
     }
   }
 }
