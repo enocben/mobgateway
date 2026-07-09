@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import api from '~/lib/api'
-import type { PaginatedResponse, ApiResponse } from '~/types'
+import type { PaginatedResponse } from '~/types'
 
 export function useFetch<T>(url: string) {
   const [data, setData] = useState<T | null>(null)
@@ -58,6 +58,7 @@ export function useApiMutation<T = any, P = any>(url: string, method: 'post' | '
     setLoading(true)
     setError(null)
     try {
+      // @ts-ignore
       const res = await api[method](url, payload)
       setData(res.data.data || res.data)
       return res.data.data || res.data

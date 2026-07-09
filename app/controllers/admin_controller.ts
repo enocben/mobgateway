@@ -1,6 +1,8 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Application from '#models/application'
 import ApplicationTransformer from '#transformers/application_transformer'
+import User from '#models/user'
+import UserTransformer from '#transformers/user_transformer'
 
 export default class AdminController {
   async index({ response }: HttpContext) {
@@ -32,8 +34,11 @@ export default class AdminController {
     return inertia.render('admin/Applications/Detail', {})
   }
 
-  async users({ inertia }: HttpContext) {
-    return inertia.render('admin/Users/List', {})
+  async users({ inertia, params }: HttpContext) {
+    const users = await User.query().where('applicationId', params.id)
+    return inertia.render('admin/Users/List', {
+      users: UserTransformer.transform(users)
+    })
   }
 
   async usersDetail({ inertia }: HttpContext) {
