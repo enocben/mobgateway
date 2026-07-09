@@ -48,36 +48,6 @@ const routes = {
     tokens: [{"old":"/api/v1/dashboard/stats","type":0,"val":"api","end":""},{"old":"/api/v1/dashboard/stats","type":0,"val":"v1","end":""},{"old":"/api/v1/dashboard/stats","type":0,"val":"dashboard","end":""},{"old":"/api/v1/dashboard/stats","type":0,"val":"stats","end":""}],
     types: placeholder as Registry['dashboard.get_stats']['types'],
   },
-  'organizations.index': {
-    methods: ["GET","HEAD"],
-    pattern: '/api/v1/organizations',
-    tokens: [{"old":"/api/v1/organizations","type":0,"val":"api","end":""},{"old":"/api/v1/organizations","type":0,"val":"v1","end":""},{"old":"/api/v1/organizations","type":0,"val":"organizations","end":""}],
-    types: placeholder as Registry['organizations.index']['types'],
-  },
-  'organizations.store': {
-    methods: ["POST"],
-    pattern: '/api/v1/organizations',
-    tokens: [{"old":"/api/v1/organizations","type":0,"val":"api","end":""},{"old":"/api/v1/organizations","type":0,"val":"v1","end":""},{"old":"/api/v1/organizations","type":0,"val":"organizations","end":""}],
-    types: placeholder as Registry['organizations.store']['types'],
-  },
-  'organizations.show': {
-    methods: ["GET","HEAD"],
-    pattern: '/api/v1/organizations/:id',
-    tokens: [{"old":"/api/v1/organizations/:id","type":0,"val":"api","end":""},{"old":"/api/v1/organizations/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/organizations/:id","type":0,"val":"organizations","end":""},{"old":"/api/v1/organizations/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['organizations.show']['types'],
-  },
-  'organizations.update': {
-    methods: ["PUT"],
-    pattern: '/api/v1/organizations/:id',
-    tokens: [{"old":"/api/v1/organizations/:id","type":0,"val":"api","end":""},{"old":"/api/v1/organizations/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/organizations/:id","type":0,"val":"organizations","end":""},{"old":"/api/v1/organizations/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['organizations.update']['types'],
-  },
-  'organizations.destroy': {
-    methods: ["DELETE"],
-    pattern: '/api/v1/organizations/:id',
-    tokens: [{"old":"/api/v1/organizations/:id","type":0,"val":"api","end":""},{"old":"/api/v1/organizations/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/organizations/:id","type":0,"val":"organizations","end":""},{"old":"/api/v1/organizations/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['organizations.destroy']['types'],
-  },
   'applications.index': {
     methods: ["GET","HEAD"],
     pattern: '/api/v1/applications',
@@ -593,12 +563,6 @@ const routes = {
     pattern: '/admin/dashboard',
     tokens: [{"old":"/admin/dashboard","type":0,"val":"admin","end":""},{"old":"/admin/dashboard","type":0,"val":"dashboard","end":""}],
     types: placeholder as Registry['admin.dashboard']['types'],
-  },
-  'admin.organizations': {
-    methods: ["GET","HEAD"],
-    pattern: '/admin/organizations',
-    tokens: [{"old":"/admin/organizations","type":0,"val":"admin","end":""},{"old":"/admin/organizations","type":0,"val":"organizations","end":""}],
-    types: placeholder as Registry['admin.organizations']['types'],
   },
   'admin.applications': {
     methods: ["GET","HEAD"],

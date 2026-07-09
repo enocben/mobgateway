@@ -19,7 +19,6 @@ export const controllers = {
   Monitoring: () => import('#controllers/monitoring_controller'),
   NewAccount: () => import('#controllers/new_account_controller'),
   OperatorPrefixes: () => import('#controllers/operator_prefixes_controller'),
-  Organizations: () => import('#controllers/organizations_controller'),
   ProviderRoutes: () => import('#controllers/provider_routes_controller'),
   Providers: () => import('#controllers/providers_controller'),
   Reconciliation: () => import('#controllers/reconciliation_controller'),

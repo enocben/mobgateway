@@ -11,11 +11,6 @@ export type ScannedRoutes = {
     'auth.me': { paramsTuple?: []; params?: {} }
     'auth.logout': { paramsTuple?: []; params?: {} }
     'dashboard.get_stats': { paramsTuple?: []; params?: {} }
-    'organizations.index': { paramsTuple?: []; params?: {} }
-    'organizations.store': { paramsTuple?: []; params?: {} }
-    'organizations.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'organizations.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'organizations.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'applications.index': { paramsTuple?: []; params?: {} }
     'applications.store': { paramsTuple?: []; params?: {} }
     'applications.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -102,7 +97,6 @@ export type ScannedRoutes = {
     'session.destroy': { paramsTuple?: []; params?: {} }
     'admin': { paramsTuple?: []; params?: {} }
     'admin.dashboard': { paramsTuple?: []; params?: {} }
-    'admin.organizations': { paramsTuple?: []; params?: {} }
     'admin.applications': { paramsTuple?: []; params?: {} }
     'admin.applications.create': { paramsTuple?: []; params?: {} }
     'admin.applications.edit': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -126,8 +120,6 @@ export type ScannedRoutes = {
     'home': { paramsTuple?: []; params?: {} }
     'auth.me': { paramsTuple?: []; params?: {} }
     'dashboard.get_stats': { paramsTuple?: []; params?: {} }
-    'organizations.index': { paramsTuple?: []; params?: {} }
-    'organizations.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'applications.index': { paramsTuple?: []; params?: {} }
     'applications.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'applications.stats': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -169,7 +161,6 @@ export type ScannedRoutes = {
     'session.create': { paramsTuple?: []; params?: {} }
     'admin': { paramsTuple?: []; params?: {} }
     'admin.dashboard': { paramsTuple?: []; params?: {} }
-    'admin.organizations': { paramsTuple?: []; params?: {} }
     'admin.applications': { paramsTuple?: []; params?: {} }
     'admin.applications.create': { paramsTuple?: []; params?: {} }
     'admin.applications.edit': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -193,8 +184,6 @@ export type ScannedRoutes = {
     'home': { paramsTuple?: []; params?: {} }
     'auth.me': { paramsTuple?: []; params?: {} }
     'dashboard.get_stats': { paramsTuple?: []; params?: {} }
-    'organizations.index': { paramsTuple?: []; params?: {} }
-    'organizations.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'applications.index': { paramsTuple?: []; params?: {} }
     'applications.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'applications.stats': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -236,7 +225,6 @@ export type ScannedRoutes = {
     'session.create': { paramsTuple?: []; params?: {} }
     'admin': { paramsTuple?: []; params?: {} }
     'admin.dashboard': { paramsTuple?: []; params?: {} }
-    'admin.organizations': { paramsTuple?: []; params?: {} }
     'admin.applications': { paramsTuple?: []; params?: {} }
     'admin.applications.create': { paramsTuple?: []; params?: {} }
     'admin.applications.edit': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -261,7 +249,6 @@ export type ScannedRoutes = {
     'auth.login': { paramsTuple?: []; params?: {} }
     'auth.refresh': { paramsTuple?: []; params?: {} }
     'auth.logout': { paramsTuple?: []; params?: {} }
-    'organizations.store': { paramsTuple?: []; params?: {} }
     'applications.store': { paramsTuple?: []; params?: {} }
     'api_keys.store': { paramsTuple: [ParamValue]; params: {'application_id': ParamValue} }
     'countries.store': { paramsTuple?: []; params?: {} }
@@ -287,7 +274,6 @@ export type ScannedRoutes = {
     'session.destroy': { paramsTuple?: []; params?: {} }
   }
   PUT: {
-    'organizations.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'applications.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'countries.update': { paramsTuple: [ParamValue]; params: {'code': ParamValue} }
     'currencies.update': { paramsTuple: [ParamValue]; params: {'code': ParamValue} }
@@ -299,7 +285,6 @@ export type ScannedRoutes = {
     'users.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   DELETE: {
-    'organizations.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'applications.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'api_keys.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'application_id': ParamValue,'id': ParamValue} }
     'countries.destroy': { paramsTuple: [ParamValue]; params: {'code': ParamValue} }

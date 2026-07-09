@@ -13,13 +13,6 @@ export interface ApiDefinition {
   dashboard: {
     getStats: typeof routes['dashboard.get_stats']
   }
-  organizations: {
-    index: typeof routes['organizations.index']
-    store: typeof routes['organizations.store']
-    show: typeof routes['organizations.show']
-    update: typeof routes['organizations.update']
-    destroy: typeof routes['organizations.destroy']
-  }
   applications: {
     index: typeof routes['applications.index']
     store: typeof routes['applications.store']
@@ -146,7 +139,6 @@ export interface ApiDefinition {
   }
   admin: typeof routes['admin'] & {
     dashboard: typeof routes['admin.dashboard']
-    organizations: typeof routes['admin.organizations']
     applications: typeof routes['admin.applications'] & {
       create: typeof routes['admin.applications.create']
       edit: typeof routes['admin.applications.edit']

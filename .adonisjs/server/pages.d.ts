@@ -24,7 +24,6 @@ declare module '@adonisjs/inertia/types' {
     'admin/Logs/List': ExtractProps<(typeof import('../../inertia/pages/admin/Logs/List.tsx'))['default']>
     'admin/MobileOperators/List': ExtractProps<(typeof import('../../inertia/pages/admin/MobileOperators/List.tsx'))['default']>
     'admin/Monitoring/Dashboard': ExtractProps<(typeof import('../../inertia/pages/admin/Monitoring/Dashboard.tsx'))['default']>
-    'admin/Organizations/List': ExtractProps<(typeof import('../../inertia/pages/admin/Organizations/List.tsx'))['default']>
     'admin/ProviderRoutes/List': ExtractProps<(typeof import('../../inertia/pages/admin/ProviderRoutes/List.tsx'))['default']>
     'admin/Providers/Create': ExtractProps<(typeof import('../../inertia/pages/admin/Providers/Create.tsx'))['default']>
     'admin/Providers/Detail': ExtractProps<(typeof import('../../inertia/pages/admin/Providers/Detail.tsx'))['default']>

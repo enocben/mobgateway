@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { type ReactElement } from 'react'
 import { Link, usePage } from '@inertiajs/react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '~/components/ui/button'
@@ -32,19 +32,17 @@ import {
   Route,
   FileText,
   Settings,
-  LogOut,
   Building2,
   Coins,
   Calculator,
   Scale,
 } from 'lucide-react'
+import { Data } from '@generated/data'
 
 const sidebarSections = [
   {
     section: 'Overview',
-    items: [
-      { label: 'Dashboard', icon: LayoutDashboard, href: '/admin/dashboard' },
-    ],
+    items: [{ label: 'Dashboard', icon: LayoutDashboard, href: '/admin/dashboard' }],
   },
   {
     section: 'Management',
@@ -78,11 +76,12 @@ const sidebarSections = [
 ]
 
 interface AdminLayoutProps {
-  children: ReactNode
+  children: ReactElement<Data.SharedProps>
 }
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const { url } = usePage()
+  const user = children.props.user
 
   const isActive = (href: string) => {
     if (href === '/admin/dashboard') return url === href
@@ -133,26 +132,25 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         <SidebarFooter>
           <div className="flex items-center gap-3 px-2">
             <Avatar className="size-8">
-              <AvatarFallback className="text-xs bg-primary/10 text-primary">
-                AD
-              </AvatarFallback>
+              <AvatarFallback className="text-xs bg-primary/10 text-primary">AD</AvatarFallback>
             </Avatar>
-            <div className="flex-1 min-w-0 group-data-[collapsible=icon]:hidden">
-              <p className="text-sm font-medium truncate">Admin User</p>
-              <p className="text-xs text-muted-foreground truncate">admin@mmgateway.com</p>
-            </div>
+            {user && (
+              <div className="flex-1 min-w-0 group-data-[collapsible=icon]:hidden">
+                <p className="text-sm font-medium truncate">{user.name}</p>
+                <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+              </div>
+            )}
           </div>
         </SidebarFooter>
       </Sidebar>
 
       <SidebarInset>
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-6">
+        <header className="top-0 z-30 flex h-16 items-center gap-4 border-b px-6">
           <SidebarTrigger />
           <div className="flex-1" />
           <Link href="/">
-            <Button variant="ghost" size="sm">
-              <LogOut className="mr-2 size-4" />
-              Exit Admin
+            <Button variant="destructive" size="sm">
+              Logout
             </Button>
           </Link>
         </header>

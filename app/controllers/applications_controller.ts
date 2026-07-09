@@ -26,6 +26,10 @@ export default class ApplicationsController {
     return response.status(200).json(applications)
   }
 
+  async applicationsCreate({ inertia }: HttpContext) {
+    return inertia.render('admin/Applications/Create', {})
+  }
+
   async store({ request, response }: HttpContext) {
     const { name, environment } = request.only(['name', 'environment'])
 
@@ -62,7 +66,6 @@ export default class ApplicationsController {
   async show({ params, response }: HttpContext) {
     const application = await Application.query()
       .where('id', params.id)
-      .preload('accounts')
       .preload('users')
       .preload('countries')
       .preload('currencies')

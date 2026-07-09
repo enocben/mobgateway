@@ -158,7 +158,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               {loadingStats ? (
-                <Skeleton className="h-[300px] w-full" />
+                <Skeleton className="h-75 w-full" />
               ) : (
                 <ResponsiveContainer width="100%" height={300}>
                   <LineChart data={stats.revenueByDay}>
@@ -195,7 +195,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               {loadingStats ? (
-                <Skeleton className="h-[300px] w-full" />
+                <Skeleton className="h-75 w-full" />
               ) : (
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>

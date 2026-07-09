@@ -2,8 +2,9 @@ import { type Data } from '@generated/data'
 import { toast, Toaster } from 'sonner'
 import { usePage } from '@inertiajs/react'
 import { type ReactElement, useEffect } from 'react'
-import { Form, Link } from '@adonisjs/inertia/react'
+import { Link } from '@adonisjs/inertia/react'
 import { Button } from '~/components/ui/button'
+import { urlFor } from '~/client'
 
 export default function Layout({ children }: { children: ReactElement<Data.SharedProps> }) {
   const { url } = usePage()
@@ -22,7 +23,7 @@ export default function Layout({ children }: { children: ReactElement<Data.Share
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-30 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-30 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
@@ -42,14 +43,12 @@ export default function Layout({ children }: { children: ReactElement<Data.Share
           </Link>
           <nav className="flex items-center gap-4">
             {children.props.user ? (
-              <>
-                <span className="text-sm font-medium">{children.props.user.initials}</span>
-                <Form route="session.destroy">
-                  <Button type="submit" variant="outline" size="sm">
-                    Logout
-                  </Button>
-                </Form>
-              </>
+              <div className="flex gap-3 items-center">
+                <span className="text-md font-medium">{children.props.user.initials}</span>
+                <Link href={urlFor('admin.dashboard')}>
+                  <Button>Dashboard</Button>
+                </Link>
+              </div>
             ) : (
               <>
                 <Link href="/signup">
