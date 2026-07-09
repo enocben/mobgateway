@@ -75,7 +75,6 @@ const sidebarSections = [
     items: [
       { label: 'Webhooks', icon: Webhook, route: 'admin.webhooks' as const },
       { label: 'API Logs', icon: FileText, route: 'admin.logs' as const },
-      { label: 'Settings', icon: Settings, route: 'admin.settings' as const },
     ],
   },
 ]
