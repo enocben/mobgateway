@@ -51,23 +51,29 @@ export class ApiKeySchema extends BaseModel {
   declare revokedAt: DateTime | null
 }
 
-export class ApplicationCountrySchema extends BaseModel {
-  static $columns = ['applicationId', 'countryCode', 'createdAt', 'id', 'isEnabled'] as const
-  $columns = ApplicationCountrySchema.$columns
+export class ApplicationProviderSchema extends BaseModel {
+  static $columns = ['applicationId', 'config', 'createdAt', 'environment', 'id', 'isEnabled', 'providerId', 'updatedAt'] as const
+  $columns = ApplicationProviderSchema.$columns
   @column()
   declare applicationId: string
   @column()
-  declare countryCode: string
+  declare config: any
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
+  @column()
+  declare environment: string
   @column({ isPrimary: true })
   declare id: string
   @column()
   declare isEnabled: boolean
+  @column()
+  declare providerId: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime
 }
 
 export class ApplicationSchema extends BaseModel {
-  static $columns = ['createdAt', 'environment', 'id', 'name', 'organizationId', 'slug', 'status', 'updatedAt'] as const
+  static $columns = ['createdAt', 'environment', 'id', 'name', 'slug', 'status', 'updatedAt'] as const
   $columns = ApplicationSchema.$columns
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
@@ -77,8 +83,6 @@ export class ApplicationSchema extends BaseModel {
   declare id: string
   @column()
   declare name: string
-  @column()
-  declare organizationId: string
   @column()
   declare slug: string
   @column()
@@ -144,8 +148,10 @@ export class CommissionSchema extends BaseModel {
 }
 
 export class CountrySchema extends BaseModel {
-  static $columns = ['code', 'createdAt', 'currencyCode', 'id', 'name', 'phonePrefix', 'updatedAt'] as const
+  static $columns = ['applicationId', 'code', 'createdAt', 'currencyCode', 'id', 'name', 'phonePrefix', 'updatedAt'] as const
   $columns = CountrySchema.$columns
+  @column()
+  declare applicationId: string
   @column()
   declare code: string | null
   @column.dateTime({ autoCreate: true })
@@ -163,8 +169,10 @@ export class CountrySchema extends BaseModel {
 }
 
 export class CurrencySchema extends BaseModel {
-  static $columns = ['code', 'createdAt', 'decimals', 'id', 'isActive', 'name', 'symbol'] as const
+  static $columns = ['applicationId', 'code', 'createdAt', 'decimals', 'id', 'isActive', 'name', 'symbol'] as const
   $columns = CurrencySchema.$columns
+  @column()
+  declare applicationId: string
   @column()
   declare code: string | null
   @column.dateTime({ autoCreate: true })
@@ -201,8 +209,10 @@ export class LedgerEntrySchema extends BaseModel {
 }
 
 export class MobileOperatorSchema extends BaseModel {
-  static $columns = ['countryCode', 'createdAt', 'id', 'isEnabled', 'logoUrl', 'name', 'updatedAt'] as const
+  static $columns = ['applicationId', 'countryCode', 'createdAt', 'id', 'isEnabled', 'logoUrl', 'name', 'updatedAt'] as const
   $columns = MobileOperatorSchema.$columns
+  @column()
+  declare applicationId: string
   @column()
   declare countryCode: string
   @column.dateTime({ autoCreate: true })
@@ -230,23 +240,6 @@ export class OperatorPrefixSchema extends BaseModel {
   declare mobileOperatorId: string
   @column()
   declare prefix: string
-}
-
-export class OrganizationSchema extends BaseModel {
-  static $columns = ['createdAt', 'id', 'kycStatus', 'name', 'status', 'updatedAt'] as const
-  $columns = OrganizationSchema.$columns
-  @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
-  @column({ isPrimary: true })
-  declare id: string
-  @column()
-  declare kycStatus: string
-  @column()
-  declare name: string
-  @column()
-  declare status: string
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime
 }
 
 export class ProviderRouteSchema extends BaseModel {
@@ -373,8 +366,10 @@ export class TransactionSchema extends BaseModel {
 }
 
 export class UserSchema extends BaseModel {
-  static $columns = ['createdAt', 'email', 'id', 'name', 'organizationId', 'password', 'role', 'status', 'updatedAt'] as const
+  static $columns = ['applicationId', 'createdAt', 'email', 'id', 'name', 'password', 'role', 'status', 'updatedAt'] as const
   $columns = UserSchema.$columns
+  @column()
+  declare applicationId: string | null
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
   @column()
@@ -383,8 +378,6 @@ export class UserSchema extends BaseModel {
   declare id: string
   @column()
   declare name: string
-  @column()
-  declare organizationId: string | null
   @column({ serializeAs: null })
   declare password: string
   @column()

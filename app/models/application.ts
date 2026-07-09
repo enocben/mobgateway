@@ -8,7 +8,6 @@ import User from './user.js'
 import Country from './country.js'
 import Currency from './currency.js'
 import MobileOperator from './mobile_operator.js'
-import ApplicationProvider from './application_provider.js'
 import { ApplicationSchema } from '#database/schema'
 
 export default class Application extends ApplicationSchema {
@@ -35,7 +34,4 @@ export default class Application extends ApplicationSchema {
 
   @hasMany(() => MobileOperator)
   declare mobileOperators: HasMany<typeof MobileOperator>
-
-  @hasMany(() => ApplicationProvider)
-  declare applicationProviders: HasMany<typeof ApplicationProvider>
 }

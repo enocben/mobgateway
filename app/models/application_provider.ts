@@ -1,7 +1,7 @@
 import { belongsTo } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
-import Application from './application.js'
-import Provider from './provider.js'
+import Application from '#models/application'
+import Provider from '#models/provider'
 
 export default class ApplicationProvider {
   @belongsTo(() => Application, { foreignKey: 'applicationId' })

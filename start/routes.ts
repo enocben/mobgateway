@@ -79,11 +79,13 @@ router.group(() => {
   router.post('/providers/:id/test', [controllers.Providers, 'testConnection'])
   router.get('/providers/:id/stats', [controllers.Providers, 'stats'])
 
+/*
   // Application Providers (per-app config)
   router.get('/applications/:application_id/providers', [controllers.ApplicationProviders, 'index'])
   router.post('/applications/:application_id/providers', [controllers.ApplicationProviders, 'store'])
   router.put('/applications/:application_id/providers/:id', [controllers.ApplicationProviders, 'update'])
   router.delete('/applications/:application_id/providers/:id', [controllers.ApplicationProviders, 'destroy'])
+*/
 
   // Provider Routes
   router.get('/provider-routes', [controllers.ProviderRoutes, 'index'])
