@@ -99,22 +99,21 @@ export type ScannedRoutes = {
     'admin.dashboard': { paramsTuple?: []; params?: {} }
     'admin.applications': { paramsTuple?: []; params?: {} }
     'admin.applications.create': { paramsTuple?: []; params?: {} }
-    'admin.applications.edit': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'admin.applications.detail': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'admin.users': { paramsTuple?: []; params?: {} }
-    'admin.users.detail': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'admin.providers': { paramsTuple?: []; params?: {} }
-    'admin.providers.create': { paramsTuple?: []; params?: {} }
-    'admin.providers.detail': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'admin.mobile-operators': { paramsTuple?: []; params?: {} }
-    'admin.countries': { paramsTuple?: []; params?: {} }
-    'admin.currencies': { paramsTuple?: []; params?: {} }
-    'admin.transactions': { paramsTuple?: []; params?: {} }
-    'admin.webhooks': { paramsTuple?: []; params?: {} }
-    'admin.commissions': { paramsTuple?: []; params?: {} }
-    'admin.routing': { paramsTuple?: []; params?: {} }
-    'admin.logs': { paramsTuple?: []; params?: {} }
     'admin.settings': { paramsTuple?: []; params?: {} }
+    'admin.applications.edit': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.users': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.users.detail': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'userId': ParamValue} }
+    'admin.providers': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.providers.create': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.providers.detail': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'providerId': ParamValue} }
+    'admin.mobile-operators': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.countries': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.currencies': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.transactions': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.webhooks': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.commissions': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.routing': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.logs': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   GET: {
     'home': { paramsTuple?: []; params?: {} }
@@ -163,22 +162,21 @@ export type ScannedRoutes = {
     'admin.dashboard': { paramsTuple?: []; params?: {} }
     'admin.applications': { paramsTuple?: []; params?: {} }
     'admin.applications.create': { paramsTuple?: []; params?: {} }
-    'admin.applications.edit': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'admin.applications.detail': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'admin.users': { paramsTuple?: []; params?: {} }
-    'admin.users.detail': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'admin.providers': { paramsTuple?: []; params?: {} }
-    'admin.providers.create': { paramsTuple?: []; params?: {} }
-    'admin.providers.detail': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'admin.mobile-operators': { paramsTuple?: []; params?: {} }
-    'admin.countries': { paramsTuple?: []; params?: {} }
-    'admin.currencies': { paramsTuple?: []; params?: {} }
-    'admin.transactions': { paramsTuple?: []; params?: {} }
-    'admin.webhooks': { paramsTuple?: []; params?: {} }
-    'admin.commissions': { paramsTuple?: []; params?: {} }
-    'admin.routing': { paramsTuple?: []; params?: {} }
-    'admin.logs': { paramsTuple?: []; params?: {} }
     'admin.settings': { paramsTuple?: []; params?: {} }
+    'admin.applications.edit': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.users': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.users.detail': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'userId': ParamValue} }
+    'admin.providers': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.providers.create': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.providers.detail': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'providerId': ParamValue} }
+    'admin.mobile-operators': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.countries': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.currencies': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.transactions': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.webhooks': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.commissions': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.routing': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.logs': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   HEAD: {
     'home': { paramsTuple?: []; params?: {} }
@@ -227,22 +225,21 @@ export type ScannedRoutes = {
     'admin.dashboard': { paramsTuple?: []; params?: {} }
     'admin.applications': { paramsTuple?: []; params?: {} }
     'admin.applications.create': { paramsTuple?: []; params?: {} }
-    'admin.applications.edit': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'admin.applications.detail': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'admin.users': { paramsTuple?: []; params?: {} }
-    'admin.users.detail': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'admin.providers': { paramsTuple?: []; params?: {} }
-    'admin.providers.create': { paramsTuple?: []; params?: {} }
-    'admin.providers.detail': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'admin.mobile-operators': { paramsTuple?: []; params?: {} }
-    'admin.countries': { paramsTuple?: []; params?: {} }
-    'admin.currencies': { paramsTuple?: []; params?: {} }
-    'admin.transactions': { paramsTuple?: []; params?: {} }
-    'admin.webhooks': { paramsTuple?: []; params?: {} }
-    'admin.commissions': { paramsTuple?: []; params?: {} }
-    'admin.routing': { paramsTuple?: []; params?: {} }
-    'admin.logs': { paramsTuple?: []; params?: {} }
     'admin.settings': { paramsTuple?: []; params?: {} }
+    'admin.applications.edit': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.users': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.users.detail': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'userId': ParamValue} }
+    'admin.providers': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.providers.create': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.providers.detail': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'providerId': ParamValue} }
+    'admin.mobile-operators': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.countries': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.currencies': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.transactions': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.webhooks': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.commissions': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.routing': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.logs': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   POST: {
     'auth.register': { paramsTuple?: []; params?: {} }

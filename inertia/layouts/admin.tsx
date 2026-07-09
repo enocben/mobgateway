@@ -20,18 +20,15 @@ import {
 import {
   ArrowLeftRight,
   Building2,
-  Calculator,
   Coins,
   FileText,
   Globe,
   LayoutDashboard,
   Percent,
   Route,
-  Scale,
   Settings,
   Smartphone,
   Users,
-  Wallet,
   Webhook,
 } from 'lucide-react'
 import { Data } from '@generated/data'
@@ -53,35 +50,32 @@ import { Spinner } from '~/components/ui/spinner'
 const sidebarSections = [
   {
     section: 'Overview',
-    items: [{ label: 'Dashboard', icon: LayoutDashboard, href: '/admin/dashboard' }],
+    items: [{ label: 'Dashboard', icon: LayoutDashboard, route: 'admin.dashboard' as const }],
   },
   {
     section: 'Management',
     items: [
-      { label: 'Applications', icon: Wallet, href: '/admin/applications' },
-      { label: 'Users', icon: Users, href: '/admin/users' },
-      { label: 'Providers', icon: Building2, href: '/admin/providers' },
-      { label: 'Transactions', icon: ArrowLeftRight, href: '/admin/transactions' },
+      { label: 'Users', icon: Users, route: 'admin.users' as const },
+      { label: 'Providers', icon: Building2, route: 'admin.providers' as const },
+      { label: 'Transactions', icon: ArrowLeftRight, route: 'admin.transactions' as const },
     ],
   },
   {
     section: 'Configuration',
     items: [
-      { label: 'Mobile Operators', icon: Smartphone, href: '/admin/mobile-operators' },
-      { label: 'Countries', icon: Globe, href: '/admin/countries' },
-      { label: 'Currencies', icon: Coins, href: '/admin/currencies' },
-      { label: 'Routing', icon: Route, href: '/admin/routing' },
-      { label: 'Commissions', icon: Percent, href: '/admin/commissions' },
+      { label: 'Mobile Operators', icon: Smartphone, route: 'admin.mobile-operators' as const },
+      { label: 'Countries', icon: Globe, route: 'admin.countries' as const },
+      { label: 'Currencies', icon: Coins, route: 'admin.currencies' as const },
+      { label: 'Routing', icon: Route, route: 'admin.routing' as const },
+      { label: 'Commissions', icon: Percent, route: 'admin.commissions' as const },
     ],
   },
   {
     section: 'System',
     items: [
-      { label: 'Reconciliation', icon: Scale, href: '/admin/reconciliation' },
-      { label: 'Webhooks', icon: Webhook, href: '/admin/webhooks' },
-      { label: 'API Logs', icon: FileText, href: '/admin/logs' },
-      { label: 'Accounts', icon: Calculator, href: '/admin/accounts' },
-      { label: 'Settings', icon: Settings, href: '/admin/settings' },
+      { label: 'Webhooks', icon: Webhook, route: 'admin.webhooks' as const },
+      { label: 'API Logs', icon: FileText, route: 'admin.logs' as const },
+      { label: 'Settings', icon: Settings, route: 'admin.settings' as const },
     ],
   },
 ]
@@ -122,16 +116,29 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     [applications]
   )
 
-  const isActive = (href: string) => {
-    if (href === '/admin/dashboard') return url === href
-    return url.startsWith(href)
+  type RouteName = Parameters<typeof urlFor>[0]
+
+  const isActive = (route: RouteName) => {
+    return url.startsWith(urlFor(route, { id: applicationId! }))
+  }
+
+  const sidebarHref = (route: RouteName) => {
+    // Routes in the top-level /admin group don't need an application id
+    if (route === 'admin.dashboard' || route === 'admin.settings') {
+      return urlFor(route)
+    }
+    return urlFor(route, { id: applicationId! })
   }
 
   return (
     <SidebarProvider>
       <Sidebar collapsible="icon">
         <SidebarHeader className="flex h-16 items-center border-b px-4">
-          <Select value={application?.id} onValueChange={setApplication} disabled={applications.length === 0}>
+          <Select
+            value={application?.id}
+            onValueChange={setApplication}
+            disabled={applications.length === 0}
+          >
             <SelectTrigger className="w-full max-w-48">
               <SelectValue />
             </SelectTrigger>
@@ -156,13 +163,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   <SidebarGroupLabel>{section.section}</SidebarGroupLabel>
                   <SidebarMenu>
                     {section.items.map((item) => (
-                      <SidebarMenuItem key={item.href}>
+                      <SidebarMenuItem key={item.route}>
                         <SidebarMenuButton
                           asChild
-                          isActive={isActive(item.href)}
+                          isActive={isActive(item.route)}
                           tooltip={item.label}
                         >
-                          <Link href={item.href}>
+                          <Link href={sidebarHref(item.route)}>
                             <item.icon className="size-5" />
                             <span>{item.label}</span>
                           </Link>

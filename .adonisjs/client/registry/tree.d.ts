@@ -142,8 +142,8 @@ export interface ApiDefinition {
     applications: typeof routes['admin.applications'] & {
       create: typeof routes['admin.applications.create']
       edit: typeof routes['admin.applications.edit']
-      detail: typeof routes['admin.applications.detail']
     }
+    settings: typeof routes['admin.settings']
     users: typeof routes['admin.users'] & {
       detail: typeof routes['admin.users.detail']
     }
@@ -159,6 +159,5 @@ export interface ApiDefinition {
     commissions: typeof routes['admin.commissions']
     routing: typeof routes['admin.routing']
     logs: typeof routes['admin.logs']
-    settings: typeof routes['admin.settings']
   }
 }

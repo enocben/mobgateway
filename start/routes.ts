@@ -169,51 +169,57 @@ router
   .use(middleware.auth())
 
 // Admin routes
+router.group(() => {
+  router.get('/', [controllers.Admin, 'index']).as('admin')
+  router.get('/dashboard', [controllers.Admin, 'dashboard']).as('admin.dashboard')
+  router.get('/applications', [controllers.Admin, 'applications']).as('admin.applications')
+  router.get('/applications/create', [controllers.Admin, 'applicationsCreate']).as('admin.applications.create')
+  router.get('/settings', [controllers.Admin, 'settings']).as('admin.settings')
+})
+  .prefix('/admin')
+  .use(middleware.auth())
+
 router
   .group(() => {
-    router.get('/admin', [controllers.Admin, 'index']).as('admin')
-    router.get('/admin/dashboard', [controllers.Admin, 'dashboard']).as('admin.dashboard')
+
 
     // Applications
-    router.get('/admin/applications', [controllers.Admin, 'applications']).as('admin.applications')
-    router.get('/admin/applications/create', [controllers.Admin, 'applicationsCreate']).as('admin.applications.create')
-    router.get('/admin/applications/:id/edit', [controllers.Admin, 'applicationsEdit']).as('admin.applications.edit')
-    router.get('/admin/applications/:id', [controllers.Admin, 'applicationsDetail']).as('admin.applications.detail')
+    router.get('/edit', [controllers.Admin, 'applicationsEdit']).as('admin.applications.edit')
+    // router.get('/', [controllers.Admin, 'applicationsDetail']).as('admin.applications.detail')
 
     // Users
-    router.get('/admin/users', [controllers.Admin, 'users']).as('admin.users')
-    router.get('/admin/users/:id', [controllers.Admin, 'usersDetail']).as('admin.users.detail')
+    router.get('/users', [controllers.Admin, 'users']).as('admin.users')
+    router.get('/users/:userId', [controllers.Admin, 'usersDetail']).as('admin.users.detail')
 
     // Providers
-    router.get('/admin/providers', [controllers.Admin, 'providers']).as('admin.providers')
-    router.get('/admin/providers/create', [controllers.Admin, 'providersCreate']).as('admin.providers.create')
-    router.get('/admin/providers/:id', [controllers.Admin, 'providersDetail']).as('admin.providers.detail')
+    router.get('/providers', [controllers.Admin, 'providers']).as('admin.providers')
+    router.get('/providers/create', [controllers.Admin, 'providersCreate']).as('admin.providers.create')
+    router.get('/providers/:providerId', [controllers.Admin, 'providersDetail']).as('admin.providers.detail')
 
     // Mobile Operators
-    router.get('/admin/mobile-operators', [controllers.Admin, 'mobileOperators']).as('admin.mobile-operators')
+    router.get('/mobile-operators', [controllers.Admin, 'mobileOperators']).as('admin.mobile-operators')
 
     // Countries
-    router.get('/admin/countries', [controllers.Admin, 'countries']).as('admin.countries')
+    router.get('/countries', [controllers.Admin, 'countries']).as('admin.countries')
 
     // Currencies
-    router.get('/admin/currencies', [controllers.Admin, 'currencies']).as('admin.currencies')
+    router.get('/currencies', [controllers.Admin, 'currencies']).as('admin.currencies')
 
     // Transactions
-    router.get('/admin/transactions', [controllers.Admin, 'transactions']).as('admin.transactions')
+    router.get('/transactions', [controllers.Admin, 'transactions']).as('admin.transactions')
 
     // Webhooks
-    router.get('/admin/webhooks', [controllers.Admin, 'webhooks']).as('admin.webhooks')
+    router.get('/webhooks', [controllers.Admin, 'webhooks']).as('admin.webhooks')
 
     // Commissions
-    router.get('/admin/commissions', [controllers.Admin, 'commissions']).as('admin.commissions')
+    router.get('/commissions', [controllers.Admin, 'commissions']).as('admin.commissions')
 
     // Routing
-    router.get('/admin/routing', [controllers.Admin, 'routing']).as('admin.routing')
+    router.get('/routing', [controllers.Admin, 'routing']).as('admin.routing')
 
     // Logs
-    router.get('/admin/logs', [controllers.Admin, 'logs']).as('admin.logs')
+    router.get('/logs', [controllers.Admin, 'logs']).as('admin.logs')
 
-    // Settings
-    router.get('/admin/settings', [controllers.Admin, 'settings']).as('admin.settings')
   })
+  .prefix("/admin/:id")
   .use(middleware.auth())

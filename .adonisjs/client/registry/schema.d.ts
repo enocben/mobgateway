@@ -1147,186 +1147,6 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['applicationsCreate']>>>
     }
   }
-  'admin.applications.edit': {
-    methods: ["GET","HEAD"]
-    pattern: '/admin/applications/:id/edit'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['applicationsEdit']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['applicationsEdit']>>>
-    }
-  }
-  'admin.applications.detail': {
-    methods: ["GET","HEAD"]
-    pattern: '/admin/applications/:id'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['applicationsDetail']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['applicationsDetail']>>>
-    }
-  }
-  'admin.users': {
-    methods: ["GET","HEAD"]
-    pattern: '/admin/users'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['users']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['users']>>>
-    }
-  }
-  'admin.users.detail': {
-    methods: ["GET","HEAD"]
-    pattern: '/admin/users/:id'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['usersDetail']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['usersDetail']>>>
-    }
-  }
-  'admin.providers': {
-    methods: ["GET","HEAD"]
-    pattern: '/admin/providers'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['providers']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['providers']>>>
-    }
-  }
-  'admin.providers.create': {
-    methods: ["GET","HEAD"]
-    pattern: '/admin/providers/create'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['providersCreate']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['providersCreate']>>>
-    }
-  }
-  'admin.providers.detail': {
-    methods: ["GET","HEAD"]
-    pattern: '/admin/providers/:id'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['providersDetail']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['providersDetail']>>>
-    }
-  }
-  'admin.mobile-operators': {
-    methods: ["GET","HEAD"]
-    pattern: '/admin/mobile-operators'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['mobileOperators']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['mobileOperators']>>>
-    }
-  }
-  'admin.countries': {
-    methods: ["GET","HEAD"]
-    pattern: '/admin/countries'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['countries']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['countries']>>>
-    }
-  }
-  'admin.currencies': {
-    methods: ["GET","HEAD"]
-    pattern: '/admin/currencies'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['currencies']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['currencies']>>>
-    }
-  }
-  'admin.transactions': {
-    methods: ["GET","HEAD"]
-    pattern: '/admin/transactions'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['transactions']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['transactions']>>>
-    }
-  }
-  'admin.webhooks': {
-    methods: ["GET","HEAD"]
-    pattern: '/admin/webhooks'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['webhooks']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['webhooks']>>>
-    }
-  }
-  'admin.commissions': {
-    methods: ["GET","HEAD"]
-    pattern: '/admin/commissions'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['commissions']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['commissions']>>>
-    }
-  }
-  'admin.routing': {
-    methods: ["GET","HEAD"]
-    pattern: '/admin/routing'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['routing']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['routing']>>>
-    }
-  }
-  'admin.logs': {
-    methods: ["GET","HEAD"]
-    pattern: '/admin/logs'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['logs']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['logs']>>>
-    }
-  }
   'admin.settings': {
     methods: ["GET","HEAD"]
     pattern: '/admin/settings'
@@ -1337,6 +1157,174 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['settings']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['settings']>>>
+    }
+  }
+  'admin.applications.edit': {
+    methods: ["GET","HEAD"]
+    pattern: '/admin/:id/edit'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['applicationsEdit']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['applicationsEdit']>>>
+    }
+  }
+  'admin.users': {
+    methods: ["GET","HEAD"]
+    pattern: '/admin/:id/users'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['users']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['users']>>>
+    }
+  }
+  'admin.users.detail': {
+    methods: ["GET","HEAD"]
+    pattern: '/admin/:id/users/:userId'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue, ParamValue]
+      params: { id: ParamValue; userId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['usersDetail']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['usersDetail']>>>
+    }
+  }
+  'admin.providers': {
+    methods: ["GET","HEAD"]
+    pattern: '/admin/:id/providers'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['providers']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['providers']>>>
+    }
+  }
+  'admin.providers.create': {
+    methods: ["GET","HEAD"]
+    pattern: '/admin/:id/providers/create'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['providersCreate']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['providersCreate']>>>
+    }
+  }
+  'admin.providers.detail': {
+    methods: ["GET","HEAD"]
+    pattern: '/admin/:id/providers/:providerId'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue, ParamValue]
+      params: { id: ParamValue; providerId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['providersDetail']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['providersDetail']>>>
+    }
+  }
+  'admin.mobile-operators': {
+    methods: ["GET","HEAD"]
+    pattern: '/admin/:id/mobile-operators'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['mobileOperators']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['mobileOperators']>>>
+    }
+  }
+  'admin.countries': {
+    methods: ["GET","HEAD"]
+    pattern: '/admin/:id/countries'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['countries']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['countries']>>>
+    }
+  }
+  'admin.currencies': {
+    methods: ["GET","HEAD"]
+    pattern: '/admin/:id/currencies'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['currencies']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['currencies']>>>
+    }
+  }
+  'admin.transactions': {
+    methods: ["GET","HEAD"]
+    pattern: '/admin/:id/transactions'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['transactions']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['transactions']>>>
+    }
+  }
+  'admin.webhooks': {
+    methods: ["GET","HEAD"]
+    pattern: '/admin/:id/webhooks'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['webhooks']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['webhooks']>>>
+    }
+  }
+  'admin.commissions': {
+    methods: ["GET","HEAD"]
+    pattern: '/admin/:id/commissions'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['commissions']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['commissions']>>>
+    }
+  }
+  'admin.routing': {
+    methods: ["GET","HEAD"]
+    pattern: '/admin/:id/routing'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['routing']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['routing']>>>
+    }
+  }
+  'admin.logs': {
+    methods: ["GET","HEAD"]
+    pattern: '/admin/:id/logs'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['logs']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['logs']>>>
     }
   }
 }
