@@ -17,14 +17,13 @@ export default function EditApplication() {
   const { data, loading: loadingApp, error } = useFetch<ApiResponse<Application>>(
     id ? `/api/v1/applications/${id}` : null
   )
-  const [form, setForm] = useState({ name: '', organization_id: '', environment: 'sandbox' as const })
+  const [form, setForm] = useState({ name: '', environment: 'sandbox' as const })
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (data?.data) {
       setForm({
         name: data.data.name,
-        organization_id: String(data.data.organization_id),
         environment: data.data.environment,
       })
     }
@@ -68,7 +67,6 @@ export default function EditApplication() {
           <CardContent className="flex flex-col gap-6">
             <Skeleton className="h-12 w-full" />
             <Skeleton className="h-12 w-full" />
-            <Skeleton className="h-12 w-full" />
           </CardContent>
         </Card>
       </div>
@@ -94,10 +92,6 @@ export default function EditApplication() {
             <div className="flex flex-col gap-2">
               <Label htmlFor="name">Application Name</Label>
               <Input id="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="organization_id">Organization ID</Label>
-              <Input id="organization_id" type="number" value={form.organization_id} onChange={(e) => setForm({ ...form, organization_id: e.target.value })} required />
             </div>
             <div className="flex flex-col gap-2">
               <Label>Environment</Label>

@@ -1,13 +1,12 @@
 import { belongsTo } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import Application from './application.js'
-import Country from './country.js'
-import { ApplicationCountrySchema } from '#database/schema'
+import Provider from './provider.js'
 
-export default class ApplicationCountry extends ApplicationCountrySchema {
+export default class ApplicationProvider {
   @belongsTo(() => Application, { foreignKey: 'applicationId' })
   declare application: BelongsTo<typeof Application>
 
-  @belongsTo(() => Country, { foreignKey: 'countryCode' })
-  declare country: BelongsTo<typeof Country>
+  @belongsTo(() => Provider, { foreignKey: 'providerId' })
+  declare provider: BelongsTo<typeof Provider>
 }

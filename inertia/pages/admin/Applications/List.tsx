@@ -36,8 +36,7 @@ export default function ApplicationsList() {
 
   const applications = data?.data ?? []
   const filtered = applications.filter((app) =>
-    app.name.toLowerCase().includes(search.toLowerCase()) ||
-    app.organization?.name?.toLowerCase().includes(search.toLowerCase())
+    app.name.toLowerCase().includes(search.toLowerCase())
   )
 
   return (
@@ -83,7 +82,6 @@ export default function ApplicationsList() {
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
-                <TableHead>Organization</TableHead>
                 <TableHead>Environment</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Created</TableHead>
@@ -95,7 +93,6 @@ export default function ApplicationsList() {
                 Array.from({ length: 5 }).map((_, i) => (
                   <TableRow key={i}>
                     <TableCell><Skeleton className="h-4 w-40" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-32" /></TableCell>
                     <TableCell><Skeleton className="h-5 w-20" /></TableCell>
                     <TableCell><Skeleton className="h-5 w-20" /></TableCell>
                     <TableCell><Skeleton className="h-4 w-24" /></TableCell>
@@ -104,7 +101,7 @@ export default function ApplicationsList() {
                 ))
               ) : filtered.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
                     {search ? 'No applications match your search' : 'No applications found'}
                   </TableCell>
                 </TableRow>
@@ -119,9 +116,6 @@ export default function ApplicationsList() {
                   >
                     <TableCell className="font-medium">
                       <Link href={`/admin/applications/${app.id}`} className="hover:underline">{app.name}</Link>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {app.organization?.name ?? '—'}
                     </TableCell>
                     <TableCell>
                       <Badge variant={envVariant[app.environment] || 'default'}>

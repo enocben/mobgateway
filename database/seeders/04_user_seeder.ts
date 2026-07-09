@@ -1,21 +1,22 @@
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
-import Organization from '#models/organization'
+import Application from '#models/application'
 import User from '#models/user'
 
 export default class UserSeeder extends BaseSeeder {
   async run() {
-    const org = await Organization.firstOrCreate(
-      { name: 'Default Organization' },
+    const app = await Application.firstOrCreate(
+      { slug: 'default' },
       {
-        name: 'Default Organization',
-        kycStatus: 'approved',
+        name: 'Default Application',
+        slug: 'default',
+        environment: 'sandbox',
         status: 'active',
       }
     )
 
     const users = [
       {
-        organizationId: org.id,
+        applicationId: app.id,
         name: 'Super Admin',
         email: 'admin@mmg.local',
         password: 'admin123',
@@ -23,7 +24,15 @@ export default class UserSeeder extends BaseSeeder {
         status: 'active',
       },
       {
-        organizationId: org.id,
+        applicationId: null, // admin global — peut voir toutes les apps
+        name: 'Global Admin',
+        email: 'global@mmg.local',
+        password: 'admin123',
+        role: 'admin',
+        status: 'active',
+      },
+      {
+        applicationId: app.id,
         name: 'Support Agent',
         email: 'support@mmg.local',
         password: 'support123',
@@ -31,7 +40,7 @@ export default class UserSeeder extends BaseSeeder {
         status: 'active',
       },
       {
-        organizationId: org.id,
+        applicationId: app.id,
         name: 'Developer',
         email: 'dev@mmg.local',
         password: 'dev123',

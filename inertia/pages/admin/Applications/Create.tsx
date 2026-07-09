@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { router, Link, usePage } from '@inertiajs/react'
-import { ArrowLeft, AlertCircle, RefreshCw } from 'lucide-react'
+import { router, Link } from '@inertiajs/react'
+import { ArrowLeft } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~
 import { toast } from 'sonner'
 
 export default function CreateApplication() {
-  const [form, setForm] = useState({ name: '', organization_id: '', environment: 'sandbox' as const })
+  const [form, setForm] = useState({ name: '', environment: 'sandbox' as const })
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,10 +54,6 @@ export default function CreateApplication() {
             <div className="flex flex-col gap-2">
               <Label htmlFor="name">Application Name</Label>
               <Input id="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="My Application" required />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="organization_id">Organization ID</Label>
-              <Input id="organization_id" type="number" value={form.organization_id} onChange={(e) => setForm({ ...form, organization_id: e.target.value })} placeholder="1" required />
             </div>
             <div className="flex flex-col gap-2">
               <Label>Environment</Label>

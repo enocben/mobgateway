@@ -35,7 +35,6 @@ import {
   LogOut,
   Building2,
   Coins,
-  Landmark,
   Calculator,
   Scale,
 } from 'lucide-react'
@@ -50,7 +49,6 @@ const sidebarSections = [
   {
     section: 'Management',
     items: [
-      { label: 'Organizations', icon: Landmark, href: '/admin/organizations' },
       { label: 'Applications', icon: Wallet, href: '/admin/applications' },
       { label: 'Users', icon: Users, href: '/admin/users' },
       { label: 'Providers', icon: Building2, href: '/admin/providers' },

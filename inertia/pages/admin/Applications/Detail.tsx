@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, usePage } from '@inertiajs/react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Copy, Check, Key, Globe, Building2, Calendar, Activity, RefreshCw, AlertCircle } from 'lucide-react'
+import { ArrowLeft, Copy, Check, Key, Globe, Calendar, Activity, RefreshCw, AlertCircle } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
@@ -97,11 +97,6 @@ export default function ApplicationDetail() {
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground"><Activity className="size-4" /> Status</div>
                 <Badge variant={statusVariant[app.status] || 'default'}>{app.status}</Badge>
-              </div>
-              <Separator />
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground"><Building2 className="size-4" /> Organization</div>
-                <span className="font-medium">{app.organization?.name ?? app.organization_id}</span>
               </div>
               <Separator />
               <div className="flex justify-between items-center">

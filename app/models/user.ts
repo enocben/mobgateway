@@ -4,17 +4,13 @@ import hash from '@adonisjs/core/services/hash'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import { belongsTo, hasMany } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
-import Organization from './organization.js'
 import Application from './application.js'
 import AuditLog from './audit_log.js'
 import { UserSchema } from '#database/schema'
 
 export default class User extends compose(UserSchema, withAuthFinder(() => hash.use('scrypt'))) {
-  @belongsTo(() => Organization, { foreignKey: 'organizationId' })
-  declare organization: BelongsTo<typeof Organization>
-
-  @hasMany(() => Application)
-  declare applications: HasMany<typeof Application>
+  @belongsTo(() => Application, { foreignKey: 'applicationId' })
+  declare application: BelongsTo<typeof Application>
 
   @hasMany(() => AuditLog)
   declare auditLogs: HasMany<typeof AuditLog>

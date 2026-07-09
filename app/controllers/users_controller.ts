@@ -8,9 +8,9 @@ export default class UsersController {
     const search = request.input('search')
     const role = request.input('role')
     const status = request.input('status')
-    const organizationId = request.input('organization_id')
+    const applicationId = request.input('application_id')
 
-    const query = User.query().preload('organization')
+    const query = User.query().preload('application')
 
     if (search) {
       query.where((q) => {
@@ -21,14 +21,14 @@ export default class UsersController {
 
     if (role) query.where('role', role)
     if (status) query.where('status', status)
-    if (organizationId) query.where('organization_id', Number(organizationId))
+    if (applicationId) query.where('application_id', applicationId)
 
     const users = await query.orderBy('created_at', 'desc').paginate(page, limit)
     return response.status(200).json(users)
   }
 
   async store({ request, response }: HttpContext) {
-    const { name, email, password, role, organizationId } = request.only(['name', 'email', 'password', 'role', 'organizationId'])
+    const { name, email, password, role, applicationId } = request.only(['name', 'email', 'password', 'role', 'applicationId'])
 
     if (!name || !email || !password) {
       return response.status(422).json({
@@ -42,7 +42,7 @@ export default class UsersController {
     }
 
     const user = await User.create({
-      organizationId: organizationId ? Number(organizationId) : null,
+      applicationId: applicationId || null,
       name,
       email,
       password,
@@ -56,8 +56,7 @@ export default class UsersController {
   async show({ params, response }: HttpContext) {
     const user = await User.query()
       .where('id', params.id)
-      .preload('organization')
-      .preload('applications')
+      .preload('application')
       .first()
 
     if (!user) {
@@ -73,7 +72,7 @@ export default class UsersController {
       return response.status(404).json({ message: 'User not found' })
     }
 
-    const { name, email, role, organizationId } = request.only(['name', 'email', 'role', 'organizationId'])
+    const { name, email, role, applicationId } = request.only(['name', 'email', 'role', 'applicationId'])
 
     if (name !== undefined) {
       if (typeof name !== 'string' || name.trim().length === 0) {
@@ -106,8 +105,8 @@ export default class UsersController {
       user.role = role
     }
 
-    if (organizationId !== undefined) {
-      user.organizationId = organizationId ? Number(organizationId) : null
+    if (applicationId !== undefined) {
+      user.applicationId = applicationId || null
     }
 
     await user.save()

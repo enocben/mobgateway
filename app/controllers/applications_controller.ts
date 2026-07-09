@@ -8,16 +8,11 @@ export default class ApplicationsController {
     const limit = request.input('limit', 20)
     const status = request.input('status')
     const search = request.input('search')
-    const organizationId = request.input('organization_id')
 
-    const query = Application.query().preload('organization')
+    const query = Application.query()
 
     if (status) {
       query.where('status', status)
-    }
-
-    if (organizationId) {
-      query.where('organization_id', Number(organizationId))
     }
 
     if (search) {
@@ -32,19 +27,12 @@ export default class ApplicationsController {
   }
 
   async store({ request, response }: HttpContext) {
-    const { name, organizationId, environment } = request.only(['name', 'organizationId', 'environment'])
+    const { name, environment } = request.only(['name', 'environment'])
 
     if (!name || typeof name !== 'string' || name.trim().length === 0) {
       return response.status(422).json({
         message: 'Validation failed',
         errors: { name: 'Name is required' },
-      })
-    }
-
-    if (!organizationId) {
-      return response.status(422).json({
-        message: 'Validation failed',
-        errors: { organizationId: 'Organization ID is required' },
       })
     }
 
@@ -62,7 +50,6 @@ export default class ApplicationsController {
     }
 
     const application = await Application.create({
-      organizationId: Number(organizationId),
       name: name.trim(),
       slug,
       environment: environment || 'sandbox',
@@ -75,8 +62,10 @@ export default class ApplicationsController {
   async show({ params, response }: HttpContext) {
     const application = await Application.query()
       .where('id', params.id)
-      .preload('organization')
       .preload('accounts')
+      .preload('users')
+      .preload('countries')
+      .preload('currencies')
       .first()
 
     if (!application) {
@@ -92,7 +81,7 @@ export default class ApplicationsController {
       return response.status(404).json({ message: 'Application not found' })
     }
 
-    const { name, status, environment, organizationId } = request.only(['name', 'status', 'environment', 'organizationId'])
+    const { name, status, environment } = request.only(['name', 'status', 'environment'])
 
     if (name !== undefined) {
       if (typeof name !== 'string' || name.trim().length === 0) {
@@ -122,10 +111,6 @@ export default class ApplicationsController {
         })
       }
       application.environment = environment
-    }
-
-    if (organizationId !== undefined) {
-      application.organizationId = Number(organizationId)
     }
 
     await application.save()

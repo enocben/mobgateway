@@ -24,21 +24,11 @@ router.group(() => {
   router.post('/auth/refresh', [controllers.Auth, 'refresh'])
 }).prefix('/api/v1')
 
-// Webhook receiving endpoint (public)
-// router.post('/api/v1/webhooks/receive', [controllers.Webhooks, 'receive'])
-
 // Authenticated API routes
 router.group(() => {
   router.get('/auth/me', [controllers.Auth, 'me'])
   router.post('/auth/logout', [controllers.Auth, 'logout'])
   router.get('/dashboard/stats', [controllers.Dashboard, 'getStats'])
-
-  // Organizations
-  router.get('/organizations', [controllers.Organizations, 'index'])
-  router.post('/organizations', [controllers.Organizations, 'store'])
-  router.get('/organizations/:id', [controllers.Organizations, 'show'])
-  router.put('/organizations/:id', [controllers.Organizations, 'update'])
-  router.delete('/organizations/:id', [controllers.Organizations, 'destroy'])
 
   // Applications
   router.get('/applications', [controllers.Applications, 'index'])
@@ -54,21 +44,21 @@ router.group(() => {
   router.get('/applications/:application_id/api-keys/:id', [controllers.ApiKeys, 'show'])
   router.delete('/applications/:application_id/api-keys/:id', [controllers.ApiKeys, 'destroy'])
 
-  // Countries (using code as PK)
+  // Countries
   router.get('/countries', [controllers.Countries, 'index'])
   router.post('/countries', [controllers.Countries, 'store'])
   router.get('/countries/:code', [controllers.Countries, 'show'])
   router.put('/countries/:code', [controllers.Countries, 'update'])
   router.delete('/countries/:code', [controllers.Countries, 'destroy'])
 
-  // Currencies (using code as PK)
+  // Currencies
   router.get('/currencies', [controllers.Currencies, 'index'])
   router.post('/currencies', [controllers.Currencies, 'store'])
   router.get('/currencies/:code', [controllers.Currencies, 'show'])
   router.put('/currencies/:code', [controllers.Currencies, 'update'])
   router.delete('/currencies/:code', [controllers.Currencies, 'destroy'])
 
-  // Mobile Operators (replaces Networks)
+  // Mobile Operators
   router.get('/mobile-operators', [controllers.MobileOperators, 'index'])
   router.post('/mobile-operators', [controllers.MobileOperators, 'store'])
   router.get('/mobile-operators/:id', [controllers.MobileOperators, 'show'])
@@ -80,7 +70,7 @@ router.group(() => {
   router.post('/mobile-operators/:mobile_operator_id/prefixes', [controllers.OperatorPrefixes, 'store'])
   router.delete('/mobile-operators/:mobile_operator_id/prefixes/:id', [controllers.OperatorPrefixes, 'destroy'])
 
-  // Providers
+  // Providers (global registry)
   router.get('/providers', [controllers.Providers, 'index'])
   router.post('/providers', [controllers.Providers, 'store'])
   router.get('/providers/:id', [controllers.Providers, 'show'])
@@ -88,6 +78,12 @@ router.group(() => {
   router.delete('/providers/:id', [controllers.Providers, 'destroy'])
   router.post('/providers/:id/test', [controllers.Providers, 'testConnection'])
   router.get('/providers/:id/stats', [controllers.Providers, 'stats'])
+
+  // Application Providers (per-app config)
+  router.get('/applications/:application_id/providers', [controllers.ApplicationProviders, 'index'])
+  router.post('/applications/:application_id/providers', [controllers.ApplicationProviders, 'store'])
+  router.put('/applications/:application_id/providers/:id', [controllers.ApplicationProviders, 'update'])
+  router.delete('/applications/:application_id/providers/:id', [controllers.ApplicationProviders, 'destroy'])
 
   // Provider Routes
   router.get('/provider-routes', [controllers.ProviderRoutes, 'index'])
@@ -175,9 +171,6 @@ router
   .group(() => {
     router.get('/admin', [controllers.Admin, 'index']).as('admin')
     router.get('/admin/dashboard', [controllers.Admin, 'dashboard']).as('admin.dashboard')
-
-    // Organizations
-    router.get('/admin/organizations', [controllers.Admin, 'organizations']).as('admin.organizations')
 
     // Applications
     router.get('/admin/applications', [controllers.Admin, 'applications']).as('admin.applications')

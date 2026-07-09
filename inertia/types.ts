@@ -4,29 +4,22 @@ import { type JSONDataTypes } from '@adonisjs/core/types/transformers'
 
 export type InertiaProps<T extends JSONDataTypes = {}> = PropsWithChildren<Data.SharedProps & T>
 
-export interface Organization {
-  id: number
-  name: string
-  kyc_status: 'pending' | 'approved' | 'rejected'
-  status: 'active' | 'suspended'
-  created_at: string
-  updated_at: string
-}
-
 export interface Application {
-  id: number
-  organization_id: number
-  organization?: Organization
+  id: string
   name: string
   slug: string
   environment: 'sandbox' | 'production'
   status: 'active' | 'suspended'
   created_at: string
   updated_at: string
+  users?: User[]
+  countries?: Country[]
+  currencies?: Currency[]
 }
 
 export interface Country {
-  code: string  // PK, e.g. "CD"
+  code: string
+  application_id: string
   name: string
   currency_code: string
   phone_prefix: string
@@ -35,7 +28,8 @@ export interface Country {
 }
 
 export interface Currency {
-  code: string  // PK, e.g. "CDF"
+  code: string
+  application_id: string
   name: string
   symbol: string
   decimals: number
@@ -44,7 +38,8 @@ export interface Currency {
 }
 
 export interface MobileOperator {
-  id: number
+  id: string
+  application_id: string
   country_code: string
   country?: Country
   name: string
@@ -55,14 +50,14 @@ export interface MobileOperator {
 }
 
 export interface OperatorPrefix {
-  id: number
-  mobile_operator_id: number
+  id: string
+  mobile_operator_id: string
   prefix: string
   created_at: string
 }
 
 export interface Provider {
-  id: number
+  id: string
   name: string
   code: string
   type: 'direct' | 'aggregator'
@@ -72,11 +67,23 @@ export interface Provider {
   updated_at: string
 }
 
+export interface ApplicationProvider {
+  id: string
+  application_id: string
+  provider_id: string
+  provider?: Provider
+  is_enabled: boolean
+  config: Record<string, any>
+  environment: 'sandbox' | 'production'
+  created_at: string
+  updated_at: string
+}
+
 export interface ProviderRoute {
-  id: number
-  mobile_operator_id: number
+  id: string
+  mobile_operator_id: string
   mobile_operator?: MobileOperator
-  provider_id: number
+  provider_id: string
   provider?: Provider
   priority: number
   is_active: boolean
@@ -85,11 +92,11 @@ export interface ProviderRoute {
 }
 
 export interface Transaction {
-  id: number
-  application_id: number
-  mobile_operator_id: number | null
-  provider_id: number | null
-  provider_route_id: number | null
+  id: string
+  application_id: string
+  mobile_operator_id: string | null
+  provider_id: string | null
+  provider_route_id: string | null
   idempotency_key: string
   tx_type: 'collection' | 'payout'
   msisdn: string
@@ -106,8 +113,8 @@ export interface Transaction {
 }
 
 export interface TransactionEvent {
-  id: number
-  transaction_id: number
+  id: string
+  transaction_id: string
   from_status: string | null
   to_status: string
   payload: Record<string, any>
@@ -115,8 +122,8 @@ export interface TransactionEvent {
 }
 
 export interface Account {
-  id: number
-  application_id: number
+  id: string
+  application_id: string
   account_type: 'app_balance' | 'operator_suspense' | 'platform_revenue'
   currency: string
   balance_cached: number
@@ -125,9 +132,9 @@ export interface Account {
 }
 
 export interface LedgerEntry {
-  id: number
-  transaction_id: number
-  account_id: number
+  id: string
+  transaction_id: string
+  account_id: string
   direction: 'debit' | 'credit'
   amount: number
   currency: string
@@ -135,8 +142,8 @@ export interface LedgerEntry {
 }
 
 export interface ReconciliationEntry {
-  id: number
-  transaction_id: number | null
+  id: string
+  transaction_id: string | null
   source: string
   external_ref: string
   amount: number
@@ -148,8 +155,8 @@ export interface ReconciliationEntry {
 }
 
 export interface Webhook {
-  id: number
-  application_id: number
+  id: string
+  application_id: string
   url: string
   secret_hash: string
   status: 'active' | 'inactive'
@@ -159,8 +166,8 @@ export interface Webhook {
 }
 
 export interface WebhookDelivery {
-  id: number
-  webhook_id: number
+  id: string
+  webhook_id: string
   event: string
   payload: Record<string, any>
   status: 'pending' | 'success' | 'failed'
@@ -172,8 +179,9 @@ export interface WebhookDelivery {
 }
 
 export interface User {
-  id: number
-  organization_id: number | null
+  id: string
+  application_id: string | null
+  application?: Application
   name: string
   email: string
   role: string
@@ -183,8 +191,8 @@ export interface User {
 }
 
 export interface ApiKey {
-  id: number
-  application_id: number
+  id: string
+  application_id: string
   key_type: 'public' | 'secret'
   key_hash: string
   name: string
@@ -196,12 +204,12 @@ export interface ApiKey {
 }
 
 export interface Commission {
-  id: number
-  application_id: number | null
+  id: string
+  application_id: string | null
   country_code: string | null
   currency_code: string | null
-  mobile_operator_id: number | null
-  provider_id: number | null
+  mobile_operator_id: string | null
+  provider_id: string | null
   type: 'fixed' | 'percentage'
   value: number
   min_amount: number | null
@@ -211,12 +219,12 @@ export interface Commission {
 }
 
 export interface AuditLog {
-  id: number
-  user_id: number | null
-  application_id: number | null
+  id: string
+  user_id: string | null
+  application_id: string | null
   action: string
   entity_type: string
-  entity_id: number
+  entity_id: string
   old_value: Record<string, any> | null
   new_value: Record<string, any> | null
   ip_address: string

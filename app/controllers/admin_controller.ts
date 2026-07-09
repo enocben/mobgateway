@@ -41,10 +41,6 @@ export default class AdminController {
     })
   }
 
-  async organizations({ inertia }: HttpContext) {
-    return inertia.render('admin/Organizations/List', {})
-  }
-
   async applications({ inertia }: HttpContext) {
     return inertia.render('admin/Applications/List', {})
   }

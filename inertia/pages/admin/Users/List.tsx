@@ -60,7 +60,7 @@ export default function UsersList() {
               <TableRow>
                 <TableHead>User</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead>Organization</TableHead>
+                <TableHead>Application</TableHead>
                 <TableHead>Role</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Joined</TableHead>
@@ -96,7 +96,7 @@ export default function UsersList() {
                       </Link>
                     </TableCell>
                     <TableCell className="text-muted-foreground">{user.email}</TableCell>
-                    <TableCell className="text-muted-foreground text-sm">{user.organization_id ?? '—'}</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">{user.application?.name ?? user.application_id ?? '—'}</TableCell>
                     <TableCell><Badge variant={roleVariant[user.role] || 'default'} className="capitalize">{user.role}</Badge></TableCell>
                     <TableCell><Badge variant={user.status === 'active' ? 'success' : 'secondary'}>{user.status}</Badge></TableCell>
                     <TableCell className="text-muted-foreground text-xs">{formatDate(user.created_at)}</TableCell>

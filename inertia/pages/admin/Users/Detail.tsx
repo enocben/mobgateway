@@ -1,6 +1,6 @@
 import { Link, usePage } from '@inertiajs/react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Mail, Shield, Calendar, Activity, Building2, AlertCircle, RefreshCw } from 'lucide-react'
+import { ArrowLeft, Mail, Shield, Calendar, Activity, Wallet, AlertCircle, RefreshCw } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { Badge } from '~/components/ui/badge'
 import { Avatar, AvatarFallback } from '~/components/ui/avatar'
@@ -91,8 +91,8 @@ export default function UserDetail() {
               </div>
               <Separator />
               <div className="flex justify-between items-center">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground"><Building2 className="size-4" /> Organization</div>
-                <span className="text-sm">{user.organization_id ?? '—'}</span>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground"><Wallet className="size-4" /> Application</div>
+                <span className="text-sm">{user.application?.name ?? user.application_id ?? '—'}</span>
               </div>
               <Separator />
               <div className="flex justify-between items-center">
