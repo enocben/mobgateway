@@ -60,7 +60,6 @@ export default class ProvidersController {
   async show({ params, response }: HttpContext) {
     const provider = await Provider.query()
       .where('id', params.id)
-      .preload('providerRoutes', (q) => q.preload('mobileOperator'))
       .first()
 
     if (!provider) {
