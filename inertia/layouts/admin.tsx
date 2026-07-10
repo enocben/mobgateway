@@ -47,7 +47,12 @@ import {
 } from '~/components/ui/select'
 import { Spinner } from '~/components/ui/spinner'
 
-const sidebarSections = [
+type SideBarSectionsType = {
+  section: string;
+  items: {label: string; icon: any, route: Parameters<typeof urlFor>[0]}[]
+}[]
+
+const sidebarSections: SideBarSectionsType = [
   {
     section: 'Overview',
     items: [{ label: 'Dashboard', icon: LayoutDashboard, route: 'admin.dashboard' as const }],
