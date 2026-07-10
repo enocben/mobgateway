@@ -6,8 +6,13 @@ export default class CountriesController {
     const page = request.input('page', 1)
     const limit = request.input('limit', 20)
     const search = request.input('search')
+    const applicationId = request.input('application_id')
 
-    const query = Country.query().preload('currency')
+    const query = Country.query()
+
+    if (applicationId) {
+      query.where('application_id', applicationId)
+    }
 
     if (search) {
       query.where((q) => {
@@ -21,9 +26,9 @@ export default class CountriesController {
   }
 
   async store({ request, response }: HttpContext) {
-    const { code, name, currencyCode, phonePrefix } = request.only(['code', 'name', 'currencyCode', 'phonePrefix'])
+    const { code, name, currencyCode, phonePrefix, applicationId } = request.only(['code', 'name', 'currencyCode', 'phonePrefix', 'applicationId'])
 
-    if (!code || !name || !currencyCode || !phonePrefix) {
+    if (!code || !name || !currencyCode || !phonePrefix || !applicationId) {
       return response.status(422).json({
         message: 'Validation failed',
         errors: {
@@ -31,6 +36,7 @@ export default class CountriesController {
           name: !name ? 'Name is required' : undefined,
           currencyCode: !currencyCode ? 'Currency code is required' : undefined,
           phonePrefix: !phonePrefix ? 'Phone prefix is required' : undefined,
+          applicationId: !applicationId ? 'Application ID is required' : undefined,
         },
       })
     }
@@ -47,6 +53,7 @@ export default class CountriesController {
       name,
       currencyCode,
       phonePrefix,
+      applicationId,
     })
 
     return response.status(201).json(country)
@@ -55,8 +62,6 @@ export default class CountriesController {
   async show({ params, response }: HttpContext) {
     const country = await Country.query()
       .where('code', params.code)
-      .preload('currency')
-      .preload('mobileOperators')
       .first()
 
     if (!country) {
@@ -67,7 +72,7 @@ export default class CountriesController {
   }
 
   async update({ params, request, response }: HttpContext) {
-    const country = await Country.find(params.code)
+    const country = await Country.findBy('code', params.code)
     if (!country) {
       return response.status(404).json({ message: 'Country not found' })
     }
@@ -92,7 +97,7 @@ export default class CountriesController {
   }
 
   async destroy({ params, response }: HttpContext) {
-    const country = await Country.find(params.code)
+    const country = await Country.findBy('code', params.code)
     if (!country) {
       return response.status(404).json({ message: 'Country not found' })
     }

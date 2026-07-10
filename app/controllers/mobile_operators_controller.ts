@@ -7,8 +7,13 @@ export default class MobileOperatorsController {
     const limit = request.input('limit', 20)
     const search = request.input('search')
     const countryCode = request.input('country_code')
+    const applicationId = request.input('application_id')
 
     const query = MobileOperator.query().preload('country').preload('prefixes')
+
+    if (applicationId) {
+      query.where('application_id', applicationId)
+    }
 
     if (search) {
       query.where('name', 'ilike', `%${search}%`)
@@ -23,14 +28,15 @@ export default class MobileOperatorsController {
   }
 
   async store({ request, response }: HttpContext) {
-    const { countryCode, name, logoUrl } = request.only(['countryCode', 'name', 'logoUrl'])
+    const { countryCode, name, logoUrl, applicationId } = request.only(['countryCode', 'name', 'logoUrl', 'applicationId'])
 
-    if (!countryCode || !name) {
+    if (!countryCode || !name || !applicationId) {
       return response.status(422).json({
         message: 'Validation failed',
         errors: {
           countryCode: !countryCode ? 'Country code is required' : undefined,
           name: !name ? 'Name is required' : undefined,
+          applicationId: !applicationId ? 'Application ID is required' : undefined,
         },
       })
     }
@@ -40,6 +46,7 @@ export default class MobileOperatorsController {
       name,
       logoUrl: logoUrl || null,
       isEnabled: true,
+      applicationId,
     })
 
     return response.status(201).json(operator)

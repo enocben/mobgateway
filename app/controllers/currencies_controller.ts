@@ -6,8 +6,13 @@ export default class CurrenciesController {
     const page = request.input('page', 1)
     const limit = request.input('limit', 20)
     const search = request.input('search')
+    const applicationId = request.input('application_id')
 
     const query = Currency.query()
+
+    if (applicationId) {
+      query.where('application_id', applicationId)
+    }
 
     if (search) {
       query.where((q) => {
@@ -21,15 +26,16 @@ export default class CurrenciesController {
   }
 
   async store({ request, response }: HttpContext) {
-    const { code, name, symbol, decimals } = request.only(['code', 'name', 'symbol', 'decimals'])
+    const { code, name, symbol, decimals, applicationId } = request.only(['code', 'name', 'symbol', 'decimals', 'applicationId'])
 
-    if (!code || !name || !symbol) {
+    if (!code || !name || !symbol || !applicationId) {
       return response.status(422).json({
         message: 'Validation failed',
         errors: {
           code: !code ? 'Currency code is required' : undefined,
           name: !name ? 'Name is required' : undefined,
           symbol: !symbol ? 'Symbol is required' : undefined,
+          applicationId: !applicationId ? 'Application ID is required' : undefined,
         },
       })
     }
@@ -47,13 +53,14 @@ export default class CurrenciesController {
       symbol,
       decimals: decimals ?? 2,
       isActive: true,
+      applicationId,
     })
 
     return response.status(201).json(currency)
   }
 
   async show({ params, response }: HttpContext) {
-    const currency = await Currency.find(params.code)
+    const currency = await Currency.findBy('code', params.code)
     if (!currency) {
       return response.status(404).json({ message: 'Currency not found' })
     }
@@ -62,7 +69,7 @@ export default class CurrenciesController {
   }
 
   async update({ params, request, response }: HttpContext) {
-    const currency = await Currency.find(params.code)
+    const currency = await Currency.findBy('code', params.code)
     if (!currency) {
       return response.status(404).json({ message: 'Currency not found' })
     }
@@ -79,7 +86,7 @@ export default class CurrenciesController {
   }
 
   async destroy({ params, response }: HttpContext) {
-    const currency = await Currency.find(params.code)
+    const currency = await Currency.findBy('code', params.code)
     if (!currency) {
       return response.status(404).json({ message: 'Currency not found' })
     }
