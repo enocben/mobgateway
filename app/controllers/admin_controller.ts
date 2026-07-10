@@ -102,8 +102,16 @@ export default class AdminController {
     return inertia.render('admin/Countries/List', {})
   }
 
+  async countriesCreate({ inertia }: HttpContext) {
+    return inertia.render('admin/Countries/Create', {})
+  }
+
   async currencies({ inertia }: HttpContext) {
     return inertia.render('admin/Currencies/List', {})
+  }
+
+  async currenciesCreate({ inertia }: HttpContext) {
+    return inertia.render('admin/Currencies/Create', {})
   }
 
   async transactions({ inertia }: HttpContext) {

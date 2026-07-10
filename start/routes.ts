@@ -201,9 +201,11 @@ router
 
     // Countries
     router.get('/countries', [controllers.Admin, 'countries']).as('admin.countries')
+    router.get('/countries/create', [controllers.Admin, 'countriesCreate']).as('admin.countries.create')
 
     // Currencies
     router.get('/currencies', [controllers.Admin, 'currencies']).as('admin.currencies')
+    router.get('/currencies/create', [controllers.Admin, 'currenciesCreate']).as('admin.currencies.create')
 
     // Transactions
     router.get('/transactions', [controllers.Admin, 'transactions']).as('admin.transactions')
