@@ -141,6 +141,7 @@ export interface ApiDefinition {
     dashboard: typeof routes['admin.dashboard']
     applications: typeof routes['admin.applications'] & {
       create: typeof routes['admin.applications.create']
+      detail: typeof routes['admin.applications.detail']
       edit: typeof routes['admin.applications.edit']
     }
     settings: typeof routes['admin.settings']

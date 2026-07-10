@@ -576,6 +576,12 @@ const routes = {
     tokens: [{"old":"/admin/applications/create","type":0,"val":"admin","end":""},{"old":"/admin/applications/create","type":0,"val":"applications","end":""},{"old":"/admin/applications/create","type":0,"val":"create","end":""}],
     types: placeholder as Registry['admin.applications.create']['types'],
   },
+  'admin.applications.detail': {
+    methods: ["GET","HEAD"],
+    pattern: '/admin/applications/:appId',
+    tokens: [{"old":"/admin/applications/:appId","type":0,"val":"admin","end":""},{"old":"/admin/applications/:appId","type":0,"val":"applications","end":""},{"old":"/admin/applications/:appId","type":1,"val":"appId","end":""}],
+    types: placeholder as Registry['admin.applications.detail']['types'],
+  },
   'admin.settings': {
     methods: ["GET","HEAD"],
     pattern: '/admin/settings',

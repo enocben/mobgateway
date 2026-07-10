@@ -99,6 +99,7 @@ export type ScannedRoutes = {
     'admin.dashboard': { paramsTuple?: []; params?: {} }
     'admin.applications': { paramsTuple?: []; params?: {} }
     'admin.applications.create': { paramsTuple?: []; params?: {} }
+    'admin.applications.detail': { paramsTuple: [ParamValue]; params: {'appId': ParamValue} }
     'admin.settings': { paramsTuple?: []; params?: {} }
     'admin.applications.edit': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.users': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -162,6 +163,7 @@ export type ScannedRoutes = {
     'admin.dashboard': { paramsTuple?: []; params?: {} }
     'admin.applications': { paramsTuple?: []; params?: {} }
     'admin.applications.create': { paramsTuple?: []; params?: {} }
+    'admin.applications.detail': { paramsTuple: [ParamValue]; params: {'appId': ParamValue} }
     'admin.settings': { paramsTuple?: []; params?: {} }
     'admin.applications.edit': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.users': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -225,6 +227,7 @@ export type ScannedRoutes = {
     'admin.dashboard': { paramsTuple?: []; params?: {} }
     'admin.applications': { paramsTuple?: []; params?: {} }
     'admin.applications.create': { paramsTuple?: []; params?: {} }
+    'admin.applications.detail': { paramsTuple: [ParamValue]; params: {'appId': ParamValue} }
     'admin.settings': { paramsTuple?: []; params?: {} }
     'admin.applications.edit': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.users': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }

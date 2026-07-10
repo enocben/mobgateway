@@ -12,9 +12,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { formatDate } from '~/lib/utils'
 import { useFetch } from '~/hooks/use-fetch'
 import type { Provider, PaginatedResponse } from '~/types'
+import { useApplicationStore } from '~/context/application_context'
+import { urlFor } from '~/client'
 
 export default function ProvidersList() {
   const [search, setSearch] = useState('')
+  const applicationId = useApplicationStore((a) => a.applicationId)
   const { data, loading, error, refetch } = useFetch<PaginatedResponse<Provider>>('/api/v1/providers')
 
   const providers = data?.data ?? []
@@ -86,7 +89,10 @@ export default function ProvidersList() {
                 filtered.map((provider, i) => (
                   <motion.tr key={provider.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="border-b transition-colors hover:bg-muted/50">
                     <TableCell className="font-medium">
-                      <Link href={`/admin/providers/${provider.id}`} className="hover:underline">{provider.name}</Link>
+                      <Link href={urlFor('admin.providers.detail', {
+                        id: applicationId!,
+                        providerId: provider.id
+                      })} className="hover:underline">{provider.name}</Link>
                     </TableCell>
                     <TableCell className="font-mono text-xs">{provider.code}</TableCell>
                     <TableCell className="capitalize">{provider.type}</TableCell>
@@ -98,7 +104,10 @@ export default function ProvidersList() {
                           <Button variant="ghost" size="icon"><MoreHorizontal className="size-4" /></Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem asChild><Link href={`/admin/providers/${provider.id}`}>View Details</Link></DropdownMenuItem>
+                          <DropdownMenuItem asChild><Link href={urlFor('admin.providers.detail', {
+                            id: applicationId!,
+                            providerId: provider.id
+                          })}>View Details</Link></DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>

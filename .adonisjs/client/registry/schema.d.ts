@@ -1147,6 +1147,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['applicationsCreate']>>>
     }
   }
+  'admin.applications.detail': {
+    methods: ["GET","HEAD"]
+    pattern: '/admin/applications/:appId'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { appId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['applicationsDetail']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['applicationsDetail']>>>
+    }
+  }
   'admin.settings': {
     methods: ["GET","HEAD"]
     pattern: '/admin/settings'
