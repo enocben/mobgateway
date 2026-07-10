@@ -9,13 +9,12 @@ export default class UserTransformer extends BaseTransformer<User> {
         'id',
         'email',
         'name',
-        'createdAt',
-        'updatedAt',
         'initials',
         'applicationId',
         'role',
         'status',
         'createdAt',
+        'updatedAt',
       ]),
       application: this.resource.application
         ? ApplicationTransformer.transform(this.resource.application)

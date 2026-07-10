@@ -174,6 +174,7 @@ router.group(() => {
   router.get('/dashboard', [controllers.Admin, 'dashboard']).as('admin.dashboard')
   router.get('/applications', [controllers.Admin, 'applications']).as('admin.applications')
   router.get('/applications/create', [controllers.Admin, 'applicationsCreate']).as('admin.applications.create')
+  router.get('/applications/:appId', [controllers.Admin, 'applicationsDetail']).as('admin.applications.detail')
   router.get('/settings', [controllers.Admin, 'settings']).as('admin.settings')
 })
   .prefix('/admin')
@@ -185,7 +186,6 @@ router
 
     // Applications
     router.get('/edit', [controllers.Admin, 'applicationsEdit']).as('admin.applications.edit')
-    // router.get('/', [controllers.Admin, 'applicationsDetail']).as('admin.applications.detail')
 
     // Users
     router.get('/users', [controllers.Admin, 'users']).as('admin.users')

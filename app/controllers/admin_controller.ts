@@ -3,17 +3,46 @@ import Application from '#models/application'
 import ApplicationTransformer from '#transformers/application_transformer'
 import User from '#models/user'
 import UserTransformer from '#transformers/user_transformer'
+import db from '@adonisjs/lucid/services/db'
 
 export default class AdminController {
   async index({ response }: HttpContext) {
     return response.redirect().toPath('/admin/dashboard')
   }
 
-  async dashboard({ inertia }: HttpContext) {
-    const applications = await Application.query()
+  async dashboard({ inertia, auth }: HttpContext) {
+    const user = auth.user!
+    const applications = user.role === 'admin' || user.role === 'super_admin'
+      ? await Application.query().orderBy('createdAt', 'asc')
+      : await Application.query().whereHas('users', (q) => q.where('id', user.id)).orderBy('createdAt', 'asc')
+
+    const appIds = applications.map((a) => a.id)
+    const [txStats, userCount, providerCount] = await Promise.all([
+      db.from('transactions').whereIn('application_id', appIds)
+        .select(
+          db.raw('COUNT(*)::int as total'),
+          db.raw("COALESCE(SUM(CASE WHEN status = 'completed' THEN amount ELSE 0 END), 0) as volume"),
+          db.raw("COALESCE(SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END), 0) as completed")
+        ).first(),
+      db.from('users').whereIn('application_id', appIds).count('* as count').first(),
+      db.from('providers').where('status', 'active').count('* as count').first(),
+    ])
+
+    const totalTx = Number(txStats?.total ?? 0)
+    const volume = Number(txStats?.volume ?? 0)
+    const completed = Number(txStats?.completed ?? 0)
+    const successRate = totalTx > 0 ? Number(((completed / totalTx) * 100).toFixed(1)) : 0
 
     return inertia.render('admin/Monitoring/Dashboard', {
       applications: ApplicationTransformer.transform(applications),
+      stats: {
+        totalApplications: applications.length,
+        totalUsers: Number(userCount?.count ?? 0),
+        totalTransactions: totalTx,
+        totalRevenue: volume,
+        successRate,
+        activeProviders: Number(providerCount?.count ?? 0),
+      },
     })
   }
 
@@ -34,10 +63,18 @@ export default class AdminController {
     return inertia.render('admin/Applications/Detail', {})
   }
 
-  async users({ inertia, params }: HttpContext) {
-    const users = await User.query().where('applicationId', params.id)
+  async users({ inertia, params, auth }: HttpContext) {
+    const user = auth.user!
+    const isAdmin = user.role === 'admin' || user.role === 'super_admin'
+    const query = User.query().preload('application')
+
+    if (!isAdmin) {
+      query.where('applicationId', params.id)
+    }
+
+    const users = await query.orderBy('createdAt', 'desc')
     return inertia.render('admin/Users/List', {
-      users: UserTransformer.transform(users)
+      users: UserTransformer.transform(users),
     })
   }
 
