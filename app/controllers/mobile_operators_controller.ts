@@ -1,30 +1,19 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import MobileOperator from '#models/mobile_operator'
+import MobileOperatorTransformer from '#transformers/mobile_operator_transformer'
 
 export default class MobileOperatorsController {
-  async index({ request, response }: HttpContext) {
-    const page = request.input('page', 1)
-    const limit = request.input('limit', 20)
-    const search = request.input('search')
-    const countryCode = request.input('country_code')
-    const applicationId = request.input('application_id')
+  async index({ params, inertia }: HttpContext) {
+    const applicationId = params.id
 
-    const query = MobileOperator.query().preload('country').preload('prefixes')
+    const mobileOperators = await MobileOperator.query()
+      .where('applicationId', applicationId)
+      .preload('country')
+      .preload('prefixes')
 
-    if (applicationId) {
-      query.where('application_id', applicationId)
-    }
-
-    if (search) {
-      query.where('name', 'ilike', `%${search}%`)
-    }
-
-    if (countryCode) {
-      query.where('country_code', countryCode)
-    }
-
-    const operators = await query.orderBy('name', 'asc').paginate(page, limit)
-    return response.status(200).json(operators)
+    return inertia.render('admin/MobileOperators/List', {
+      mobileOperators: MobileOperatorTransformer.transform(mobileOperators)
+    })
   }
 
   async store({ request, response }: HttpContext) {
@@ -57,7 +46,6 @@ export default class MobileOperatorsController {
       .where('id', params.id)
       .preload('country')
       .preload('prefixes')
-      .preload('providerRoutes', (q) => q.preload('provider'))
       .first()
 
     if (!operator) {

@@ -138,36 +138,6 @@ const routes = {
     tokens: [{"old":"/api/v1/currencies/:code","type":0,"val":"api","end":""},{"old":"/api/v1/currencies/:code","type":0,"val":"v1","end":""},{"old":"/api/v1/currencies/:code","type":0,"val":"currencies","end":""},{"old":"/api/v1/currencies/:code","type":1,"val":"code","end":""}],
     types: placeholder as Registry['currencies.destroy']['types'],
   },
-  'mobile_operators.index': {
-    methods: ["GET","HEAD"],
-    pattern: '/api/v1/mobile-operators',
-    tokens: [{"old":"/api/v1/mobile-operators","type":0,"val":"api","end":""},{"old":"/api/v1/mobile-operators","type":0,"val":"v1","end":""},{"old":"/api/v1/mobile-operators","type":0,"val":"mobile-operators","end":""}],
-    types: placeholder as Registry['mobile_operators.index']['types'],
-  },
-  'mobile_operators.store': {
-    methods: ["POST"],
-    pattern: '/api/v1/mobile-operators',
-    tokens: [{"old":"/api/v1/mobile-operators","type":0,"val":"api","end":""},{"old":"/api/v1/mobile-operators","type":0,"val":"v1","end":""},{"old":"/api/v1/mobile-operators","type":0,"val":"mobile-operators","end":""}],
-    types: placeholder as Registry['mobile_operators.store']['types'],
-  },
-  'mobile_operators.show': {
-    methods: ["GET","HEAD"],
-    pattern: '/api/v1/mobile-operators/:id',
-    tokens: [{"old":"/api/v1/mobile-operators/:id","type":0,"val":"api","end":""},{"old":"/api/v1/mobile-operators/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/mobile-operators/:id","type":0,"val":"mobile-operators","end":""},{"old":"/api/v1/mobile-operators/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['mobile_operators.show']['types'],
-  },
-  'mobile_operators.update': {
-    methods: ["PUT"],
-    pattern: '/api/v1/mobile-operators/:id',
-    tokens: [{"old":"/api/v1/mobile-operators/:id","type":0,"val":"api","end":""},{"old":"/api/v1/mobile-operators/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/mobile-operators/:id","type":0,"val":"mobile-operators","end":""},{"old":"/api/v1/mobile-operators/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['mobile_operators.update']['types'],
-  },
-  'mobile_operators.destroy': {
-    methods: ["DELETE"],
-    pattern: '/api/v1/mobile-operators/:id',
-    tokens: [{"old":"/api/v1/mobile-operators/:id","type":0,"val":"api","end":""},{"old":"/api/v1/mobile-operators/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/mobile-operators/:id","type":0,"val":"mobile-operators","end":""},{"old":"/api/v1/mobile-operators/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['mobile_operators.destroy']['types'],
-  },
   'operator_prefixes.index': {
     methods: ["GET","HEAD"],
     pattern: '/api/v1/mobile-operators/:mobile_operator_id/prefixes',

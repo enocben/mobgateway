@@ -9,6 +9,8 @@ import type { InferSharedProps } from '@adonisjs/inertia/types'
 import type UserTransformer from '#transformers/user_transformer'
 import type ApplicationTransformer from '#transformers/application_transformer'
 import type CountryTransformer from '#transformers/country_transformer'
+import type MobileOperatorTransformer from '#transformers/mobile_operator_transformer'
+import type OperatorPrefixTransformer from '#transformers/operator_prefix_transformer'
 import type InertiaMiddleware from '#middleware/inertia_middleware'
 
 export namespace Data {
@@ -23,6 +25,14 @@ export namespace Data {
   export type Country = InferData<CountryTransformer>
   export namespace Country {
     export type Variants = InferVariants<CountryTransformer>
+  }
+  export type MobileOperator = InferData<MobileOperatorTransformer>
+  export namespace MobileOperator {
+    export type Variants = InferVariants<MobileOperatorTransformer>
+  }
+  export type OperatorPrefix = InferData<OperatorPrefixTransformer>
+  export namespace OperatorPrefix {
+    export type Variants = InferVariants<OperatorPrefixTransformer>
   }
   export type SharedProps = InferSharedProps<InertiaMiddleware>
 }

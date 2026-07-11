@@ -34,13 +34,6 @@ export interface ApiDefinition {
     update: typeof routes['currencies.update']
     destroy: typeof routes['currencies.destroy']
   }
-  mobileOperators: {
-    index: typeof routes['mobile_operators.index']
-    store: typeof routes['mobile_operators.store']
-    show: typeof routes['mobile_operators.show']
-    update: typeof routes['mobile_operators.update']
-    destroy: typeof routes['mobile_operators.destroy']
-  }
   operatorPrefixes: {
     index: typeof routes['operator_prefixes.index']
     store: typeof routes['operator_prefixes.store']

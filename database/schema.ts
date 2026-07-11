@@ -209,12 +209,12 @@ export class LedgerEntrySchema extends BaseModel {
 }
 
 export class MobileOperatorSchema extends BaseModel {
-  static $columns = ['applicationId', 'countryCode', 'createdAt', 'id', 'isEnabled', 'logoUrl', 'name', 'updatedAt'] as const
+  static $columns = ['applicationId', 'countryId', 'createdAt', 'id', 'isEnabled', 'logoUrl', 'name', 'prefixPhone', 'updatedAt'] as const
   $columns = MobileOperatorSchema.$columns
   @column()
   declare applicationId: string
   @column()
-  declare countryCode: string
+  declare countryId: string
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
   @column({ isPrimary: true })
@@ -225,6 +225,8 @@ export class MobileOperatorSchema extends BaseModel {
   declare logoUrl: string | null
   @column()
   declare name: string
+  @column()
+  declare prefixPhone: any | null
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 }

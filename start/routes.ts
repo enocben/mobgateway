@@ -54,13 +54,6 @@ router
     router.put('/currencies/:code', [controllers.Currencies, 'update'])
     router.delete('/currencies/:code', [controllers.Currencies, 'destroy'])
 
-    // Mobile Operators
-    router.get('/mobile-operators', [controllers.MobileOperators, 'index'])
-    router.post('/mobile-operators', [controllers.MobileOperators, 'store'])
-    router.get('/mobile-operators/:id', [controllers.MobileOperators, 'show'])
-    router.put('/mobile-operators/:id', [controllers.MobileOperators, 'update'])
-    router.delete('/mobile-operators/:id', [controllers.MobileOperators, 'destroy'])
-
     // Operator Prefixes
     router.get('/mobile-operators/:mobile_operator_id/prefixes', [
       controllers.OperatorPrefixes,
@@ -215,15 +208,21 @@ router
 
     // Mobile Operators
     router
-      .get('/mobile-operators', [controllers.Admin, 'mobileOperators'])
+      .get('/mobile-operators', [controllers.MobileOperators, "index"])
       .as('admin.mobile-operators')
+        // Mobile Operators
+    /*router.get('/mobile-operators', [controllers.MobileOperators, 'index'])
+    router.post('/mobile-operators', [controllers.MobileOperators, 'store'])
+    router.get('/mobile-operators/:id', [controllers.MobileOperators, 'show'])
+    router.put('/mobile-operators/:id', [controllers.MobileOperators, 'update'])
+    router.delete('/mobile-operators/:id', [controllers.MobileOperators, 'destroy'])*/
+
 
     // Countries
     router.get('/countries', [controllers.Countries, 'countries']).as('admin.countries')
     router
       .post('/countries/create/:iso2', [controllers.Countries, 'create'])
       .as('admin.countries.create')
-    // router.put('/countries/:countryId', [controllers.Countries, 'update']).as('admin.countries.update')
     router
       .delete('/countries/:countryId', [controllers.Countries, 'destroy'])
       .as('admin.countries.delete')
