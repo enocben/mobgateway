@@ -1,6 +1,11 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import MobileOperator from '#models/mobile_operator'
+import OperatorPrefix from '#models/operator_prefix'
 import MobileOperatorTransformer from '#transformers/mobile_operator_transformer'
+import {
+  createMobileOperatorValidator,
+  updateMobileOperatorValidator,
+} from '#validators/mobile_operator'
 
 export default class MobileOperatorsController {
   async index({ params, inertia }: HttpContext) {
@@ -12,82 +17,106 @@ export default class MobileOperatorsController {
       .preload('prefixes')
 
     return inertia.render('admin/MobileOperators/List', {
-      mobileOperators: MobileOperatorTransformer.transform(mobileOperators)
+      mobileOperators: MobileOperatorTransformer.transform(mobileOperators),
     })
   }
 
-  async store({ request, response }: HttpContext) {
-    const { countryCode, name, logoUrl, applicationId } = request.only(['countryCode', 'name', 'logoUrl', 'applicationId'])
+  async store({ params, request, response, session }: HttpContext) {
+    const applicationId = params.id
+    const inputs = request.only(['countryCode', 'name', 'logoUrl'])
+    const prefixes = request.input('prefixes') ?? []
 
-    if (!countryCode || !name || !applicationId) {
-      return response.status(422).json({
-        message: 'Validation failed',
-        errors: {
-          countryCode: !countryCode ? 'Country code is required' : undefined,
-          name: !name ? 'Name is required' : undefined,
-          applicationId: !applicationId ? 'Application ID is required' : undefined,
-        },
+    const [error, data] = await createMobileOperatorValidator.tryValidate({
+      ...inputs,
+      applicationId,
+      prefixes: Array.isArray(prefixes) ? prefixes : [prefixes],
+    })
+
+    if (error) {
+      session.flash('errors', {
+        mobileOperator: error.messages,
       })
+      return response.redirect().back()
     }
 
     const operator = await MobileOperator.create({
-      countryCode,
-      name,
-      logoUrl: logoUrl || null,
+      countryCode: data.countryCode,
+      name: data.name,
+      logoUrl: data.logoUrl ?? null,
       isEnabled: true,
       applicationId,
     })
 
-    return response.status(201).json(operator)
+    // Créer les préfixes associés
+    for (const prefix of data.prefixes) {
+      await OperatorPrefix.create({
+        mobileOperatorId: operator.id,
+        prefix,
+      })
+    }
+
+    session.flash('success', 'Mobile operator created')
+    return response.redirect().back()
   }
 
-  async show({ params, response }: HttpContext) {
+  async update({ params, request, response, session }: HttpContext) {
     const operator = await MobileOperator.query()
-      .where('id', params.id)
-      .preload('country')
-      .preload('prefixes')
+      .where('applicationId', params.id)
+      .where('id', params.operatorId)
       .first()
 
     if (!operator) {
-      return response.status(404).json({ message: 'Mobile operator not found' })
+      session.flash('errors', { mobileOperator: 'Mobile operator not found' })
+      return response.redirect().back()
     }
 
-    return response.status(200).json(operator)
-  }
+    const [error, data] = await updateMobileOperatorValidator.tryValidate({
+      ...request.only(['countryCode', 'name', 'logoUrl', 'isEnabled']),
+      prefixes: request.input('prefixes'),
+    })
 
-  async update({ params, request, response }: HttpContext) {
-    const operator = await MobileOperator.find(params.id)
-    if (!operator) {
-      return response.status(404).json({ message: 'Mobile operator not found' })
+    if (error) {
+      session.flash('errors', {
+        mobileOperator: error.messages,
+      })
+      return response.redirect().back()
     }
 
-    const { countryCode, name, logoUrl, isEnabled } = request.only(['countryCode', 'name', 'logoUrl', 'isEnabled'])
-
-    if (name !== undefined) {
-      if (typeof name !== 'string' || name.trim().length === 0) {
-        return response.status(422).json({
-          message: 'Validation failed',
-          errors: { name: 'Name cannot be empty' },
-        })
-      }
-      operator.name = name
-    }
-
-    if (countryCode !== undefined) operator.countryCode = countryCode
-    if (logoUrl !== undefined) operator.logoUrl = logoUrl
-    if (isEnabled !== undefined) operator.isEnabled = Boolean(isEnabled)
+    if (data.name !== undefined) operator.name = data.name
+    if (data.countryCode !== undefined) operator.countryCode = data.countryCode
+    if (data.logoUrl !== undefined) operator.logoUrl = data.logoUrl
+    if (data.isEnabled !== undefined) operator.isEnabled = data.isEnabled
 
     await operator.save()
-    return response.status(200).json(operator)
+
+    // Mise à jour des préfixes : suppression + recréation
+    if (data.prefixes !== undefined) {
+      await OperatorPrefix.query().where('mobileOperatorId', operator.id).delete()
+      for (const prefix of data.prefixes) {
+        await OperatorPrefix.create({
+          mobileOperatorId: operator.id,
+          prefix,
+        })
+      }
+    }
+
+    session.flash('success', 'Mobile operator updated')
+    return response.redirect().back()
   }
 
-  async destroy({ params, response }: HttpContext) {
-    const operator = await MobileOperator.find(params.id)
+  async destroy({ params, response, session }: HttpContext) {
+    const operator = await MobileOperator.query()
+      .where('applicationId', params.id)
+      .where('id', params.operatorId)
+      .first()
+
     if (!operator) {
-      return response.status(404).json({ message: 'Mobile operator not found' })
+      session.flash('errors', { mobileOperator: 'Mobile operator not found' })
+      return response.redirect().back()
     }
 
     await operator.delete()
-    return response.status(200).json({ message: 'Mobile operator deleted' })
+    session.flash('success', 'Mobile operator deleted')
+    return response.redirect().back()
   }
 }

@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Search, Globe, Hash } from 'lucide-react'
+import { Search, Globe, Hash, Trash2 } from 'lucide-react'
 import { Card, CardContent } from '~/components/ui/card'
 import { Input } from '~/components/ui/input'
 import { Badge } from '~/components/ui/badge'
+import { Button } from '~/components/ui/button'
 import {
   Table,
   TableBody,
@@ -14,19 +15,23 @@ import {
 } from '~/components/ui/table'
 import { Data } from '@generated/data'
 import { DialogMobileOperator } from '~/components/mobile_operator/dialog_mobile_operator'
+import { Form } from '@adonisjs/inertia/react'
+import { useApplicationStore } from '~/context/application_context'
 
 type Props = {
   mobileOperators: Data.MobileOperator[] | undefined
 }
 
 export default function MobileOperatorsList({ mobileOperators: operators }: Props) {
+  const applicationId = useApplicationStore((a) => a.applicationId)
   const [search, setSearch] = useState('')
 
   const filtered =
     operators?.filter(
       (op) =>
         op.name.toLowerCase().includes(search.toLowerCase()) ||
-        op.country.currencyCode.toLowerCase().includes(search.toLowerCase())
+        op.countryCode.toLowerCase().includes(search.toLowerCase()) ||
+        op.prefixes?.some((p) => p.prefix.includes(search))
     ) ?? []
 
   return (
@@ -34,8 +39,10 @@ export default function MobileOperatorsList({ mobileOperators: operators }: Prop
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Mobile Operators</h1>
         <div className="flex justify-between items-center">
-          <p className="text-sm text-muted-foreground mt-1">Mobile network operators by country</p>
-          <DialogMobileOperator />
+          <p className="text-sm text-muted-foreground mt-1">
+            Mobile network operators by country
+          </p>
+          <DialogMobileOperator currentOperators={operators} />
         </div>
       </div>
 
@@ -57,13 +64,16 @@ export default function MobileOperatorsList({ mobileOperators: operators }: Prop
                 <TableHead>Country</TableHead>
                 <TableHead>Prefixes</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead className="w-10" />
               </TableRow>
             </TableHeader>
             <TableBody>
               {filtered.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
-                    {search ? 'No operators match your search' : 'No mobile operators found'}
+                  <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                    {search
+                      ? 'No operators match your search'
+                      : 'No mobile operators found'}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -78,7 +88,11 @@ export default function MobileOperatorsList({ mobileOperators: operators }: Prop
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
                         {op.logoUrl ? (
-                          <img src={op.logoUrl} alt={op.name} className="size-6 rounded" />
+                          <img
+                            src={op.logoUrl}
+                            alt={op.name}
+                            className="size-6 rounded"
+                          />
                         ) : (
                           <Globe className="size-4 text-muted-foreground" />
                         )}
@@ -86,15 +100,17 @@ export default function MobileOperatorsList({ mobileOperators: operators }: Prop
                       </div>
                     </TableCell>
                     <TableCell>
-                      <span className="font-mono text-xs">
-                        {op.country?.name ?? op.country.code}
-                      </span>
+                      <span className="font-mono text-xs">{op.countryCode}</span>
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
                         {op.prefixes?.length ? (
                           op.prefixes.map((p) => (
-                            <Badge key={p.id} variant="secondary" className="font-mono text-xs">
+                            <Badge
+                              key={p.id}
+                              variant="secondary"
+                              className="font-mono text-xs"
+                            >
                               <Hash className="size-3 mr-0.5" />
                               {p.prefix}
                             </Badge>
@@ -108,6 +124,16 @@ export default function MobileOperatorsList({ mobileOperators: operators }: Prop
                       <Badge variant={op.isEnabled ? 'success' : 'secondary'}>
                         {op.isEnabled ? 'enabled' : 'disabled'}
                       </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Form
+                        route="admin.mobile-operators.destroy"
+                        routeParams={{ id: applicationId!, operatorId: op.id }}
+                      >
+                        <Button variant="ghost" size="icon" type="submit">
+                          <Trash2 className="size-4 text-destructive" />
+                        </Button>
+                      </Form>
                     </TableCell>
                   </motion.tr>
                 ))

@@ -208,14 +208,17 @@ router
 
     // Mobile Operators
     router
-      .get('/mobile-operators', [controllers.MobileOperators, "index"])
+      .get('/mobile-operators', [controllers.MobileOperators, 'index'])
       .as('admin.mobile-operators')
-        // Mobile Operators
-    /*router.get('/mobile-operators', [controllers.MobileOperators, 'index'])
-    router.post('/mobile-operators', [controllers.MobileOperators, 'store'])
-    router.get('/mobile-operators/:id', [controllers.MobileOperators, 'show'])
-    router.put('/mobile-operators/:id', [controllers.MobileOperators, 'update'])
-    router.delete('/mobile-operators/:id', [controllers.MobileOperators, 'destroy'])*/
+    router
+      .post('/mobile-operators', [controllers.MobileOperators, 'store'])
+      .as('admin.mobile-operators.store')
+    router
+      .put('/mobile-operators/:operatorId', [controllers.MobileOperators, 'update'])
+      .as('admin.mobile-operators.update')
+    router
+      .delete('/mobile-operators/:operatorId', [controllers.MobileOperators, 'destroy'])
+      .as('admin.mobile-operators.destroy')
 
 
     // Countries

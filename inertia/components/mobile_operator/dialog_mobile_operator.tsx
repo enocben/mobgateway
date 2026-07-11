@@ -24,33 +24,57 @@ import { Form } from '@adonisjs/inertia/react'
 import { useApplicationStore } from '~/context/application_context'
 import { Input } from '~/components/ui/input'
 import { Field, FieldLabel } from '~/components/ui/field'
+import { Plus, X } from 'lucide-react'
+import { Data } from '@generated/data'
 
 type Props = {
+  currentOperators?: Data.MobileOperator[]
 }
 
-export function DialogMobileOperator({  }: Props) {
+export function DialogMobileOperator({ currentOperators }: Props) {
   const applicationId = useApplicationStore((a) => a.applicationId)
-  const countries = useMemo(() => getCountryDataList().filter((c) => c.continent === 'AF'), [])
-  const [country, setCountry] = useState<string | undefined>('')
+  const countries = useMemo(
+    () => getCountryDataList().filter((c) => c.continent === 'AF'),
+    []
+  )
+  const [countryCode, setCountryCode] = useState('')
+  const [prefixes, setPrefixes] = useState<string[]>([''])
+  const [open, setOpen] = useState(false)
+
+  const addPrefix = () => setPrefixes([...prefixes, ''])
+  const removePrefix = (i: number) => {
+    if (prefixes.length <= 1) return
+    setPrefixes(prefixes.filter((_, idx) => idx !== i))
+  }
+  const updatePrefix = (i: number, val: string) => {
+    setPrefixes(prefixes.map((p, idx) => (idx === i ? val : p)))
+  }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>Add Operator</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
-          <DialogTitle>Edit Operator</DialogTitle>
+          <DialogTitle>Add Mobile Operator</DialogTitle>
           <DialogDescription>
-            Make changes to your operator here. Click save when you&apos;re done.
+            Register a new mobile network operator for the current application.
           </DialogDescription>
         </DialogHeader>
+
         <Field>
-          <FieldLabel id='name'>Operator Name</FieldLabel>
-          <Input id='name' placeholder="Airtel Money"/>
+          <FieldLabel htmlFor="name">Operator Name</FieldLabel>
+          <Input id="name" name="name" placeholder="Airtel Money" required />
         </Field>
-        <Select onValueChange={setCountry}>
-          <SelectTrigger className="w-full max-w-48">
+
+        <Field>
+          <FieldLabel htmlFor="logoUrl">Logo URL</FieldLabel>
+          <Input id="logoUrl" name="logoUrl" placeholder="https://..." />
+        </Field>
+
+        <Select name="countryCode" onValueChange={setCountryCode} required>
+          <SelectTrigger className="w-full">
             <SelectValue placeholder="Select Country" />
           </SelectTrigger>
           <SelectContent>
@@ -64,14 +88,53 @@ export function DialogMobileOperator({  }: Props) {
             </SelectGroup>
           </SelectContent>
         </Select>
+
+        <input type="hidden" name="countryCode" value={countryCode} />
+
+        <Field>
+          <FieldLabel>Prefixes</FieldLabel>
+          {prefixes.map((p, i) => (
+            <div key={i} className="flex items-center gap-1">
+              <Input
+                name="prefixes[]"
+                placeholder="+243 or 243"
+                value={p}
+                onChange={(e) => updatePrefix(i, e.target.value)}
+                className="flex-1"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => removePrefix(i)}
+                disabled={prefixes.length <= 1}
+              >
+                <X className="size-4" />
+              </Button>
+            </div>
+          ))}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={addPrefix}
+            className="mt-1"
+          >
+            <Plus className="size-3 mr-1" />
+            Add prefix
+          </Button>
+        </Field>
+
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Form route="admin.countries.create" routeParams={{ id: applicationId!, iso2: country! }}>
-            <DialogClose>
-              <Button type="submit">Add Country</Button>
-            </DialogClose>
+          <Form
+            route="admin.mobile-operators.store"
+            routeParams={{ id: applicationId! }}
+            onSubmit={() => setOpen(false)}
+          >
+            <Button type="submit">Save</Button>
           </Form>
         </DialogFooter>
       </DialogContent>
