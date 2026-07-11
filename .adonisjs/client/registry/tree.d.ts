@@ -27,13 +27,6 @@ export interface ApiDefinition {
     show: typeof routes['api_keys.show']
     destroy: typeof routes['api_keys.destroy']
   }
-  countries: {
-    index: typeof routes['countries.index']
-    store: typeof routes['countries.store']
-    show: typeof routes['countries.show']
-    update: typeof routes['countries.update']
-    destroy: typeof routes['countries.destroy']
-  }
   currencies: {
     index: typeof routes['currencies.index']
     store: typeof routes['currencies.store']
@@ -153,8 +146,13 @@ export interface ApiDefinition {
       detail: typeof routes['admin.providers.detail']
     }
     mobileOperators: typeof routes['admin.mobile-operators']
-    countries: typeof routes['admin.countries']
-    currencies: typeof routes['admin.currencies']
+    countries: typeof routes['admin.countries'] & {
+      create: typeof routes['admin.countries.create']
+      delete: typeof routes['admin.countries.delete']
+    }
+    currencies: typeof routes['admin.currencies'] & {
+      create: typeof routes['admin.currencies.create']
+    }
     transactions: typeof routes['admin.transactions']
     webhooks: typeof routes['admin.webhooks']
     commissions: typeof routes['admin.commissions']

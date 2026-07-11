@@ -40,5 +40,7 @@ declare module '@adonisjs/inertia/types' {
     'errors/not_found': ExtractProps<(typeof import('../../inertia/pages/errors/not_found.tsx'))['default']>
     'errors/server_error': ExtractProps<(typeof import('../../inertia/pages/errors/server_error.tsx'))['default']>
     'home': ExtractProps<(typeof import('../../inertia/pages/home.tsx'))['default']>
+    'admin/Countries/Create': ExtractProps<(typeof import('../../inertia/pages/admin/Countries/Create.tsx'))['default']>
+    'admin/Currencies/Create': ExtractProps<(typeof import('../../inertia/pages/admin/Currencies/Create.tsx'))['default']>
   }
 }

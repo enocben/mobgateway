@@ -21,11 +21,6 @@ export type ScannedRoutes = {
     'api_keys.store': { paramsTuple: [ParamValue]; params: {'application_id': ParamValue} }
     'api_keys.show': { paramsTuple: [ParamValue,ParamValue]; params: {'application_id': ParamValue,'id': ParamValue} }
     'api_keys.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'application_id': ParamValue,'id': ParamValue} }
-    'countries.index': { paramsTuple?: []; params?: {} }
-    'countries.store': { paramsTuple?: []; params?: {} }
-    'countries.show': { paramsTuple: [ParamValue]; params: {'code': ParamValue} }
-    'countries.update': { paramsTuple: [ParamValue]; params: {'code': ParamValue} }
-    'countries.destroy': { paramsTuple: [ParamValue]; params: {'code': ParamValue} }
     'currencies.index': { paramsTuple?: []; params?: {} }
     'currencies.store': { paramsTuple?: []; params?: {} }
     'currencies.show': { paramsTuple: [ParamValue]; params: {'code': ParamValue} }
@@ -109,7 +104,10 @@ export type ScannedRoutes = {
     'admin.providers.detail': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'providerId': ParamValue} }
     'admin.mobile-operators': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.countries': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.countries.create': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.countries.delete': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'countryId': ParamValue} }
     'admin.currencies': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.currencies.create': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.transactions': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.webhooks': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.commissions': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -125,8 +123,6 @@ export type ScannedRoutes = {
     'applications.stats': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'api_keys.index': { paramsTuple: [ParamValue]; params: {'application_id': ParamValue} }
     'api_keys.show': { paramsTuple: [ParamValue,ParamValue]; params: {'application_id': ParamValue,'id': ParamValue} }
-    'countries.index': { paramsTuple?: []; params?: {} }
-    'countries.show': { paramsTuple: [ParamValue]; params: {'code': ParamValue} }
     'currencies.index': { paramsTuple?: []; params?: {} }
     'currencies.show': { paramsTuple: [ParamValue]; params: {'code': ParamValue} }
     'mobile_operators.index': { paramsTuple?: []; params?: {} }
@@ -173,7 +169,9 @@ export type ScannedRoutes = {
     'admin.providers.detail': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'providerId': ParamValue} }
     'admin.mobile-operators': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.countries': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.countries.create': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.currencies': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.currencies.create': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.transactions': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.webhooks': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.commissions': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -189,8 +187,6 @@ export type ScannedRoutes = {
     'applications.stats': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'api_keys.index': { paramsTuple: [ParamValue]; params: {'application_id': ParamValue} }
     'api_keys.show': { paramsTuple: [ParamValue,ParamValue]; params: {'application_id': ParamValue,'id': ParamValue} }
-    'countries.index': { paramsTuple?: []; params?: {} }
-    'countries.show': { paramsTuple: [ParamValue]; params: {'code': ParamValue} }
     'currencies.index': { paramsTuple?: []; params?: {} }
     'currencies.show': { paramsTuple: [ParamValue]; params: {'code': ParamValue} }
     'mobile_operators.index': { paramsTuple?: []; params?: {} }
@@ -237,7 +233,9 @@ export type ScannedRoutes = {
     'admin.providers.detail': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'providerId': ParamValue} }
     'admin.mobile-operators': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.countries': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.countries.create': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.currencies': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.currencies.create': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.transactions': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.webhooks': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.commissions': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -251,7 +249,6 @@ export type ScannedRoutes = {
     'auth.logout': { paramsTuple?: []; params?: {} }
     'applications.store': { paramsTuple?: []; params?: {} }
     'api_keys.store': { paramsTuple: [ParamValue]; params: {'application_id': ParamValue} }
-    'countries.store': { paramsTuple?: []; params?: {} }
     'currencies.store': { paramsTuple?: []; params?: {} }
     'mobile_operators.store': { paramsTuple?: []; params?: {} }
     'operator_prefixes.store': { paramsTuple: [ParamValue]; params: {'mobile_operator_id': ParamValue} }
@@ -275,7 +272,6 @@ export type ScannedRoutes = {
   }
   PUT: {
     'applications.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'countries.update': { paramsTuple: [ParamValue]; params: {'code': ParamValue} }
     'currencies.update': { paramsTuple: [ParamValue]; params: {'code': ParamValue} }
     'mobile_operators.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'providers.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -287,7 +283,6 @@ export type ScannedRoutes = {
   DELETE: {
     'applications.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'api_keys.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'application_id': ParamValue,'id': ParamValue} }
-    'countries.destroy': { paramsTuple: [ParamValue]; params: {'code': ParamValue} }
     'currencies.destroy': { paramsTuple: [ParamValue]; params: {'code': ParamValue} }
     'mobile_operators.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'operator_prefixes.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'mobile_operator_id': ParamValue,'id': ParamValue} }
@@ -296,6 +291,7 @@ export type ScannedRoutes = {
     'webhooks.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'commissions.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'users.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.countries.delete': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'countryId': ParamValue} }
   }
   PATCH: {
     'users.suspend': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }

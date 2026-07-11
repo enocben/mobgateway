@@ -211,66 +211,6 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/api_keys_controller').default['destroy']>>>
     }
   }
-  'countries.index': {
-    methods: ["GET","HEAD"]
-    pattern: '/api/v1/countries'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/countries_controller').default['index']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/countries_controller').default['index']>>>
-    }
-  }
-  'countries.store': {
-    methods: ["POST"]
-    pattern: '/api/v1/countries'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/countries_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/countries_controller').default['store']>>>
-    }
-  }
-  'countries.show': {
-    methods: ["GET","HEAD"]
-    pattern: '/api/v1/countries/:code'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { code: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/countries_controller').default['show']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/countries_controller').default['show']>>>
-    }
-  }
-  'countries.update': {
-    methods: ["PUT"]
-    pattern: '/api/v1/countries/:code'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { code: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/countries_controller').default['update']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/countries_controller').default['update']>>>
-    }
-  }
-  'countries.destroy': {
-    methods: ["DELETE"]
-    pattern: '/api/v1/countries/:code'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { code: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/countries_controller').default['destroy']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/countries_controller').default['destroy']>>>
-    }
-  }
   'currencies.index': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/currencies'
@@ -1263,8 +1203,32 @@ export interface Registry {
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['countries']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['countries']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/countries_controller').default['countries']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/countries_controller').default['countries']>>>
+    }
+  }
+  'admin.countries.create': {
+    methods: ["GET","HEAD"]
+    pattern: '/admin/:id/countries/create'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['countriesCreate']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['countriesCreate']>>>
+    }
+  }
+  'admin.countries.delete': {
+    methods: ["DELETE"]
+    pattern: '/admin/:id/countries/:countryId'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue, ParamValue]
+      params: { id: ParamValue; countryId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/countries_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/countries_controller').default['destroy']>>>
     }
   }
   'admin.currencies': {
@@ -1277,6 +1241,18 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['currencies']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['currencies']>>>
+    }
+  }
+  'admin.currencies.create': {
+    methods: ["GET","HEAD"]
+    pattern: '/admin/:id/currencies/create'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['currenciesCreate']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['currenciesCreate']>>>
     }
   }
   'admin.transactions': {

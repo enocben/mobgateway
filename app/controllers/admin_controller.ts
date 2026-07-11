@@ -12,18 +12,26 @@ export default class AdminController {
 
   async dashboard({ inertia, auth }: HttpContext) {
     const user = auth.user!
-    const applications = user.role === 'admin' || user.role === 'super_admin'
-      ? await Application.query().orderBy('createdAt', 'asc')
-      : await Application.query().whereHas('users', (q) => q.where('id', user.id)).orderBy('createdAt', 'asc')
+    const applications =
+      user.role === 'admin' || user.role === 'super_admin'
+        ? await Application.query().orderBy('createdAt', 'asc')
+        : await Application.query()
+            .whereHas('users', (q) => q.where('id', user.id))
+            .orderBy('createdAt', 'asc')
 
     const appIds = applications.map((a) => a.id)
     const [txStats, userCount, providerCount] = await Promise.all([
-      db.from('transactions').whereIn('application_id', appIds)
+      db
+        .from('transactions')
+        .whereIn('application_id', appIds)
         .select(
           db.raw('COUNT(*)::int as total'),
-          db.raw("COALESCE(SUM(CASE WHEN status = 'completed' THEN amount ELSE 0 END), 0) as volume"),
+          db.raw(
+            "COALESCE(SUM(CASE WHEN status = 'completed' THEN amount ELSE 0 END), 0) as volume"
+          ),
           db.raw("COALESCE(SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END), 0) as completed")
-        ).first(),
+        )
+        .first(),
       db.from('users').whereIn('application_id', appIds).count('* as count').first(),
       db.from('providers').where('status', 'active').count('* as count').first(),
     ])
@@ -96,10 +104,6 @@ export default class AdminController {
 
   async mobileOperators({ inertia }: HttpContext) {
     return inertia.render('admin/MobileOperators/List', {})
-  }
-
-  async countries({ inertia }: HttpContext) {
-    return inertia.render('admin/Countries/List', {})
   }
 
   async countriesCreate({ inertia }: HttpContext) {
