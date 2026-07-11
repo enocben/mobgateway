@@ -1208,15 +1208,15 @@ export interface Registry {
     }
   }
   'admin.countries.create': {
-    methods: ["GET","HEAD"]
-    pattern: '/admin/:id/countries/create'
+    methods: ["POST"]
+    pattern: '/admin/:id/countries/create/:iso2'
     types: {
       body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
+      paramsTuple: [ParamValue, ParamValue]
+      params: { id: ParamValue; iso2: ParamValue }
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['countriesCreate']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['countriesCreate']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/countries_controller').default['create']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/countries_controller').default['create']>>>
     }
   }
   'admin.countries.delete': {

@@ -607,9 +607,9 @@ const routes = {
     types: placeholder as Registry['admin.countries']['types'],
   },
   'admin.countries.create': {
-    methods: ["GET","HEAD"],
-    pattern: '/admin/:id/countries/create',
-    tokens: [{"old":"/admin/:id/countries/create","type":0,"val":"admin","end":""},{"old":"/admin/:id/countries/create","type":1,"val":"id","end":""},{"old":"/admin/:id/countries/create","type":0,"val":"countries","end":""},{"old":"/admin/:id/countries/create","type":0,"val":"create","end":""}],
+    methods: ["POST"],
+    pattern: '/admin/:id/countries/create/:iso2',
+    tokens: [{"old":"/admin/:id/countries/create/:iso2","type":0,"val":"admin","end":""},{"old":"/admin/:id/countries/create/:iso2","type":1,"val":"id","end":""},{"old":"/admin/:id/countries/create/:iso2","type":0,"val":"countries","end":""},{"old":"/admin/:id/countries/create/:iso2","type":0,"val":"create","end":""},{"old":"/admin/:id/countries/create/:iso2","type":1,"val":"iso2","end":""}],
     types: placeholder as Registry['admin.countries.create']['types'],
   },
   'admin.countries.delete': {

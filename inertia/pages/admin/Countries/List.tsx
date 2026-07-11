@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { Link } from '@inertiajs/react'
 import { motion } from 'framer-motion'
-import { Plus, Search, Trash2 } from 'lucide-react'
+import { Search, Trash2 } from 'lucide-react'
 import { Card, CardContent } from '~/components/ui/card'
 import { Input } from '~/components/ui/input'
 import { Button } from '~/components/ui/button'
@@ -13,17 +12,15 @@ import {
   TableHeader,
   TableRow,
 } from '~/components/ui/table'
-import { useApplicationStore } from '~/context/application_context'
-import { urlFor } from '~/client'
 import { Data } from '@generated/data'
 import { Form } from '@adonisjs/inertia/react'
+import { DialogCountry } from '~/components/country/dialog_country'
 
 type CountriesListProps = {
   countries: Data.Country[]
 }
 
 export default function CountriesList({ countries }: CountriesListProps) {
-  const applicationId = useApplicationStore((c) => c.applicationId)
   const [search, setSearch] = useState('')
 
   const filtered = countries.filter(
@@ -41,12 +38,7 @@ export default function CountriesList({ countries }: CountriesListProps) {
             Supported countries and their currencies
           </p>
         </div>
-        <Link href={urlFor('admin.countries.create', { id: applicationId! })}>
-          <Button>
-            <Plus className="mr-2 size-4" />
-            Add Country
-          </Button>
-        </Link>
+        <DialogCountry currentCountries={countries}/>
       </div>
 
       <Card>

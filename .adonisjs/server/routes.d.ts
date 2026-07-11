@@ -104,7 +104,7 @@ export type ScannedRoutes = {
     'admin.providers.detail': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'providerId': ParamValue} }
     'admin.mobile-operators': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.countries': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'admin.countries.create': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.countries.create': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'iso2': ParamValue} }
     'admin.countries.delete': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'countryId': ParamValue} }
     'admin.currencies': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.currencies.create': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -169,7 +169,6 @@ export type ScannedRoutes = {
     'admin.providers.detail': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'providerId': ParamValue} }
     'admin.mobile-operators': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.countries': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'admin.countries.create': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.currencies': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.currencies.create': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.transactions': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -233,7 +232,6 @@ export type ScannedRoutes = {
     'admin.providers.detail': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'providerId': ParamValue} }
     'admin.mobile-operators': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.countries': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'admin.countries.create': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.currencies': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.currencies.create': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.transactions': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -269,6 +267,7 @@ export type ScannedRoutes = {
     'new_account.store': { paramsTuple?: []; params?: {} }
     'session.store': { paramsTuple?: []; params?: {} }
     'session.destroy': { paramsTuple?: []; params?: {} }
+    'admin.countries.create': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'iso2': ParamValue} }
   }
   PUT: {
     'applications.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }

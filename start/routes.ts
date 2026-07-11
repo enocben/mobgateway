@@ -221,7 +221,7 @@ router
     // Countries
     router.get('/countries', [controllers.Countries, 'countries']).as('admin.countries')
     router
-      .get('/countries/create', [controllers.Admin, 'countriesCreate'])
+      .post('/countries/create/:iso2', [controllers.Countries, 'create'])
       .as('admin.countries.create')
     // router.put('/countries/:countryId', [controllers.Countries, 'update']).as('admin.countries.update')
     router
