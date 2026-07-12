@@ -6,6 +6,7 @@ import {
   createMobileOperatorValidator,
   updateMobileOperatorValidator,
 } from '#validators/mobile_operator'
+import Country from '#models/country'
 
 export default class MobileOperatorsController {
   async index({ params, inertia }: HttpContext) {
@@ -23,28 +24,19 @@ export default class MobileOperatorsController {
 
   async store({ params, request, response, session }: HttpContext) {
     const applicationId = params.id
-    const inputs = request.only(['countryCode', 'name', 'logoUrl'])
-    const prefixes = request.input('prefixes') ?? []
+    const data = await request.validateUsing(createMobileOperatorValidator)
+    const country = await Country.findBy('code', data.countryCode)
 
-    const [error, data] = await createMobileOperatorValidator.tryValidate({
-      ...inputs,
-      applicationId,
-      prefixes: Array.isArray(prefixes) ? prefixes : [prefixes],
-    })
+    if (!country)
+      return response.abort("Country not found", 404)
 
-    if (error) {
-      session.flash('errors', {
-        mobileOperator: error.messages,
-      })
-      return response.redirect().back()
-    }
 
     const operator = await MobileOperator.create({
-      countryCode: data.countryCode,
       name: data.name,
       logoUrl: data.logoUrl ?? null,
       isEnabled: true,
       applicationId,
+      countryId: country.id
     })
 
     // Créer les préfixes associés
@@ -60,6 +52,8 @@ export default class MobileOperatorsController {
   }
 
   async update({ params, request, response, session }: HttpContext) {
+    const data = await request.validateUsing(updateMobileOperatorValidator)
+
     const operator = await MobileOperator.query()
       .where('applicationId', params.id)
       .where('id', params.operatorId)
@@ -70,20 +64,13 @@ export default class MobileOperatorsController {
       return response.redirect().back()
     }
 
-    const [error, data] = await updateMobileOperatorValidator.tryValidate({
-      ...request.only(['countryCode', 'name', 'logoUrl', 'isEnabled']),
-      prefixes: request.input('prefixes'),
-    })
-
-    if (error) {
-      session.flash('errors', {
-        mobileOperator: error.messages,
-      })
-      return response.redirect().back()
-    }
 
     if (data.name !== undefined) operator.name = data.name
-    if (data.countryCode !== undefined) operator.countryCode = data.countryCode
+    if (data.countryCode){
+      const country = await Country.findBy('code', data.countryCode)
+      if (country)
+        operator.countryId = country.id
+    }
     if (data.logoUrl !== undefined) operator.logoUrl = data.logoUrl
     if (data.isEnabled !== undefined) operator.isEnabled = data.isEnabled
 

@@ -30,7 +30,7 @@ export default function MobileOperatorsList({ mobileOperators: operators }: Prop
     operators?.filter(
       (op) =>
         op.name.toLowerCase().includes(search.toLowerCase()) ||
-        op.countryCode.toLowerCase().includes(search.toLowerCase()) ||
+        // op.country?.code.toLowerCase().includes(search.toLowerCase()) ||
         op.prefixes?.some((p) => p.prefix.includes(search))
     ) ?? []
 
@@ -100,7 +100,7 @@ export default function MobileOperatorsList({ mobileOperators: operators }: Prop
                       </div>
                     </TableCell>
                     <TableCell>
-                      <span className="font-mono text-xs">{op.countryCode}</span>
+                      <span className="font-mono text-xs">{op.country.code}</span>
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">

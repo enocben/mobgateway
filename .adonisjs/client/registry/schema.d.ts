@@ -1139,24 +1139,24 @@ export interface Registry {
     methods: ["POST"]
     pattern: '/admin/:id/mobile-operators'
     types: {
-      body: {}
+      body: ExtractBody<InferInput<(typeof import('#validators/mobile_operator').createMobileOperatorValidator)>>
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
-      query: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/mobile_operator').createMobileOperatorValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/mobile_operators_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/mobile_operators_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/mobile_operators_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'admin.mobile-operators.update': {
     methods: ["PUT"]
     pattern: '/admin/:id/mobile-operators/:operatorId'
     types: {
-      body: {}
+      body: ExtractBody<InferInput<(typeof import('#validators/mobile_operator').updateMobileOperatorValidator)>>
       paramsTuple: [ParamValue, ParamValue]
       params: { id: ParamValue; operatorId: ParamValue }
-      query: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/mobile_operator').updateMobileOperatorValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/mobile_operators_controller').default['update']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/mobile_operators_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/mobile_operators_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'admin.mobile-operators.destroy': {

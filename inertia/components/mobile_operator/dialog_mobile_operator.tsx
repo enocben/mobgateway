@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '~/components/ui/dialog'
-import { getCountryDataList } from 'countries-list'
+import { getCountryData, getCountryDataList, TCountryCode } from 'countries-list'
 import {
   Select,
   SelectContent,
@@ -31,23 +31,34 @@ type Props = {
   currentOperators?: Data.MobileOperator[]
 }
 
-export function DialogMobileOperator({ currentOperators }: Props) {
+export function DialogMobileOperator({}: Props) {
   const applicationId = useApplicationStore((a) => a.applicationId)
+
   const countries = useMemo(
     () => getCountryDataList().filter((c) => c.continent === 'AF'),
     []
   )
-  const [countryCode, setCountryCode] = useState('')
-  const [prefixes, setPrefixes] = useState<string[]>([''])
-  const [open, setOpen] = useState(false)
 
-  const addPrefix = () => setPrefixes([...prefixes, ''])
-  const removePrefix = (i: number) => {
-    if (prefixes.length <= 1) return
-    setPrefixes(prefixes.filter((_, idx) => idx !== i))
+  const [open, setOpen] = useState(false)
+  const [countryCode, setCountryCode] = useState<TCountryCode | ''>('')
+  const [name, setName] = useState('')
+  const [prefixes, setPrefixes] = useState<string[]>([''])
+
+  const addPrefix = () => {
+    setPrefixes((prev) => [...prev, ''])
   }
-  const updatePrefix = (i: number, val: string) => {
-    setPrefixes(prefixes.map((p, idx) => (idx === i ? val : p)))
+
+  const removePrefix = (index: number) => {
+    setPrefixes((prev) => {
+      if (prev.length <= 1) return prev
+      return prev.filter((_, i) => i !== index)
+    })
+  }
+
+  const updatePrefix = (index: number, value: string) => {
+    setPrefixes((prev) =>
+      prev.map((prefix, i) => (i === index ? value : prefix))
+    )
   }
 
   return (
@@ -55,88 +66,143 @@ export function DialogMobileOperator({ currentOperators }: Props) {
       <DialogTrigger asChild>
         <Button>Add Operator</Button>
       </DialogTrigger>
+
       <DialogContent className="sm:max-w-sm">
-        <DialogHeader>
-          <DialogTitle>Add Mobile Operator</DialogTitle>
-          <DialogDescription>
-            Register a new mobile network operator for the current application.
-          </DialogDescription>
-        </DialogHeader>
+        <Form
+          route="admin.mobile-operators.store"
+          routeParams={{ id: applicationId! }}
+          onSubmit={() => setOpen(false)}
+        >
+          <DialogHeader>
+            <DialogTitle>Add Mobile Operator</DialogTitle>
+            <DialogDescription>
+              Register a new mobile network operator for the current application.
+            </DialogDescription>
+          </DialogHeader>
 
-        <Field>
-          <FieldLabel htmlFor="name">Operator Name</FieldLabel>
-          <Input id="name" name="name" placeholder="Airtel Money" required />
-        </Field>
+          <Field className="mb-2">
+            <FieldLabel htmlFor="name">Operator Name</FieldLabel>
 
-        <Field>
-          <FieldLabel htmlFor="logoUrl">Logo URL</FieldLabel>
-          <Input id="logoUrl" name="logoUrl" placeholder="https://..." />
-        </Field>
+            <Input
+              id="name"
+              name="name"
+              placeholder="Airtel"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </Field>
 
-        <Select name="countryCode" onValueChange={setCountryCode} required>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select Country" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Country</SelectLabel>
-              {countries.map((c) => (
-                <SelectItem key={c.iso2} value={c.iso2}>
-                  {c.name}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+          <Field className="mb-2">
+            <FieldLabel htmlFor="logoUrl">Logo URL</FieldLabel>
 
-        <input type="hidden" name="countryCode" value={countryCode} />
+            <Input
+              id="logoUrl"
+              name="logoUrl"
+              placeholder="https://..."
+            />
+          </Field>
 
-        <Field>
-          <FieldLabel>Prefixes</FieldLabel>
-          {prefixes.map((p, i) => (
-            <div key={i} className="flex items-center gap-1">
-              <Input
-                name="prefixes[]"
-                placeholder="+243 or 243"
-                value={p}
-                onChange={(e) => updatePrefix(i, e.target.value)}
-                className="flex-1"
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={() => removePrefix(i)}
-                disabled={prefixes.length <= 1}
+          <Field className="mb-2">
+            <FieldLabel>Country</FieldLabel>
+
+            <Select
+              value={countryCode}
+              onValueChange={(value) => {
+                setCountryCode(value as TCountryCode)
+
+                const country = getCountryData(value as TCountryCode)
+
+                if (!country) return
+
+                setName((current) => {
+                  const baseName = current.replace(/\s*\([^)]+\)$/, '')
+                  return `${baseName} (${country.iso3})`
+                })
+              }}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Country" />
+              </SelectTrigger>
+
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Country</SelectLabel>
+
+                  {countries.map((country) => (
+                    <SelectItem
+                      key={country.iso2}
+                      value={country.iso2}
+                    >
+                      {country.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+
+            <input
+              type="hidden"
+              name="countryCode"
+              value={countryCode}
+            />
+          </Field>
+
+          <Field>
+            <FieldLabel>Prefixes</FieldLabel>
+
+            {prefixes.map((prefix, index) => (
+              <div
+                key={index}
+                className="mb-2 flex items-center gap-2"
               >
-                <X className="size-4" />
-              </Button>
-            </div>
-          ))}
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={addPrefix}
-            className="mt-1"
-          >
-            <Plus className="size-3 mr-1" />
-            Add prefix
-          </Button>
-        </Field>
+                <Input
+                  name="prefixes[]"
+                  placeholder="+243 or 243"
+                  value={prefix}
+                  onChange={(e) =>
+                    updatePrefix(index, e.target.value)
+                  }
+                  className="flex-1"
+                />
 
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DialogClose>
-          <Form
-            route="admin.mobile-operators.store"
-            routeParams={{ id: applicationId! }}
-            onSubmit={() => setOpen(false)}
-          >
-            <Button type="submit">Save</Button>
-          </Form>
-        </DialogFooter>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => removePrefix(index)}
+                  disabled={prefixes.length <= 1}
+                >
+                  <X className="size-4" />
+                </Button>
+              </div>
+            ))}
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={addPrefix}
+            >
+              <Plus className="mr-1 size-3" />
+              Add prefix
+            </Button>
+          </Field>
+
+          <DialogFooter className="mt-4">
+            <DialogClose asChild>
+              <Button variant="outline">
+                Cancel
+              </Button>
+            </DialogClose>
+
+            <DialogClose asChild>
+              <Button type="submit">
+                Save
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </Form>
       </DialogContent>
     </Dialog>
   )

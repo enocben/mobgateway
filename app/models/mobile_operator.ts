@@ -9,7 +9,7 @@ export default class MobileOperator extends MobileOperatorSchema {
   @belongsTo(() => Application, { foreignKey: 'applicationId' })
   declare application: BelongsTo<typeof Application>
 
-  @belongsTo(() => Country, { foreignKey: 'countryCode' })
+  @belongsTo(() => Country, { foreignKey: 'countryId' })
   declare country: BelongsTo<typeof Country>
 
   @hasMany(() => OperatorPrefix)
