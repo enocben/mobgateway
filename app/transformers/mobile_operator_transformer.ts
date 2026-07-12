@@ -1,23 +1,23 @@
 import { BaseTransformer } from '@adonisjs/core/transformers'
 import MobileOperator from '#models/mobile_operator'
+import CountryTransformer from '#transformers/country_transformer'
+import OperatorPrefixTransformer from '#transformers/operator_prefix_transformer'
 
 export default class MobileOperatorTransformer extends BaseTransformer<MobileOperator> {
   toObject() {
     return {
       ...this.pick(this.resource, [
         'id',
+        'name',
         'applicationId',
         'countryCode',
-        'name',
         'logoUrl',
         'isEnabled',
         'createdAt',
         'updatedAt',
       ]),
-      prefixes: this.resource.prefixes?.map((p) => ({
-        id: p.id,
-        prefix: p.prefix,
-      })) ?? [],
+      country: CountryTransformer.transform(this.resource.country),
+      prefixes: OperatorPrefixTransformer.transform(this.resource.prefixes),
     }
   }
 }

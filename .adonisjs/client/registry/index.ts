@@ -570,6 +570,24 @@ const routes = {
     tokens: [{"old":"/admin/:id/mobile-operators","type":0,"val":"admin","end":""},{"old":"/admin/:id/mobile-operators","type":1,"val":"id","end":""},{"old":"/admin/:id/mobile-operators","type":0,"val":"mobile-operators","end":""}],
     types: placeholder as Registry['admin.mobile-operators']['types'],
   },
+  'admin.mobile-operators.store': {
+    methods: ["POST"],
+    pattern: '/admin/:id/mobile-operators',
+    tokens: [{"old":"/admin/:id/mobile-operators","type":0,"val":"admin","end":""},{"old":"/admin/:id/mobile-operators","type":1,"val":"id","end":""},{"old":"/admin/:id/mobile-operators","type":0,"val":"mobile-operators","end":""}],
+    types: placeholder as Registry['admin.mobile-operators.store']['types'],
+  },
+  'admin.mobile-operators.update': {
+    methods: ["PUT"],
+    pattern: '/admin/:id/mobile-operators/:operatorId',
+    tokens: [{"old":"/admin/:id/mobile-operators/:operatorId","type":0,"val":"admin","end":""},{"old":"/admin/:id/mobile-operators/:operatorId","type":1,"val":"id","end":""},{"old":"/admin/:id/mobile-operators/:operatorId","type":0,"val":"mobile-operators","end":""},{"old":"/admin/:id/mobile-operators/:operatorId","type":1,"val":"operatorId","end":""}],
+    types: placeholder as Registry['admin.mobile-operators.update']['types'],
+  },
+  'admin.mobile-operators.destroy': {
+    methods: ["DELETE"],
+    pattern: '/admin/:id/mobile-operators/:operatorId',
+    tokens: [{"old":"/admin/:id/mobile-operators/:operatorId","type":0,"val":"admin","end":""},{"old":"/admin/:id/mobile-operators/:operatorId","type":1,"val":"id","end":""},{"old":"/admin/:id/mobile-operators/:operatorId","type":0,"val":"mobile-operators","end":""},{"old":"/admin/:id/mobile-operators/:operatorId","type":1,"val":"operatorId","end":""}],
+    types: placeholder as Registry['admin.mobile-operators.destroy']['types'],
+  },
   'admin.countries': {
     methods: ["GET","HEAD"],
     pattern: '/admin/:id/countries',

@@ -98,6 +98,9 @@ export type ScannedRoutes = {
     'admin.providers.create': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.providers.detail': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'providerId': ParamValue} }
     'admin.mobile-operators': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.mobile-operators.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.mobile-operators.update': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'operatorId': ParamValue} }
+    'admin.mobile-operators.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'operatorId': ParamValue} }
     'admin.countries': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.countries.create': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'iso2': ParamValue} }
     'admin.countries.delete': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'countryId': ParamValue} }
@@ -257,6 +260,7 @@ export type ScannedRoutes = {
     'new_account.store': { paramsTuple?: []; params?: {} }
     'session.store': { paramsTuple?: []; params?: {} }
     'session.destroy': { paramsTuple?: []; params?: {} }
+    'admin.mobile-operators.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.countries.create': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'iso2': ParamValue} }
   }
   PUT: {
@@ -267,6 +271,7 @@ export type ScannedRoutes = {
     'webhooks.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'commissions.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'users.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.mobile-operators.update': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'operatorId': ParamValue} }
   }
   DELETE: {
     'applications.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -278,6 +283,7 @@ export type ScannedRoutes = {
     'webhooks.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'commissions.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'users.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.mobile-operators.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'operatorId': ParamValue} }
     'admin.countries.delete': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'countryId': ParamValue} }
   }
   PATCH: {

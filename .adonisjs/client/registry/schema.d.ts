@@ -1135,6 +1135,42 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/mobile_operators_controller').default['index']>>>
     }
   }
+  'admin.mobile-operators.store': {
+    methods: ["POST"]
+    pattern: '/admin/:id/mobile-operators'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/mobile_operators_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/mobile_operators_controller').default['store']>>>
+    }
+  }
+  'admin.mobile-operators.update': {
+    methods: ["PUT"]
+    pattern: '/admin/:id/mobile-operators/:operatorId'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue, ParamValue]
+      params: { id: ParamValue; operatorId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/mobile_operators_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/mobile_operators_controller').default['update']>>>
+    }
+  }
+  'admin.mobile-operators.destroy': {
+    methods: ["DELETE"]
+    pattern: '/admin/:id/mobile-operators/:operatorId'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue, ParamValue]
+      params: { id: ParamValue; operatorId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/mobile_operators_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/mobile_operators_controller').default['destroy']>>>
+    }
+  }
   'admin.countries': {
     methods: ["GET","HEAD"]
     pattern: '/admin/:id/countries'

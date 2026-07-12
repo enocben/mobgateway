@@ -138,7 +138,11 @@ export interface ApiDefinition {
       create: typeof routes['admin.providers.create']
       detail: typeof routes['admin.providers.detail']
     }
-    mobileOperators: typeof routes['admin.mobile-operators']
+    mobileOperators: typeof routes['admin.mobile-operators'] & {
+      store: typeof routes['admin.mobile-operators.store']
+      update: typeof routes['admin.mobile-operators.update']
+      destroy: typeof routes['admin.mobile-operators.destroy']
+    }
     countries: typeof routes['admin.countries'] & {
       create: typeof routes['admin.countries.create']
       delete: typeof routes['admin.countries.delete']
