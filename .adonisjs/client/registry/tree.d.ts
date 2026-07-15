@@ -60,6 +60,13 @@ export interface ApiDefinition {
     index: typeof routes['audit_logs.index']
     show: typeof routes['audit_logs.show']
   }
+  providers: {
+    index: typeof routes['providers.index']
+    show: typeof routes['providers.show']
+    update: typeof routes['providers.update']
+    testConnection: typeof routes['providers.test_connection']
+    stats: typeof routes['providers.stats']
+  }
   users: {
     index: typeof routes['users.index']
     store: typeof routes['users.store']
@@ -112,7 +119,6 @@ export interface ApiDefinition {
       detail: typeof routes['admin.users.detail']
     }
     providers: typeof routes['admin.providers'] & {
-      create: typeof routes['admin.providers.create']
       detail: typeof routes['admin.providers.detail']
     }
     mobileOperators: typeof routes['admin.mobile-operators'] & {

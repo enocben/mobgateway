@@ -44,6 +44,11 @@ export type ScannedRoutes = {
     'commissions.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'audit_logs.index': { paramsTuple?: []; params?: {} }
     'audit_logs.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'providers.index': { paramsTuple?: []; params?: {} }
+    'providers.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'providers.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'providers.test_connection': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'providers.stats': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'users.index': { paramsTuple?: []; params?: {} }
     'users.store': { paramsTuple?: []; params?: {} }
     'users.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -78,7 +83,6 @@ export type ScannedRoutes = {
     'admin.users': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.users.detail': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'userId': ParamValue} }
     'admin.providers': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'admin.providers.create': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.providers.detail': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'providerId': ParamValue} }
     'admin.mobile-operators': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.mobile-operators.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -113,6 +117,9 @@ export type ScannedRoutes = {
     'commissions.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'audit_logs.index': { paramsTuple?: []; params?: {} }
     'audit_logs.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'providers.index': { paramsTuple?: []; params?: {} }
+    'providers.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'providers.stats': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'users.index': { paramsTuple?: []; params?: {} }
     'users.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'accounts.index': { paramsTuple?: []; params?: {} }
@@ -135,7 +142,6 @@ export type ScannedRoutes = {
     'admin.users': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.users.detail': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'userId': ParamValue} }
     'admin.providers': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'admin.providers.create': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.providers.detail': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'providerId': ParamValue} }
     'admin.mobile-operators': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.countries': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -165,6 +171,9 @@ export type ScannedRoutes = {
     'commissions.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'audit_logs.index': { paramsTuple?: []; params?: {} }
     'audit_logs.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'providers.index': { paramsTuple?: []; params?: {} }
+    'providers.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'providers.stats': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'users.index': { paramsTuple?: []; params?: {} }
     'users.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'accounts.index': { paramsTuple?: []; params?: {} }
@@ -187,7 +196,6 @@ export type ScannedRoutes = {
     'admin.users': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.users.detail': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'userId': ParamValue} }
     'admin.providers': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'admin.providers.create': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.providers.detail': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'providerId': ParamValue} }
     'admin.mobile-operators': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.countries': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -211,6 +219,7 @@ export type ScannedRoutes = {
     'webhooks.store': { paramsTuple?: []; params?: {} }
     'webhooks.retry_delivery': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'delivery_id': ParamValue} }
     'commissions.store': { paramsTuple?: []; params?: {} }
+    'providers.test_connection': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'users.store': { paramsTuple?: []; params?: {} }
     'reconciliation.upload': { paramsTuple?: []; params?: {} }
     'reconciliation.match': { paramsTuple?: []; params?: {} }
@@ -226,6 +235,7 @@ export type ScannedRoutes = {
     'applications.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'webhooks.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'commissions.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'providers.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'users.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.mobile-operators.update': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'operatorId': ParamValue} }
   }

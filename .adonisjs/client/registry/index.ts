@@ -246,6 +246,36 @@ const routes = {
     tokens: [{"old":"/api/v1/audit-logs/:id","type":0,"val":"api","end":""},{"old":"/api/v1/audit-logs/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/audit-logs/:id","type":0,"val":"audit-logs","end":""},{"old":"/api/v1/audit-logs/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['audit_logs.show']['types'],
   },
+  'providers.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/providers',
+    tokens: [{"old":"/api/v1/providers","type":0,"val":"api","end":""},{"old":"/api/v1/providers","type":0,"val":"v1","end":""},{"old":"/api/v1/providers","type":0,"val":"providers","end":""}],
+    types: placeholder as Registry['providers.index']['types'],
+  },
+  'providers.show': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/providers/:id',
+    tokens: [{"old":"/api/v1/providers/:id","type":0,"val":"api","end":""},{"old":"/api/v1/providers/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/providers/:id","type":0,"val":"providers","end":""},{"old":"/api/v1/providers/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['providers.show']['types'],
+  },
+  'providers.update': {
+    methods: ["PUT"],
+    pattern: '/api/v1/providers/:id',
+    tokens: [{"old":"/api/v1/providers/:id","type":0,"val":"api","end":""},{"old":"/api/v1/providers/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/providers/:id","type":0,"val":"providers","end":""},{"old":"/api/v1/providers/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['providers.update']['types'],
+  },
+  'providers.test_connection': {
+    methods: ["POST"],
+    pattern: '/api/v1/providers/:id/test',
+    tokens: [{"old":"/api/v1/providers/:id/test","type":0,"val":"api","end":""},{"old":"/api/v1/providers/:id/test","type":0,"val":"v1","end":""},{"old":"/api/v1/providers/:id/test","type":0,"val":"providers","end":""},{"old":"/api/v1/providers/:id/test","type":1,"val":"id","end":""},{"old":"/api/v1/providers/:id/test","type":0,"val":"test","end":""}],
+    types: placeholder as Registry['providers.test_connection']['types'],
+  },
+  'providers.stats': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/providers/:id/stats',
+    tokens: [{"old":"/api/v1/providers/:id/stats","type":0,"val":"api","end":""},{"old":"/api/v1/providers/:id/stats","type":0,"val":"v1","end":""},{"old":"/api/v1/providers/:id/stats","type":0,"val":"providers","end":""},{"old":"/api/v1/providers/:id/stats","type":1,"val":"id","end":""},{"old":"/api/v1/providers/:id/stats","type":0,"val":"stats","end":""}],
+    types: placeholder as Registry['providers.stats']['types'],
+  },
   'users.index': {
     methods: ["GET","HEAD"],
     pattern: '/api/v1/users',
@@ -449,12 +479,6 @@ const routes = {
     pattern: '/admin/:id/providers',
     tokens: [{"old":"/admin/:id/providers","type":0,"val":"admin","end":""},{"old":"/admin/:id/providers","type":1,"val":"id","end":""},{"old":"/admin/:id/providers","type":0,"val":"providers","end":""}],
     types: placeholder as Registry['admin.providers']['types'],
-  },
-  'admin.providers.create': {
-    methods: ["GET","HEAD"],
-    pattern: '/admin/:id/providers/create',
-    tokens: [{"old":"/admin/:id/providers/create","type":0,"val":"admin","end":""},{"old":"/admin/:id/providers/create","type":1,"val":"id","end":""},{"old":"/admin/:id/providers/create","type":0,"val":"providers","end":""},{"old":"/admin/:id/providers/create","type":0,"val":"create","end":""}],
-    types: placeholder as Registry['admin.providers.create']['types'],
   },
   'admin.providers.detail': {
     methods: ["GET","HEAD"],

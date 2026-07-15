@@ -487,6 +487,66 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/audit_logs_controller').default['show']>>>
     }
   }
+  'providers.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/providers'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['index']>>>
+    }
+  }
+  'providers.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/providers/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['show']>>>
+    }
+  }
+  'providers.update': {
+    methods: ["PUT"]
+    pattern: '/api/v1/providers/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['update']>>>
+    }
+  }
+  'providers.test_connection': {
+    methods: ["POST"]
+    pattern: '/api/v1/providers/:id/test'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['testConnection']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['testConnection']>>>
+    }
+  }
+  'providers.stats': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/providers/:id/stats'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['stats']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['stats']>>>
+    }
+  }
   'users.index': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/users'
@@ -893,18 +953,6 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['index']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['index']>>>
-    }
-  }
-  'admin.providers.create': {
-    methods: ["GET","HEAD"]
-    pattern: '/admin/:id/providers/create'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['providersCreate']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['providersCreate']>>>
     }
   }
   'admin.providers.detail': {

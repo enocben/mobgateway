@@ -7,6 +7,7 @@ import {
   type TransactionFilter,
   type WebhookRequest,
 } from '#pro/base_payment_provider'
+import env from '#start/env'
 
 /**
  * Shwary mobile money provider.
@@ -18,18 +19,17 @@ import {
 export default class ShwaryProvider extends BasePaymentProvider {
   readonly provider = 'shwary'
   readonly label = 'Shwary'
-  readonly description = 'Shwary mobile money aggregator — supports multiple operators across Africa'
+  readonly description =
+    'Shwary mobile money aggregator — supports multiple operators across Africa'
   readonly icon = '📡'
 
-  private baseUrl = 'https://api.shwary.com/v1'
-  private apiKey: string | null = null
-  private apiSecret: string | null = null
-  private sandbox = false
+  private baseUrl = env.get('SHWARY_BASE_URL')
+  private apiKey: string = env.get('SHWARY_ID_MARCHAND')
+  private apiSecret: string = env.get('SHWARY_SECRET')
 
   // ── Initialisation ──────────────────────────────────────────────────────
 
   async initialize(config: ProviderConfig): Promise<void> {
-    this.sandbox = config.sandbox
     this.apiKey = (config.values.apiKey as string) ?? null
     this.apiSecret = (config.values.apiSecret as string) ?? null
 
@@ -43,8 +43,8 @@ export default class ShwaryProvider extends BasePaymentProvider {
   private buildHeaders(): Record<string, string> {
     return {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${this.apiKey}`,
-      'X-Shwary-Secret': this.apiSecret ?? '',
+      'x-merchant-id': this.apiKey,
+      'x-merchant-key': this.apiSecret,
     }
   }
 
@@ -108,9 +108,7 @@ export default class ShwaryProvider extends BasePaymentProvider {
     const raw = await response.json()
 
     if (!response.ok) {
-      throw new Error(
-        (raw as any).message ?? `Shwary HTTP ${response.status}`
-      )
+      throw new Error((raw as any).message ?? `Shwary HTTP ${response.status}`)
     }
 
     return this.normalize(raw, request.phoneNumber)
@@ -126,12 +124,10 @@ export default class ShwaryProvider extends BasePaymentProvider {
     const response = await fetch(`${this.baseUrl}/payments/${transactionId}`, {
       headers: this.buildHeaders(),
     })
-    const raw = await response.json()
+    const raw: any = await response.json()
 
     if (!response.ok) {
-      throw new Error(
-        (raw as any).message ?? `Shwary HTTP ${response.status}`
-      )
+      throw new Error((raw as any).message ?? `Shwary HTTP ${response.status}`)
     }
 
     return this.normalize(raw, raw.phone ?? '')
@@ -149,19 +145,16 @@ export default class ShwaryProvider extends BasePaymentProvider {
     if (options?.limit) params.set('limit', String(options.limit))
     if (options?.offset) params.set('offset', String(options.offset))
 
-    const response = await fetch(
-      `${this.baseUrl}/payments?${params.toString()}`,
-      { headers: this.buildHeaders() }
-    )
+    const response = await fetch(`${this.baseUrl}/payments?${params.toString()}`, {
+      headers: this.buildHeaders(),
+    })
     const raw = await response.json()
 
     if (!response.ok) {
-      throw new Error(
-        (raw as any).message ?? `Shwary HTTP ${response.status}`
-      )
+      throw new Error((raw as any).message ?? `Shwary HTTP ${response.status}`)
     }
 
-    const list = Array.isArray(raw) ? raw : (raw as any).data ?? []
+    const list = Array.isArray(raw) ? raw : ((raw as any).data ?? [])
     return list.map((item: any) => this.normalize(item, item.phone ?? ''))
   }
 
@@ -172,9 +165,7 @@ export default class ShwaryProvider extends BasePaymentProvider {
     if (!signature || !this.apiSecret) return false
 
     // Shwary signe avec HMAC-SHA256(body, secret)
-    const bodyStr = typeof request.body === 'string'
-      ? request.body
-      : JSON.stringify(request.body)
+    const bodyStr = typeof request.body === 'string' ? request.body : JSON.stringify(request.body)
 
     const encoder = new TextEncoder()
     const key = await crypto.subtle.importKey(
@@ -200,9 +191,7 @@ export default class ShwaryProvider extends BasePaymentProvider {
       throw new Error('Invalid webhook signature')
     }
 
-    const body = typeof request.body === 'string'
-      ? JSON.parse(request.body)
-      : request.body
+    const body = typeof request.body === 'string' ? JSON.parse(request.body) : request.body
 
     return this.normalize(body, (body as any).phone ?? '')
   }
