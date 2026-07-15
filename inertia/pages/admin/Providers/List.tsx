@@ -1,26 +1,26 @@
 import { useState } from 'react'
 import { Link } from '@inertiajs/react'
 import { motion } from 'framer-motion'
-import { Plus, Search, MoreHorizontal, AlertCircle, RefreshCw } from 'lucide-react'
+import { Plus, Search, MoreHorizontal } from 'lucide-react'
 import { Card, CardContent } from '~/components/ui/card'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Badge } from '~/components/ui/badge'
-import { Skeleton } from '~/components/ui/skeleton'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/ui/table'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '~/components/ui/dropdown-menu'
 import { formatDate } from '~/lib/utils'
-import { useFetch } from '~/hooks/use-fetch'
-import type { Provider, PaginatedResponse } from '~/types'
 import { useApplicationStore } from '~/context/application_context'
 import { urlFor } from '~/client'
+import { Data } from '@generated/data'
 
-export default function ProvidersList() {
+type Props = {
+  providers: Data.Provider[]
+}
+
+export default function ProvidersList({ providers }: Props) {
   const [search, setSearch] = useState('')
   const applicationId = useApplicationStore((a) => a.applicationId)
-  const { data, loading, error, refetch } = useFetch<PaginatedResponse<Provider>>('/api/v1/providers')
 
-  const providers = data?.data ?? []
   const filtered = providers.filter((p) =>
     p.name.toLowerCase().includes(search.toLowerCase()) ||
     p.code.toLowerCase().includes(search.toLowerCase())
@@ -34,21 +34,9 @@ export default function ProvidersList() {
           <p className="text-sm text-muted-foreground mt-1">Manage mobile money and payment providers</p>
         </div>
         <Link href="/admin/providers/create">
-          <Button><Plus className="mr-2 size-4" /> Add Provider</Button>
+          <Button><Plus className="size-4" /> Add Provider</Button>
         </Link>
       </div>
-
-      {error && (
-        <Card className="border-destructive/50">
-          <CardContent className="pt-6 flex items-center gap-4">
-            <AlertCircle className="size-5 text-destructive" />
-            <p className="text-sm text-destructive flex-1">{error}</p>
-            <Button variant="outline" size="sm" onClick={refetch}>
-              <RefreshCw className="size-3 mr-1" /> Retry
-            </Button>
-          </CardContent>
-        </Card>
-      )}
 
       <Card>
         <CardContent className="pt-6">
@@ -68,18 +56,7 @@ export default function ProvidersList() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {loading ? (
-                Array.from({ length: 5 }).map((_, i) => (
-                  <TableRow key={i}>
-                    <TableCell><Skeleton className="h-4 w-36" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-16" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-20" /></TableCell>
-                    <TableCell><Skeleton className="h-5 w-16" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-                    <TableCell><Skeleton className="h-8 w-8" /></TableCell>
-                  </TableRow>
-                ))
-              ) : filtered.length === 0 ? (
+              {filtered.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                     {search ? 'No providers match your search' : 'No providers found'}
@@ -97,7 +74,7 @@ export default function ProvidersList() {
                     <TableCell className="font-mono text-xs">{provider.code}</TableCell>
                     <TableCell className="capitalize">{provider.type}</TableCell>
                     <TableCell><Badge variant={provider.status === 'active' ? 'success' : 'secondary'}>{provider.status}</Badge></TableCell>
-                    <TableCell className="text-muted-foreground text-xs">{formatDate(provider.created_at)}</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">{formatDate(provider.createdAt!)}</TableCell>
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>

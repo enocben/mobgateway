@@ -35,8 +35,8 @@ export default class ProviderRoutesController {
     }
 
     const route = await ProviderRoute.create({
-      mobileOperatorId: Number(mobileOperatorId),
-      providerId: Number(providerId),
+      mobileOperatorId: mobileOperatorId,
+      providerId: providerId,
       priority: priority ?? 1,
       isActive: isActive !== undefined ? Boolean(isActive) : true,
     })
@@ -68,9 +68,9 @@ export default class ProviderRoutesController {
       'mobileOperatorId', 'providerId', 'priority', 'isActive',
     ])
 
-    if (mobileOperatorId !== undefined) route.mobileOperatorId = Number(mobileOperatorId)
-    if (providerId !== undefined) route.providerId = Number(providerId)
-    if (priority !== undefined) route.priority = Number(priority)
+    if (mobileOperatorId !== undefined) route.mobileOperatorId = mobileOperatorId
+    if (providerId !== undefined) route.providerId = providerId
+    if (priority !== undefined) route.priority = priority
     if (isActive !== undefined) route.isActive = Boolean(isActive)
 
     await route.save()

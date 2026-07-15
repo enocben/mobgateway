@@ -24,18 +24,6 @@ export type ScannedRoutes = {
     'operator_prefixes.index': { paramsTuple: [ParamValue]; params: {'mobile_operator_id': ParamValue} }
     'operator_prefixes.store': { paramsTuple: [ParamValue]; params: {'mobile_operator_id': ParamValue} }
     'operator_prefixes.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'mobile_operator_id': ParamValue,'id': ParamValue} }
-    'providers.index': { paramsTuple?: []; params?: {} }
-    'providers.store': { paramsTuple?: []; params?: {} }
-    'providers.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'providers.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'providers.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'providers.test_connection': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'providers.stats': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'provider_routes.index': { paramsTuple?: []; params?: {} }
-    'provider_routes.store': { paramsTuple?: []; params?: {} }
-    'provider_routes.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'provider_routes.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'provider_routes.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'transactions.index': { paramsTuple?: []; params?: {} }
     'transactions.store': { paramsTuple?: []; params?: {} }
     'transactions.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -115,11 +103,6 @@ export type ScannedRoutes = {
     'api_keys.index': { paramsTuple: [ParamValue]; params: {'application_id': ParamValue} }
     'api_keys.show': { paramsTuple: [ParamValue,ParamValue]; params: {'application_id': ParamValue,'id': ParamValue} }
     'operator_prefixes.index': { paramsTuple: [ParamValue]; params: {'mobile_operator_id': ParamValue} }
-    'providers.index': { paramsTuple?: []; params?: {} }
-    'providers.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'providers.stats': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'provider_routes.index': { paramsTuple?: []; params?: {} }
-    'provider_routes.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'transactions.index': { paramsTuple?: []; params?: {} }
     'transactions.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'transactions.export_csv': { paramsTuple?: []; params?: {} }
@@ -172,11 +155,6 @@ export type ScannedRoutes = {
     'api_keys.index': { paramsTuple: [ParamValue]; params: {'application_id': ParamValue} }
     'api_keys.show': { paramsTuple: [ParamValue,ParamValue]; params: {'application_id': ParamValue,'id': ParamValue} }
     'operator_prefixes.index': { paramsTuple: [ParamValue]; params: {'mobile_operator_id': ParamValue} }
-    'providers.index': { paramsTuple?: []; params?: {} }
-    'providers.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'providers.stats': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'provider_routes.index': { paramsTuple?: []; params?: {} }
-    'provider_routes.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'transactions.index': { paramsTuple?: []; params?: {} }
     'transactions.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'transactions.export_csv': { paramsTuple?: []; params?: {} }
@@ -227,9 +205,6 @@ export type ScannedRoutes = {
     'applications.store': { paramsTuple?: []; params?: {} }
     'api_keys.store': { paramsTuple: [ParamValue]; params: {'application_id': ParamValue} }
     'operator_prefixes.store': { paramsTuple: [ParamValue]; params: {'mobile_operator_id': ParamValue} }
-    'providers.store': { paramsTuple?: []; params?: {} }
-    'providers.test_connection': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'provider_routes.store': { paramsTuple?: []; params?: {} }
     'transactions.store': { paramsTuple?: []; params?: {} }
     'transactions.retry': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'transactions.cancel': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -249,8 +224,6 @@ export type ScannedRoutes = {
   }
   PUT: {
     'applications.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'providers.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'provider_routes.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'webhooks.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'commissions.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'users.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -260,8 +233,6 @@ export type ScannedRoutes = {
     'applications.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'api_keys.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'application_id': ParamValue,'id': ParamValue} }
     'operator_prefixes.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'mobile_operator_id': ParamValue,'id': ParamValue} }
-    'providers.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'provider_routes.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'webhooks.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'commissions.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'users.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }

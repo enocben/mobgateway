@@ -1,29 +1,18 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Provider from '#models/provider'
 import db from '@adonisjs/lucid/services/db'
+import ProviderTransformer from '#transformers/provider_transformer'
 
 export default class ProvidersController {
-  async index({ request, response }: HttpContext) {
-    const page = request.input('page', 1)
-    const limit = request.input('limit', 20)
-    const search = request.input('search')
-    const status = request.input('status')
-    const type = request.input('type')
+  async index({ inertia }: HttpContext) {
+    const providers = await Provider.query()
+      .preload('routes')
+      .preload('transactions')
+      .select()
 
-    const query = Provider.query()
-
-    if (search) {
-      query.where((q) => {
-        q.where('name', 'ilike', `%${search}%`)
-          .orWhere('code', 'ilike', `%${search}%`)
-      })
-    }
-
-    if (status) query.where('status', status)
-    if (type) query.where('type', type)
-
-    const providers = await query.orderBy('name', 'asc').paginate(page, limit)
-    return response.status(200).json(providers)
+    return inertia.render('admin/Providers/List', {
+      providers: ProviderTransformer.transform(providers)
+    })
   }
 
   async store({ request, response }: HttpContext) {

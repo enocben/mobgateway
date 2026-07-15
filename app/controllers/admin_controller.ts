@@ -90,10 +90,6 @@ export default class AdminController {
     return inertia.render('admin/Users/Detail', {})
   }
 
-  async providers({ inertia }: HttpContext) {
-    return inertia.render('admin/Providers/List', {})
-  }
-
   async providersCreate({ inertia }: HttpContext) {
     return inertia.render('admin/Providers/Create', {})
   }

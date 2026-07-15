@@ -32,22 +32,6 @@ export interface ApiDefinition {
     store: typeof routes['operator_prefixes.store']
     destroy: typeof routes['operator_prefixes.destroy']
   }
-  providers: {
-    index: typeof routes['providers.index']
-    store: typeof routes['providers.store']
-    show: typeof routes['providers.show']
-    update: typeof routes['providers.update']
-    destroy: typeof routes['providers.destroy']
-    testConnection: typeof routes['providers.test_connection']
-    stats: typeof routes['providers.stats']
-  }
-  providerRoutes: {
-    index: typeof routes['provider_routes.index']
-    store: typeof routes['provider_routes.store']
-    show: typeof routes['provider_routes.show']
-    update: typeof routes['provider_routes.update']
-    destroy: typeof routes['provider_routes.destroy']
-  }
   transactions: {
     index: typeof routes['transactions.index']
     store: typeof routes['transactions.store']

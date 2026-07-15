@@ -61,30 +61,6 @@ router
       'destroy',
     ])
 
-    // Providers (global registry)
-    router.get('/providers', [controllers.Providers, 'index'])
-    router.post('/providers', [controllers.Providers, 'store'])
-    router.get('/providers/:id', [controllers.Providers, 'show'])
-    router.put('/providers/:id', [controllers.Providers, 'update'])
-    router.delete('/providers/:id', [controllers.Providers, 'destroy'])
-    router.post('/providers/:id/test', [controllers.Providers, 'testConnection'])
-    router.get('/providers/:id/stats', [controllers.Providers, 'stats'])
-
-    /*
-  // Application Providers (per-app config)
-  router.get('/applications/:application_id/providers', [controllers.ApplicationProviders, 'index'])
-  router.post('/applications/:application_id/providers', [controllers.ApplicationProviders, 'store'])
-  router.put('/applications/:application_id/providers/:id', [controllers.ApplicationProviders, 'update'])
-  router.delete('/applications/:application_id/providers/:id', [controllers.ApplicationProviders, 'destroy'])
-*/
-
-    // Provider Routes
-    router.get('/provider-routes', [controllers.ProviderRoutes, 'index'])
-    router.post('/provider-routes', [controllers.ProviderRoutes, 'store'])
-    router.get('/provider-routes/:id', [controllers.ProviderRoutes, 'show'])
-    router.put('/provider-routes/:id', [controllers.ProviderRoutes, 'update'])
-    router.delete('/provider-routes/:id', [controllers.ProviderRoutes, 'destroy'])
-
     // Transactions
     router.get('/transactions', [controllers.Transactions, 'index'])
     router.post('/transactions', [controllers.Transactions, 'store'])
@@ -191,7 +167,7 @@ router
     router.get('/users/:userId', [controllers.Admin, 'usersDetail']).as('admin.users.detail')
 
     // Providers
-    router.get('/providers', [controllers.Admin, 'providers']).as('admin.providers')
+    router.get('/providers', [controllers.Providers, 'index']).as('admin.providers')
     router
       .get('/providers/create', [controllers.Admin, 'providersCreate'])
       .as('admin.providers.create')

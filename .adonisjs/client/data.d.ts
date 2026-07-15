@@ -10,6 +10,9 @@ import type ApplicationTransformer from '#transformers/application_transformer'
 import type CountryTransformer from '#transformers/country_transformer'
 import type MobileOperatorTransformer from '#transformers/mobile_operator_transformer'
 import type OperatorPrefixTransformer from '#transformers/operator_prefix_transformer'
+import type ProviderRouteTransformer from '#transformers/provider_route_transformer'
+import type ProviderTransformer from '#transformers/provider_transformer'
+import type TransactionTransformer from '#transformers/transaction_transformer'
 import type UserTransformer from '#transformers/user_transformer'
 import type InertiaMiddleware from '#middleware/inertia_middleware'
 
@@ -29,6 +32,18 @@ export namespace Data {
   export type OperatorPrefix = InferData<OperatorPrefixTransformer>
   export namespace OperatorPrefix {
     export type Variants = InferVariants<OperatorPrefixTransformer>
+  }
+  export type ProviderRoute = InferData<ProviderRouteTransformer>
+  export namespace ProviderRoute {
+    export type Variants = InferVariants<ProviderRouteTransformer>
+  }
+  export type Provider = InferData<ProviderTransformer>
+  export namespace Provider {
+    export type Variants = InferVariants<ProviderTransformer>
+  }
+  export type Transaction = InferData<TransactionTransformer>
+  export namespace Transaction {
+    export type Variants = InferVariants<TransactionTransformer>
   }
   export type User = InferData<UserTransformer>
   export namespace User {
