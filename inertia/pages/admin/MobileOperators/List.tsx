@@ -39,10 +39,8 @@ export default function MobileOperatorsList({ mobileOperators: operators }: Prop
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Mobile Operators</h1>
         <div className="flex justify-between items-center">
-          <p className="text-sm text-muted-foreground mt-1">
-            Mobile network operators by country
-          </p>
-          <DialogMobileOperator currentOperators={operators} />
+          <p className="text-sm text-muted-foreground mt-1">Mobile network operators by country</p>
+          <DialogMobileOperator />
         </div>
       </div>
 
@@ -65,15 +63,14 @@ export default function MobileOperatorsList({ mobileOperators: operators }: Prop
                 <TableHead>Prefixes</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="w-10" />
+                <TableHead className="w-10" />
               </TableRow>
             </TableHeader>
             <TableBody>
               {filtered.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
-                    {search
-                      ? 'No operators match your search'
-                      : 'No mobile operators found'}
+                    {search ? 'No operators match your search' : 'No mobile operators found'}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -88,11 +85,7 @@ export default function MobileOperatorsList({ mobileOperators: operators }: Prop
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
                         {op.logoUrl ? (
-                          <img
-                            src={op.logoUrl}
-                            alt={op.name}
-                            className="size-6 rounded"
-                          />
+                          <img src={op.logoUrl} alt={op.name} className="size-6 rounded" />
                         ) : (
                           <Globe className="size-4 text-muted-foreground" />
                         )}
@@ -106,11 +99,7 @@ export default function MobileOperatorsList({ mobileOperators: operators }: Prop
                       <div className="flex flex-wrap gap-1">
                         {op.prefixes?.length ? (
                           op.prefixes.map((p) => (
-                            <Badge
-                              key={p.id}
-                              variant="secondary"
-                              className="font-mono text-xs"
-                            >
+                            <Badge key={p.id} variant="secondary" className="font-mono text-xs">
                               <Hash className="size-3 mr-0.5" />
                               {p.prefix}
                             </Badge>
@@ -124,6 +113,9 @@ export default function MobileOperatorsList({ mobileOperators: operators }: Prop
                       <Badge variant={op.isEnabled ? 'success' : 'secondary'}>
                         {op.isEnabled ? 'enabled' : 'disabled'}
                       </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <DialogMobileOperator operator={op} />
                     </TableCell>
                     <TableCell>
                       <Form
