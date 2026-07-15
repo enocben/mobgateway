@@ -151,7 +151,7 @@ export function DialogMobileOperator({ operator }: Props) {
 
                 setName((current) => {
                   const base = current.replace(/\s*\([^)]+\)$/, '')
-                  return `${base} (${country.iso3})`
+                  return `${base} (${country.iso2})`
                 })
               }}
             >

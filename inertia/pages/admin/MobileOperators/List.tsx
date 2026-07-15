@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Search, Globe, Hash, Trash2 } from 'lucide-react'
+import { Search, Globe, Hash } from 'lucide-react'
 import { Card, CardContent } from '~/components/ui/card'
 import { Input } from '~/components/ui/input'
 import { Badge } from '~/components/ui/badge'
-import { Button } from '~/components/ui/button'
 import {
   Table,
   TableBody,
@@ -15,8 +14,9 @@ import {
 } from '~/components/ui/table'
 import { Data } from '@generated/data'
 import { DialogMobileOperator } from '~/components/mobile_operator/dialog_mobile_operator'
-import { Form } from '@adonisjs/inertia/react'
 import { useApplicationStore } from '~/context/application_context'
+import { AlertDialogDelete } from '~/components/AlertDialogDelete'
+import { client } from '~/client'
 
 type Props = {
   mobileOperators: Data.MobileOperator[] | undefined
@@ -118,14 +118,19 @@ export default function MobileOperatorsList({ mobileOperators: operators }: Prop
                       <DialogMobileOperator operator={op} />
                     </TableCell>
                     <TableCell>
-                      <Form
-                        route="admin.mobile-operators.destroy"
-                        routeParams={{ id: applicationId!, operatorId: op.id }}
-                      >
-                        <Button variant="ghost" size="icon" type="submit">
-                          <Trash2 className="size-4 text-destructive" />
-                        </Button>
-                      </Form>
+                      <AlertDialogDelete
+                        title="Delete Mobile Operator"
+                        description="This action cannot be undone."
+                        confirmationText={op.name}
+                        onConfirm={async () => {
+                          await client.api.admin.mobileOperators.destroy({
+                            params: {
+                              id: applicationId!,
+                              operatorId: op.id
+                            }
+                          })
+                        }}
+                      />
                     </TableCell>
                   </motion.tr>
                 ))
