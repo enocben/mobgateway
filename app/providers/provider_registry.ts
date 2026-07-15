@@ -1,26 +1,22 @@
-import { BasePaymentProvider } from '#pro/base_payment_provider'
+import { BasePaymentProvider, type ProviderConfig } from '#pro/base_payment_provider'
 import Provider from '#models/provider'
 import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
 /**
- * ProviderRegistry — auto-discovers and synchronizes provider classes with the database.
+ * ProviderRegistry — auto-découvre et synchronise les classes provider avec la DB.
  *
- * On startup, it scans app/providers/payment/ for concrete implementations,
- * instantiates each one, and upserts their metadata into the `providers` table.
- * The code is the source of truth; the DB mirrors it.
+ * Au démarrage, scanne app/providers/payment/ pour trouver les implémentations
+ * concrètes, instancie chacune, et upsert leurs métadonnées dans la table `providers`.
+ * Le code est la source de vérité ; la DB reflète le code.
  */
 export class ProviderRegistry {
-  /** Map of provider code → class constructor */
+  /** Map provider identifier → constructeur de classe */
   private classes = new Map<string, new () => BasePaymentProvider>()
 
-  /** Map of provider code → live instance (initialized with config) */
-  private instances = new Map<string, BasePaymentProvider>()
-
   /**
-   * Scan the filesystem for provider classes under app/providers/payment/.
-   * Dynamically imports each discovered module and registers the constructor.
+   * Scanner le système de fichiers pour trouver les classes provider.
    */
   async discover(): Promise<void> {
     this.classes.clear()
@@ -31,7 +27,6 @@ export class ProviderRegistry {
     for (const entry of entries) {
       if (!entry.isDirectory()) continue
 
-      // Find the provider file (e.g., shwary_provider.ts)
       const subDir = join(baseDir, entry.name)
       const files = readdirSync(subDir).filter(
         (f) => f.endsWith('_provider.ts') || f.endsWith('_provider.js')
@@ -45,45 +40,45 @@ export class ProviderRegistry {
           const mod = await import(moduleUrl)
           const ProviderClass = mod.default ?? mod[Object.keys(mod)[0]]
 
-          if (ProviderClass?.prototype instanceof BasePaymentProvider || ProviderClass === BasePaymentProvider) {
-            // Skip the base class itself
-            continue
-          }
+          // Skip the base class
+          if (ProviderClass === BasePaymentProvider) continue
 
-          // Verify it extends BasePaymentProvider by duck-typing
+          // Duck-typing: check for required abstract properties/methods
           const proto = ProviderClass.prototype
           if (
-            typeof proto?.collectPayment === 'function' &&
-            typeof proto?.getPaymentStatus === 'function' &&
-            proto?.code !== undefined
+            typeof proto?.createPayment === 'function' &&
+            typeof proto?.getTransaction === 'function' &&
+            typeof proto?.initialize === 'function' &&
+            proto?.provider !== undefined &&
+            proto?.label !== undefined
           ) {
-            this.classes.set(proto.code as string, ProviderClass)
+            this.classes.set(proto.provider as string, ProviderClass)
           }
         } catch (err) {
-          console.warn(`[ProviderRegistry] Failed to load provider from ${modulePath}:`, err)
+          console.warn(`[ProviderRegistry] Failed to load ${modulePath}:`, err)
         }
       }
     }
   }
 
   /**
-   * Sync discovered providers with the database.
-   * - Inserts new providers that don't exist yet
-   * - Updates label/description/icon for existing providers
-   * - Never deletes anything (providers can be disabled, not removed)
+   * Synchroniser les providers découverts avec la base de données.
+   * - Insère les nouveaux (jamais créés)
+   * - Met à jour label/description/icon (le code prime)
+   * - Ne supprime jamais (on désactive, on ne supprime pas)
    */
   async sync(): Promise<{ created: string[]; updated: string[] }> {
     const created: string[] = []
     const updated: string[] = []
 
-    for (const [code, ProviderClass] of this.classes) {
+    for (const [providerId, ProviderClass] of this.classes) {
       const instance = new ProviderClass()
-      const existing = await Provider.findBy('code', code)
+      const existing = await Provider.findBy('code', providerId)
 
       if (!existing) {
         await Provider.create({
-          code: instance.code,
-          name: instance.code, // legacy column, kept for backward compat
+          code: instance.provider,
+          name: instance.provider,
           type: 'direct',
           status: 'active',
           label: instance.label,
@@ -91,9 +86,8 @@ export class ProviderRegistry {
           icon: instance.icon,
           config: {},
         })
-        created.push(code)
+        created.push(providerId)
       } else {
-        // Sync metadata from code → DB (code is source of truth)
         let changed = false
         if (existing.label !== instance.label) {
           existing.label = instance.label
@@ -109,7 +103,7 @@ export class ProviderRegistry {
         }
         if (changed) {
           await existing.save()
-          updated.push(code)
+          updated.push(providerId)
         }
       }
     }
@@ -118,25 +112,27 @@ export class ProviderRegistry {
   }
 
   /**
-   * Get a provider instance initialized with config from the DB.
-   * Used by the transaction flow to execute payments.
+   * Obtenir une instance de provider initialisée avec sa config DB.
    */
-  async getInstance(code: string, config: Record<string, unknown>): Promise<BasePaymentProvider | null> {
-    const ProviderClass = this.classes.get(code)
+  async getInstance(
+    providerId: string,
+    config: ProviderConfig
+  ): Promise<BasePaymentProvider | null> {
+    const ProviderClass = this.classes.get(providerId)
     if (!ProviderClass) return null
 
     const instance = new ProviderClass()
-    instance.init(config)
+    await instance.initialize(config)
     return instance
   }
 
   /**
-   * Returns all registered provider codes.
+   * Retourne tous les identifiants de providers enregistrés.
    */
-  getRegisteredCodes(): string[] {
+  getRegisteredProviders(): string[] {
     return [...this.classes.keys()]
   }
 }
 
-/** Singleton instance */
+/** Singleton */
 export const providerRegistry = new ProviderRegistry()

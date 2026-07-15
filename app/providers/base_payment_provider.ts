@@ -1,13 +1,28 @@
 /**
- * Base abstract class for all payment providers.
+ * Contrat commun pour tous les providers de paiement.
  *
- * To add a new provider:
- * 1. Create a new class extending BasePaymentProvider
- * 2. Implement all abstract methods
- * 3. Place the file under app/providers/payment/<name>/
- * 4. The provider will be auto-discovered and synced to DB on startup
+ * Pour ajouter un provider :
+ * 1. Créer une classe héritant de BasePaymentProvider
+ * 2. Implémenter toutes les méthodes abstraites
+ * 3. Placer le fichier sous app/providers/payment/<nom>/
+ * 4. Le provider sera auto-découvert et synchronisé au démarrage
+ *
+ * Règle : aucun provider ne retourne directement le format de son API.
+ * Chaque provider est responsable de convertir ses réponses vers les types communs.
  */
 
+// ── Types communs ──────────────────────────────────────────────────────────
+
+/** Statuts normalisés — tous les providers mappent leurs statuts ici */
+export enum PaymentStatus {
+  PENDING = 'PENDING',
+  PROCESSING = 'PROCESSING',
+  COMPLETED = 'COMPLETED',
+  FAILED = 'FAILED',
+  CANCELLED = 'CANCELLED',
+}
+
+/** Capacités supportées par un provider */
 export type ProviderCapability =
   | 'payment'
   | 'refund'
@@ -16,62 +31,137 @@ export type ProviderCapability =
   | 'balance'
   | 'webhook'
 
+/** Configuration d'un provider */
+export interface ProviderConfig {
+  /** true = environnement sandbox, false = production */
+  sandbox: boolean
+  /** Paires clé/valeur spécifiques au provider (apiKey, secret, urls...) */
+  values: Record<string, unknown>
+}
+
+/** Requête de paiement entrante */
 export interface PaymentRequest {
-  /** MSISDN (phone number) of the payer */
-  msisdn: string
-  /** Amount in the smallest currency unit */
+  /** Montant dans la plus petite unité (ex: centimes) */
   amount: number
-  /** ISO 4217 currency code */
+  /** Code devise ISO 4217 */
   currency: string
-  /** Unique reference for the transaction */
+  /** Numéro de téléphone du payeur */
+  phoneNumber: string
+  /** Référence unique de la transaction */
   reference: string
-  /** Arbitrary metadata */
+  /** URL de callback pour notifier l'application */
+  callbackUrl?: string
+  /** Métadonnées arbitraires */
   metadata?: Record<string, unknown>
 }
 
-export interface PaymentResponse {
-  /** Whether the payment was accepted by the provider */
-  success: boolean
-  /** Provider's transaction reference */
-  providerRef?: string
-  /** Human-readable status */
-  status: 'pending' | 'completed' | 'failed'
-  /** Error message if failed */
-  errorMessage?: string
-  /** Raw response for audit */
-  raw?: unknown
+/** Filtres pour lister les transactions */
+export interface TransactionFilter {
+  startDate?: Date
+  endDate?: Date
+  status?: PaymentStatus
+  limit?: number
+  offset?: number
 }
 
-export abstract class BasePaymentProvider {
-  /** Unique identifier (e.g. "shwary", "airtel-money") */
-  abstract readonly code: string
+/** Transaction normalisée retournée par tous les providers */
+export interface PaymentTransaction {
+  /** Identifiant de la transaction (interne application) */
+  id: string
+  /** Référence unique */
+  reference: string
+  /** Montant dans la plus petite unité */
+  amount: number
+  /** Code devise ISO 4217 */
+  currency: string
+  /** Numéro de téléphone */
+  phoneNumber: string
+  /** Statut normalisé */
+  status: PaymentStatus
+  /** Référence côté provider (optionnel) */
+  providerReference?: string
+  /** Raison d'échec si status = FAILED */
+  failureReason?: string
+  /** Métadonnées arbitraires */
+  metadata?: Record<string, unknown>
+  /** Date de création */
+  createdAt: Date
+  /** Date de complétion (optionnel) */
+  completedAt?: Date
+}
 
-  /** Human-readable name */
+/**
+ * Représentation minimale d'une requête HTTP entrante
+ * pour verifyWebhook / handleWebhook.
+ */
+export interface WebhookRequest {
+  method: string
+  url: string
+  headers: Record<string, string | string[] | undefined>
+  body: string | Record<string, unknown>
+}
+
+// ── Classe de base ─────────────────────────────────────────────────────────
+
+export abstract class BasePaymentProvider {
+  // ── Métadonnées (obligatoires) ──────────────────────────────────────────
+
+  /** Identifiant unique (ex: "shwary", "airtel-money") */
+  abstract readonly provider: string
+
+  /** Nom lisible */
   abstract readonly label: string
 
-  /** Short description of the provider */
+  /** Description courte */
   abstract readonly description: string
 
-  /** Icon identifier (emoji or path) */
+  /** Icône (emoji ou chemin) */
   abstract readonly icon: string
 
-  /** Capabilities supported by this provider */
+  /** Capacités supportées */
   readonly capabilities: ProviderCapability[] = ['payment']
 
-  /**
-   * Initialize the provider with application-specific config.
-   * Called once when the provider is instantiated.
-   */
-  abstract init(config: Record<string, unknown>): void
+  // ── Méthodes obligatoires ────────────────────────────────────────────────
 
   /**
-   * Create a payment (collection).
-   * Called by the transaction flow.
+   * Initialiser le provider avec sa configuration.
+   * Appelé avant toute autre méthode.
    */
-  abstract collectPayment(request: PaymentRequest): Promise<PaymentResponse>
+  abstract initialize(config: ProviderConfig): Promise<void>
 
   /**
-   * Check the status of a payment by provider reference.
+   * Initier un paiement (collection).
    */
-  abstract getPaymentStatus(providerRef: string): Promise<PaymentResponse>
+  abstract createPayment(request: PaymentRequest): Promise<PaymentTransaction>
+
+  /**
+   * Récupérer une transaction par son identifiant.
+   */
+  abstract getTransaction(transactionId: string): Promise<PaymentTransaction>
+
+  /**
+   * Lister les transactions avec filtres optionnels.
+   */
+  abstract listTransactions(options?: TransactionFilter): Promise<PaymentTransaction[]>
+
+  /**
+   * Vérifier qu'un webhook entrant est authentique (signature, secret...).
+   */
+  abstract verifyWebhook(request: WebhookRequest): Promise<boolean>
+
+  /**
+   * Traiter un webhook entrant — retourne toujours une transaction normalisée.
+   */
+  abstract handleWebhook(request: WebhookRequest): Promise<PaymentTransaction>
+
+  /**
+   * Tester la connexion au provider (vérifier les credentials).
+   */
+  abstract testConnection(): Promise<boolean>
+
+  /**
+   * Valider une configuration avant sauvegarde.
+   * Lève une exception si la configuration est invalide.
+   */
+  abstract validateConfiguration(config: ProviderConfig): Promise<void>
 }
