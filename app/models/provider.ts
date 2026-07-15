@@ -16,6 +16,7 @@ export default class Provider extends ProviderSchema {
     pivotTable: 'provider_countries',
     pivotForeignKey: 'provider_id',
     pivotRelatedForeignKey: 'country_id',
+    pivotTimestamps: true,
   })
   declare countries: ManyToMany<typeof Country>
 }

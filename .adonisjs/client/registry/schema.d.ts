@@ -963,8 +963,32 @@ export interface Registry {
       paramsTuple: [ParamValue, ParamValue]
       params: { id: ParamValue; providerId: ParamValue }
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['providersDetail']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['providersDetail']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['providersDetail']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['providersDetail']>>>
+    }
+  }
+  'admin.providers.countries.store': {
+    methods: ["POST"]
+    pattern: '/admin/:id/providers/:providerId/countries/:countryId'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue, ParamValue, ParamValue]
+      params: { id: ParamValue; providerId: ParamValue; countryId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['createProvider']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['createProvider']>>>
+    }
+  }
+  'admin.providers.countries.destroy': {
+    methods: ["DELETE"]
+    pattern: '/admin/:id/providers/:providerId/countries/:countryId'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue, ParamValue, ParamValue]
+      params: { id: ParamValue; providerId: ParamValue; countryId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['providersDestroyCountry']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['providersDestroyCountry']>>>
     }
   }
   'admin.mobile-operators': {

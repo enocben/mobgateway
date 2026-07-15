@@ -8,6 +8,7 @@ import {
   type WebhookRequest,
 } from '#pro/base_payment_provider'
 import env from '#start/env'
+import BufferSource = NodeJS.BufferSource
 
 /**
  * Shwary mobile money provider.
@@ -213,6 +214,7 @@ export default class ShwaryProvider extends BasePaymentProvider {
     return await crypto.subtle.verify(
       'HMAC',
       key,
+      // @ts-ignore
       hexToBytes(signature),
       encoder.encode(bodyStr) as BufferSource
     )

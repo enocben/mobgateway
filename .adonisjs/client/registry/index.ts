@@ -486,6 +486,18 @@ const routes = {
     tokens: [{"old":"/admin/:id/providers/:providerId","type":0,"val":"admin","end":""},{"old":"/admin/:id/providers/:providerId","type":1,"val":"id","end":""},{"old":"/admin/:id/providers/:providerId","type":0,"val":"providers","end":""},{"old":"/admin/:id/providers/:providerId","type":1,"val":"providerId","end":""}],
     types: placeholder as Registry['admin.providers.detail']['types'],
   },
+  'admin.providers.countries.store': {
+    methods: ["POST"],
+    pattern: '/admin/:id/providers/:providerId/countries/:countryId',
+    tokens: [{"old":"/admin/:id/providers/:providerId/countries/:countryId","type":0,"val":"admin","end":""},{"old":"/admin/:id/providers/:providerId/countries/:countryId","type":1,"val":"id","end":""},{"old":"/admin/:id/providers/:providerId/countries/:countryId","type":0,"val":"providers","end":""},{"old":"/admin/:id/providers/:providerId/countries/:countryId","type":1,"val":"providerId","end":""},{"old":"/admin/:id/providers/:providerId/countries/:countryId","type":0,"val":"countries","end":""},{"old":"/admin/:id/providers/:providerId/countries/:countryId","type":1,"val":"countryId","end":""}],
+    types: placeholder as Registry['admin.providers.countries.store']['types'],
+  },
+  'admin.providers.countries.destroy': {
+    methods: ["DELETE"],
+    pattern: '/admin/:id/providers/:providerId/countries/:countryId',
+    tokens: [{"old":"/admin/:id/providers/:providerId/countries/:countryId","type":0,"val":"admin","end":""},{"old":"/admin/:id/providers/:providerId/countries/:countryId","type":1,"val":"id","end":""},{"old":"/admin/:id/providers/:providerId/countries/:countryId","type":0,"val":"providers","end":""},{"old":"/admin/:id/providers/:providerId/countries/:countryId","type":1,"val":"providerId","end":""},{"old":"/admin/:id/providers/:providerId/countries/:countryId","type":0,"val":"countries","end":""},{"old":"/admin/:id/providers/:providerId/countries/:countryId","type":1,"val":"countryId","end":""}],
+    types: placeholder as Registry['admin.providers.countries.destroy']['types'],
+  },
   'admin.mobile-operators': {
     methods: ["GET","HEAD"],
     pattern: '/admin/:id/mobile-operators',

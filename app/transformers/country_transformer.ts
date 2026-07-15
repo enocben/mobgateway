@@ -14,7 +14,9 @@ export default class CountryTransformer extends BaseTransformer<Country> {
         'code',
         'phonePrefix',
       ]),
-      application: ApplicationTransformer.transform(this.resource.application),
+      application: this.resource.application
+        ? ApplicationTransformer.transform(this.resource.application)
+        : null,
     }
   }
 }

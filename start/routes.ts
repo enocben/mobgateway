@@ -176,13 +176,13 @@ router
     // Providers
     router.get('/providers', [controllers.Providers, 'index']).as('admin.providers')
     router
-      .get('/providers/:providerId', [controllers.Admin, 'providersDetail'])
+      .get('/providers/:providerId', [controllers.Providers, 'providersDetail'])
       .as('admin.providers.detail')
     router
-      .post('/providers/:providerId/countries/:countryId', [controllers.Admin, 'providersStoreCountry'])
+      .post('/providers/:providerId/countries/:countryId', [controllers.Providers, 'createProvider'])
       .as('admin.providers.countries.store')
     router
-      .delete('/providers/:providerId/countries/:countryId', [controllers.Admin, 'providersDestroyCountry'])
+      .delete('/providers/:providerId/countries/:countryId', [controllers.Providers, 'providersDestroyCountry'])
       .as('admin.providers.countries.destroy')
 
     // Mobile Operators

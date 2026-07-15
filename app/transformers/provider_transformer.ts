@@ -2,6 +2,7 @@ import { BaseTransformer } from '@adonisjs/core/transformers'
 import Provider from '#models/provider'
 import ProviderRouteTransformer from '#transformers/provider_route_transformer'
 import TransactionTransformer from '#transformers/transaction_transformer'
+import CountryTransformer from '#transformers/country_transformer'
 
 export default class ProviderTransformer extends BaseTransformer<Provider> {
   toObject() {
@@ -21,12 +22,9 @@ export default class ProviderTransformer extends BaseTransformer<Provider> {
       ]),
       routes: ProviderRouteTransformer.transform(this.resource.routes),
       transactions: TransactionTransformer.transform(this.resource.transactions),
-      countries: this.resource.countries?.map((c) => ({
-        id: c.id,
-        code: c.code,
-        name: c.name,
-        currencyCode: c.currencyCode,
-      })) ?? [],
+      countries: this.resource.countries
+        ? CountryTransformer.transform(this.resource.countries)
+        : [],
     }
   }
 }
