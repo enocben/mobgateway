@@ -3,6 +3,7 @@ import Application from '#models/application'
 import ApplicationTransformer from '#transformers/application_transformer'
 import Provider from '#models/provider'
 import ProviderTransformer from '#transformers/provider_transformer'
+import Country from '#models/country'
 import User from '#models/user'
 import UserTransformer from '#transformers/user_transformer'
 import db from '@adonisjs/lucid/services/db'
@@ -97,7 +98,14 @@ export default class AdminController {
       .where('id', params.providerId)
       .preload('routes', (q) => q.preload('mobileOperator').orderBy('priority', 'asc'))
       .preload('transactions', (q) => q.preload('application').orderBy('createdAt', 'desc').limit(20))
+      .preload('countries')
       .firstOrFail()
+
+    // Get countries that are NOT yet linked to this provider (for the "add" dropdown)
+    const linkedCountryIds = provider.countries.map((c) => c.id)
+    const availableCountries = await Country.query()
+      .whereNotIn('id', linkedCountryIds.length > 0 ? linkedCountryIds : [''])
+      .orderBy('name', 'asc')
 
     const [txStats] = await Promise.all([
       db
@@ -117,12 +125,50 @@ export default class AdminController {
 
     return inertia.render('admin/Providers/Detail', {
       provider: ProviderTransformer.transform(provider),
+      availableCountries: availableCountries.map((c) => ({
+        id: c.id,
+        code: c.code,
+        name: c.name,
+      })),
       stats: {
         totalTransactions: totalTx,
         totalVolume: Number(txStats?.volume ?? 0),
         successRate,
       },
     })
+  }
+
+  /**
+   * Attach a country to a provider.
+   */
+  async providersStoreCountry({ params, response, session }: HttpContext) {
+    const provider = await Provider.findOrFail(params.providerId)
+    const country = await Country.findOrFail(params.countryId)
+
+    // Check if already linked
+    const existing = await provider.related('countries').query()
+      .where('country_id', country.id)
+      .first()
+
+    if (!existing) {
+      await provider.related('countries').attach([country.id])
+      session.flash('success', `Country ${country.name} added to provider`)
+    }
+
+    return response.redirect().back()
+  }
+
+  /**
+   * Detach a country from a provider.
+   */
+  async providersDestroyCountry({ params, response, session }: HttpContext) {
+    const provider = await Provider.findOrFail(params.providerId)
+    const country = await Country.findOrFail(params.countryId)
+
+    await provider.related('countries').detach([country.id])
+    session.flash('success', `Country ${country.name} removed from provider`)
+
+    return response.redirect().back()
   }
 
   async transactions({ inertia }: HttpContext) {

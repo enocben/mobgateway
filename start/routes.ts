@@ -178,6 +178,12 @@ router
     router
       .get('/providers/:providerId', [controllers.Admin, 'providersDetail'])
       .as('admin.providers.detail')
+    router
+      .post('/providers/:providerId/countries/:countryId', [controllers.Admin, 'providersStoreCountry'])
+      .as('admin.providers.countries.store')
+    router
+      .delete('/providers/:providerId/countries/:countryId', [controllers.Admin, 'providersDestroyCountry'])
+      .as('admin.providers.countries.destroy')
 
     // Mobile Operators
     router

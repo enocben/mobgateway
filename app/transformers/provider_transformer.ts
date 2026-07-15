@@ -7,17 +7,26 @@ export default class ProviderTransformer extends BaseTransformer<Provider> {
   toObject() {
     return {
       ...this.pick(this.resource, [
-      'id',
-      'name',
-      'code',
-      'status',
-      'createdAt',
-      'config',
-      'type',
-      'updatedAt',
-    ]),
+        'id',
+        'name',
+        'code',
+        'status',
+        'createdAt',
+        'config',
+        'type',
+        'updatedAt',
+        'label',
+        'description',
+        'icon',
+      ]),
       routes: ProviderRouteTransformer.transform(this.resource.routes),
-      transactions: TransactionTransformer.transform(this.resource.transactions)
+      transactions: TransactionTransformer.transform(this.resource.transactions),
+      countries: this.resource.countries?.map((c) => ({
+        id: c.id,
+        code: c.code,
+        name: c.name,
+        currencyCode: c.currencyCode,
+      })) ?? [],
     }
   }
 }

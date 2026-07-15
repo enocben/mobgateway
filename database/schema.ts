@@ -242,6 +242,19 @@ export class OperatorPrefixSchema extends BaseModel {
   declare prefix: string
 }
 
+export class ProviderCountrySchema extends BaseModel {
+  static $columns = ['countryId', 'createdAt', 'id', 'providerId'] as const
+  $columns = ProviderCountrySchema.$columns
+  @column()
+  declare countryId: string
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column({ isPrimary: true })
+  declare id: string
+  @column()
+  declare providerId: string
+}
+
 export class ProviderRouteSchema extends BaseModel {
   static $columns = ['createdAt', 'id', 'isActive', 'mobileOperatorId', 'priority', 'providerId', 'updatedAt'] as const
   $columns = ProviderRouteSchema.$columns

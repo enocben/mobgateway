@@ -1,19 +1,23 @@
 import { Link, usePage } from '@inertiajs/react'
+import { Form } from '@adonisjs/inertia/react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Code, Activity, Calendar, Shield, Route, Clock, Hash, RefreshCw, Radio } from 'lucide-react'
+import { ArrowLeft, Code, Activity, Calendar, Shield, Hash, RefreshCw, Globe, Plus, Trash2 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import { Separator } from '~/components/ui/separator'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/ui/table'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select'
 import { formatDate } from '~/lib/utils'
 import { useApplicationStore } from '~/context/application_context'
 import { urlFor } from '~/client'
 import { Data } from '@generated/data'
 import { type InertiaProps } from '~/types'
+import { useState } from 'react'
 
 type Props = {
   provider: Data.Provider
+  availableCountries: { id: string; code: string; name: string }[]
   stats: {
     totalTransactions: number
     totalVolume: number
@@ -23,7 +27,8 @@ type Props = {
 
 export default function ProviderDetail() {
   const applicationId = useApplicationStore((a) => a.applicationId)
-  const { provider, stats } = usePage<InertiaProps<Props>>().props
+  const { provider, availableCountries, stats } = usePage<InertiaProps<Props>>().props
+  const [selectedCountry, setSelectedCountry] = useState('')
 
   return (
     <div className="flex flex-col gap-6">
@@ -114,6 +119,69 @@ export default function ProviderDetail() {
                 </span>
                 <span className="text-sm">{formatDate(provider.updatedAt!)}</span>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Countries */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>Countries</CardTitle>
+                {availableCountries.length > 0 && (
+                  <div className="flex items-center gap-2">
+                    <Select onValueChange={setSelectedCountry} value={selectedCountry}>
+                      <SelectTrigger className="w-48 h-8 text-xs">
+                        <SelectValue placeholder="Add country..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          {availableCountries.map((c) => (
+                            <SelectItem key={c.id} value={c.id}>
+                              {c.name} ({c.code})
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <Form
+                      route="admin.providers.countries.store"
+                      routeParams={{ id: applicationId!, providerId: provider.id, countryId: selectedCountry }}
+                      onSubmit={() => setSelectedCountry('')}
+                    >
+                      <Button type="submit" size="sm" variant="outline" disabled={!selectedCountry}>
+                        <Plus className="size-3 mr-1" /> Add
+                      </Button>
+                    </Form>
+                  </div>
+                )}
+              </div>
+            </CardHeader>
+            <CardContent>
+              {provider.countries && provider.countries.length > 0 ? (
+                <div className="flex flex-col gap-2">
+                  {provider.countries.map((c) => (
+                    <div key={c.id} className="flex items-center justify-between py-1.5">
+                      <div className="flex items-center gap-2">
+                        <Globe className="size-4 text-muted-foreground" />
+                        <span className="text-sm">{c.name}</span>
+                        <Badge variant="outline" className="font-mono text-xs">{c.code}</Badge>
+                      </div>
+                      <Form
+                        route="admin.providers.countries.destroy"
+                        routeParams={{ id: applicationId!, providerId: provider.id, countryId: c.id }}
+                      >
+                        <Button variant="ghost" size="icon" type="submit" className="size-7">
+                          <Trash2 className="size-3 text-destructive" />
+                        </Button>
+                      </Form>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground py-4 text-center">
+                  No countries linked to this provider
+                </p>
+              )}
             </CardContent>
           </Card>
 
