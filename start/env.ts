@@ -33,8 +33,8 @@ export default await Env.create(new URL('../', import.meta.url), {
   DB_DATABASE: Env.schema.string.optional(),
 
   // SHWARY
-  SHWARY_BASE_URL: Env.schema.string(),
-  SHWARY_SECRET: Env.schema.string(),
-  SHWARY_ID_MARCHAND: Env.schema.string(),
-  SHWARY_IS_SANDBOX: Env.schema.boolean(),
+  SHWARY_BASE_URL: Env.schema.string.optional(),
+  SHWARY_SECRET: Env.schema.string.optional(),
+  SHWARY_ID_MARCHAND: Env.schema.string.optional(),
+  SHWARY_IS_SANDBOX: Env.schema.boolean.optional(),
 })

@@ -43,16 +43,19 @@ export class ProviderRegistry {
           // Skip the base class
           if (ProviderClass === BasePaymentProvider) continue
 
-          // Duck-typing: check for required abstract properties/methods
+          // Duck-typing: instancier pour vérifier les propriétés
           const proto = ProviderClass.prototype
           if (
             typeof proto?.createPayment === 'function' &&
             typeof proto?.getTransaction === 'function' &&
-            typeof proto?.initialize === 'function' &&
-            proto?.provider !== undefined &&
-            proto?.label !== undefined
+            typeof proto?.initialize === 'function'
           ) {
-            this.classes.set(proto.provider as string, ProviderClass)
+            // Les propriétés readonly sont définies dans le constructeur —
+            // on doit instancier pour les lire
+            const temp = new ProviderClass()
+            if (temp.provider && temp.label) {
+              this.classes.set(temp.provider as string, ProviderClass)
+            }
           }
         } catch (err) {
           console.warn(`[ProviderRegistry] Failed to load ${modulePath}:`, err)
