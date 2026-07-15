@@ -1,6 +1,8 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Application from '#models/application'
 import ApplicationTransformer from '#transformers/application_transformer'
+import Provider from '#models/provider'
+import ProviderTransformer from '#transformers/provider_transformer'
 import User from '#models/user'
 import UserTransformer from '#transformers/user_transformer'
 import db from '@adonisjs/lucid/services/db'
@@ -90,12 +92,37 @@ export default class AdminController {
     return inertia.render('admin/Users/Detail', {})
   }
 
-  async providersCreate({ inertia }: HttpContext) {
-    return inertia.render('admin/Providers/Create', {})
-  }
+  async providersDetail({ params, inertia }: HttpContext) {
+    const provider = await Provider.query()
+      .where('id', params.providerId)
+      .preload('routes', (q) => q.preload('mobileOperator').orderBy('priority', 'asc'))
+      .preload('transactions', (q) => q.preload('application').orderBy('createdAt', 'desc').limit(20))
+      .firstOrFail()
 
-  async providersDetail({ inertia }: HttpContext) {
-    return inertia.render('admin/Providers/Detail', {})
+    const [txStats] = await Promise.all([
+      db
+        .from('transactions')
+        .where('provider_id', provider.id)
+        .select(
+          db.raw('COUNT(*)::int as total'),
+          db.raw("COALESCE(SUM(CASE WHEN status = 'completed' THEN amount ELSE 0 END), 0) as volume"),
+          db.raw("COALESCE(SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END), 0) as completed"),
+        )
+        .first(),
+    ])
+
+    const totalTx = Number(txStats?.total ?? 0)
+    const completed = Number(txStats?.completed ?? 0)
+    const successRate = totalTx > 0 ? Number(((completed / totalTx) * 100).toFixed(1)) : 0
+
+    return inertia.render('admin/Providers/Detail', {
+      provider: ProviderTransformer.transform(provider),
+      stats: {
+        totalTransactions: totalTx,
+        totalVolume: Number(txStats?.volume ?? 0),
+        successRate,
+      },
+    })
   }
 
   async transactions({ inertia }: HttpContext) {
