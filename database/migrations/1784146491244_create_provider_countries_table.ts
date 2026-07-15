@@ -11,7 +11,7 @@ export default class extends BaseSchema {
       table.string('country_id').notNullable()
         .references('id').inTable('countries').onDelete('CASCADE')
       table.unique(['provider_id', 'country_id'])
-      table.timestamp('created_at', { useTz: true }).notNullable()
+      table.timestamp('created_at', { useTz: true }).notNullable().defaultTo(this.now())
     })
   }
 
