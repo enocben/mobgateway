@@ -209,12 +209,12 @@ export class LedgerEntrySchema extends BaseModel {
 }
 
 export class MobileOperatorSchema extends BaseModel {
-  static $columns = ['applicationId', 'countryId', 'createdAt', 'id', 'isEnabled', 'logoUrl', 'name', 'prefixPhone', 'updatedAt'] as const
+  static $columns = ['applicationId', 'countryCode', 'createdAt', 'id', 'isEnabled', 'logoUrl', 'name', 'updatedAt'] as const
   $columns = MobileOperatorSchema.$columns
   @column()
   declare applicationId: string
   @column()
-  declare countryId: string
+  declare countryCode: string
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
   @column({ isPrimary: true })
@@ -225,8 +225,6 @@ export class MobileOperatorSchema extends BaseModel {
   declare logoUrl: string | null
   @column()
   declare name: string
-  @column()
-  declare prefixPhone: any | null
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 }
@@ -264,7 +262,7 @@ export class ProviderRouteSchema extends BaseModel {
 }
 
 export class ProviderSchema extends BaseModel {
-  static $columns = ['code', 'config', 'createdAt', 'id', 'name', 'status', 'type', 'updatedAt'] as const
+  static $columns = ['code', 'config', 'createdAt', 'description', 'icon', 'id', 'label', 'name', 'status', 'type', 'updatedAt'] as const
   $columns = ProviderSchema.$columns
   @column()
   declare code: string
@@ -272,8 +270,14 @@ export class ProviderSchema extends BaseModel {
   declare config: any
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
+  @column()
+  declare description: string | null
+  @column()
+  declare icon: string | null
   @column({ isPrimary: true })
   declare id: string
+  @column()
+  declare label: string | null
   @column()
   declare name: string
   @column()

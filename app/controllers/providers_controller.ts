@@ -4,51 +4,29 @@ import db from '@adonisjs/lucid/services/db'
 import ProviderTransformer from '#transformers/provider_transformer'
 
 export default class ProvidersController {
+  /**
+   * GET /admin/:id/providers — List all providers for the dashboard.
+   * Providers are code-driven; creation happens via new classes, not the UI.
+   */
   async index({ inertia }: HttpContext) {
     const providers = await Provider.query()
       .preload('routes')
       .preload('transactions')
-      .select()
+      .orderBy('code', 'asc')
 
     return inertia.render('admin/Providers/List', {
-      providers: ProviderTransformer.transform(providers)
+      providers: ProviderTransformer.transform(providers),
     })
   }
 
-  async store({ request, response }: HttpContext) {
-    const { name, code, type, config } = request.only(['name', 'code', 'type', 'config'])
-
-    if (!name || !code) {
-      return response.status(422).json({
-        message: 'Validation failed',
-        errors: {
-          name: !name ? 'Name is required' : undefined,
-          code: !code ? 'Code is required' : undefined,
-        },
-      })
-    }
-
-    if (type && !['direct', 'aggregator'].includes(type)) {
-      return response.status(422).json({
-        message: 'Validation failed',
-        errors: { type: 'Type must be direct or aggregator' },
-      })
-    }
-
-    const provider = await Provider.create({
-      name,
-      code,
-      type: type || 'direct',
-      status: 'active',
-      config: config || {},
-    })
-
-    return response.status(201).json(provider)
-  }
-
+  /**
+   * GET /api/v1/providers/:id — Show a single provider (API).
+   */
   async show({ params, response }: HttpContext) {
     const provider = await Provider.query()
       .where('id', params.id)
+      .preload('routes')
+      .preload('transactions')
       .first()
 
     if (!provider) {
@@ -58,13 +36,17 @@ export default class ProvidersController {
     return response.status(200).json(provider)
   }
 
+  /**
+   * PUT /api/v1/providers/:id — Update provider config/status.
+   * This is how the dashboard activates/deactivates and configures providers.
+   */
   async update({ params, request, response }: HttpContext) {
     const provider = await Provider.find(params.id)
     if (!provider) {
       return response.status(404).json({ message: 'Provider not found' })
     }
 
-    const { name, code, type, status, config } = request.only(['name', 'code', 'type', 'status', 'config'])
+    const { name, status, config } = request.only(['name', 'status', 'config'])
 
     if (name !== undefined) {
       if (typeof name !== 'string' || name.trim().length === 0) {
@@ -76,16 +58,6 @@ export default class ProvidersController {
       provider.name = name
     }
 
-    if (code !== undefined) provider.code = code
-    if (type !== undefined) {
-      if (!['direct', 'aggregator'].includes(type)) {
-        return response.status(422).json({
-          message: 'Validation failed',
-          errors: { type: 'Type must be direct or aggregator' },
-        })
-      }
-      provider.type = type
-    }
     if (status !== undefined) {
       if (!['active', 'inactive'].includes(status)) {
         return response.status(422).json({
@@ -95,22 +67,18 @@ export default class ProvidersController {
       }
       provider.status = status
     }
-    if (config !== undefined) provider.config = config
+
+    if (config !== undefined) {
+      provider.config = config
+    }
 
     await provider.save()
     return response.status(200).json(provider)
   }
 
-  async destroy({ params, response }: HttpContext) {
-    const provider = await Provider.find(params.id)
-    if (!provider) {
-      return response.status(404).json({ message: 'Provider not found' })
-    }
-
-    await provider.delete()
-    return response.status(200).json({ message: 'Provider deleted' })
-  }
-
+  /**
+   * POST /api/v1/providers/:id/test — Test connection to a provider.
+   */
   async testConnection({ params, response }: HttpContext) {
     const provider = await Provider.find(params.id)
     if (!provider) {
@@ -123,6 +91,9 @@ export default class ProvidersController {
     })
   }
 
+  /**
+   * GET /api/v1/providers/:id/stats — Get transaction stats for a provider.
+   */
   async stats({ params, response }: HttpContext) {
     const provider = await Provider.find(params.id)
     if (!provider) {

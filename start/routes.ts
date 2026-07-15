@@ -92,6 +92,13 @@ router
     router.get('/audit-logs', [controllers.AuditLogs, 'index'])
     router.get('/audit-logs/:id', [controllers.AuditLogs, 'show'])
 
+    // Providers (global registry)
+    router.get('/providers', [controllers.Providers, 'index'])
+    router.get('/providers/:id', [controllers.Providers, 'show'])
+    router.put('/providers/:id', [controllers.Providers, 'update'])
+    router.post('/providers/:id/test', [controllers.Providers, 'testConnection'])
+    router.get('/providers/:id/stats', [controllers.Providers, 'stats'])
+
     // Users
     router.get('/users', [controllers.Users, 'index'])
     router.post('/users', [controllers.Users, 'store'])
@@ -168,9 +175,6 @@ router
 
     // Providers
     router.get('/providers', [controllers.Providers, 'index']).as('admin.providers')
-    router
-      .get('/providers/create', [controllers.Admin, 'providersCreate'])
-      .as('admin.providers.create')
     router
       .get('/providers/:providerId', [controllers.Admin, 'providersDetail'])
       .as('admin.providers.detail')
