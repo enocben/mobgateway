@@ -64,7 +64,6 @@ export default class ApplicationsController {
       .where('id', params.id)
       .preload('users')
       .preload('countries')
-      .preload('currencies')
       .first()
 
     if (!application) {

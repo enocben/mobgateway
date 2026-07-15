@@ -108,36 +108,6 @@ const routes = {
     tokens: [{"old":"/api/v1/applications/:application_id/api-keys/:id","type":0,"val":"api","end":""},{"old":"/api/v1/applications/:application_id/api-keys/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/applications/:application_id/api-keys/:id","type":0,"val":"applications","end":""},{"old":"/api/v1/applications/:application_id/api-keys/:id","type":1,"val":"application_id","end":""},{"old":"/api/v1/applications/:application_id/api-keys/:id","type":0,"val":"api-keys","end":""},{"old":"/api/v1/applications/:application_id/api-keys/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['api_keys.destroy']['types'],
   },
-  'currencies.index': {
-    methods: ["GET","HEAD"],
-    pattern: '/api/v1/currencies',
-    tokens: [{"old":"/api/v1/currencies","type":0,"val":"api","end":""},{"old":"/api/v1/currencies","type":0,"val":"v1","end":""},{"old":"/api/v1/currencies","type":0,"val":"currencies","end":""}],
-    types: placeholder as Registry['currencies.index']['types'],
-  },
-  'currencies.store': {
-    methods: ["POST"],
-    pattern: '/api/v1/currencies',
-    tokens: [{"old":"/api/v1/currencies","type":0,"val":"api","end":""},{"old":"/api/v1/currencies","type":0,"val":"v1","end":""},{"old":"/api/v1/currencies","type":0,"val":"currencies","end":""}],
-    types: placeholder as Registry['currencies.store']['types'],
-  },
-  'currencies.show': {
-    methods: ["GET","HEAD"],
-    pattern: '/api/v1/currencies/:code',
-    tokens: [{"old":"/api/v1/currencies/:code","type":0,"val":"api","end":""},{"old":"/api/v1/currencies/:code","type":0,"val":"v1","end":""},{"old":"/api/v1/currencies/:code","type":0,"val":"currencies","end":""},{"old":"/api/v1/currencies/:code","type":1,"val":"code","end":""}],
-    types: placeholder as Registry['currencies.show']['types'],
-  },
-  'currencies.update': {
-    methods: ["PUT"],
-    pattern: '/api/v1/currencies/:code',
-    tokens: [{"old":"/api/v1/currencies/:code","type":0,"val":"api","end":""},{"old":"/api/v1/currencies/:code","type":0,"val":"v1","end":""},{"old":"/api/v1/currencies/:code","type":0,"val":"currencies","end":""},{"old":"/api/v1/currencies/:code","type":1,"val":"code","end":""}],
-    types: placeholder as Registry['currencies.update']['types'],
-  },
-  'currencies.destroy': {
-    methods: ["DELETE"],
-    pattern: '/api/v1/currencies/:code',
-    tokens: [{"old":"/api/v1/currencies/:code","type":0,"val":"api","end":""},{"old":"/api/v1/currencies/:code","type":0,"val":"v1","end":""},{"old":"/api/v1/currencies/:code","type":0,"val":"currencies","end":""},{"old":"/api/v1/currencies/:code","type":1,"val":"code","end":""}],
-    types: placeholder as Registry['currencies.destroy']['types'],
-  },
   'operator_prefixes.index': {
     methods: ["GET","HEAD"],
     pattern: '/api/v1/mobile-operators/:mobile_operator_id/prefixes',
@@ -605,18 +575,6 @@ const routes = {
     pattern: '/admin/:id/countries/:countryId',
     tokens: [{"old":"/admin/:id/countries/:countryId","type":0,"val":"admin","end":""},{"old":"/admin/:id/countries/:countryId","type":1,"val":"id","end":""},{"old":"/admin/:id/countries/:countryId","type":0,"val":"countries","end":""},{"old":"/admin/:id/countries/:countryId","type":1,"val":"countryId","end":""}],
     types: placeholder as Registry['admin.countries.delete']['types'],
-  },
-  'admin.currencies': {
-    methods: ["GET","HEAD"],
-    pattern: '/admin/:id/currencies',
-    tokens: [{"old":"/admin/:id/currencies","type":0,"val":"admin","end":""},{"old":"/admin/:id/currencies","type":1,"val":"id","end":""},{"old":"/admin/:id/currencies","type":0,"val":"currencies","end":""}],
-    types: placeholder as Registry['admin.currencies']['types'],
-  },
-  'admin.currencies.create': {
-    methods: ["GET","HEAD"],
-    pattern: '/admin/:id/currencies/create',
-    tokens: [{"old":"/admin/:id/currencies/create","type":0,"val":"admin","end":""},{"old":"/admin/:id/currencies/create","type":1,"val":"id","end":""},{"old":"/admin/:id/currencies/create","type":0,"val":"currencies","end":""},{"old":"/admin/:id/currencies/create","type":0,"val":"create","end":""}],
-    types: placeholder as Registry['admin.currencies.create']['types'],
   },
   'admin.transactions': {
     methods: ["GET","HEAD"],

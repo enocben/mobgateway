@@ -47,13 +47,6 @@ router
     router.get('/applications/:application_id/api-keys/:id', [controllers.ApiKeys, 'show'])
     router.delete('/applications/:application_id/api-keys/:id', [controllers.ApiKeys, 'destroy'])
 
-    // Currencies
-    router.get('/currencies', [controllers.Currencies, 'index'])
-    router.post('/currencies', [controllers.Currencies, 'store'])
-    router.get('/currencies/:code', [controllers.Currencies, 'show'])
-    router.put('/currencies/:code', [controllers.Currencies, 'update'])
-    router.delete('/currencies/:code', [controllers.Currencies, 'destroy'])
-
     // Operator Prefixes
     router.get('/mobile-operators/:mobile_operator_id/prefixes', [
       controllers.OperatorPrefixes,
@@ -230,11 +223,6 @@ router
       .delete('/countries/:countryId', [controllers.Countries, 'destroy'])
       .as('admin.countries.delete')
 
-    // Currencies
-    router.get('/currencies', [controllers.Admin, 'currencies']).as('admin.currencies')
-    router
-      .get('/currencies/create', [controllers.Admin, 'currenciesCreate'])
-      .as('admin.currencies.create')
 
     // Transactions
     router.get('/transactions', [controllers.Admin, 'transactions']).as('admin.transactions')

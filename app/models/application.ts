@@ -6,7 +6,6 @@ import Commission from './commission.js'
 import AuditLog from './audit_log.js'
 import User from './user.js'
 import Country from './country.js'
-import Currency from './currency.js'
 import MobileOperator from './mobile_operator.js'
 import { ApplicationSchema } from '#database/schema'
 
@@ -28,9 +27,6 @@ export default class Application extends ApplicationSchema {
 
   @hasMany(() => Country)
   declare countries: HasMany<typeof Country>
-
-  @hasMany(() => Currency)
-  declare currencies: HasMany<typeof Currency>
 
   @hasMany(() => MobileOperator)
   declare mobileOperators: HasMany<typeof MobileOperator>

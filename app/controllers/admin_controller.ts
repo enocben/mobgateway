@@ -102,18 +102,6 @@ export default class AdminController {
     return inertia.render('admin/Providers/Detail', {})
   }
 
-  async mobileOperators({ inertia }: HttpContext) {
-    return inertia.render('admin/MobileOperators/List', {})
-  }
-
-  async currencies({ inertia }: HttpContext) {
-    return inertia.render('admin/Currencies/List', {})
-  }
-
-  async currenciesCreate({ inertia }: HttpContext) {
-    return inertia.render('admin/Currencies/Create', {})
-  }
-
   async transactions({ inertia }: HttpContext) {
     return inertia.render('admin/Transactions/List', {})
   }

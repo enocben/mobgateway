@@ -20,7 +20,6 @@ import {
 import {
   ArrowLeftRight,
   Building2,
-  Coins,
   FileText,
   Globe,
   LayoutDashboard,
@@ -70,7 +69,6 @@ const sidebarSections: SideBarSectionsType = [
     items: [
       { label: 'Mobile Operators', icon: Smartphone, route: 'admin.mobile-operators' as const },
       { label: 'Countries', icon: Globe, route: 'admin.countries' as const },
-      { label: 'Currencies', icon: Coins, route: 'admin.currencies' as const },
       { label: 'Routing', icon: Route, route: 'admin.routing' as const },
       { label: 'Commissions', icon: Percent, route: 'admin.commissions' as const },
     ],

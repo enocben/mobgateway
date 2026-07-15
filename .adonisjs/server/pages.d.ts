@@ -20,8 +20,6 @@ declare module '@adonisjs/inertia/types' {
     'admin/Commissions/List': ExtractProps<(typeof import('../../inertia/pages/admin/Commissions/List.tsx'))['default']>
     'admin/Countries/Create': ExtractProps<(typeof import('../../inertia/pages/admin/Countries/Create.tsx'))['default']>
     'admin/Countries/List': ExtractProps<(typeof import('../../inertia/pages/admin/Countries/List.tsx'))['default']>
-    'admin/Currencies/Create': ExtractProps<(typeof import('../../inertia/pages/admin/Currencies/Create.tsx'))['default']>
-    'admin/Currencies/List': ExtractProps<(typeof import('../../inertia/pages/admin/Currencies/List.tsx'))['default']>
     'admin/Dashboard': ExtractProps<(typeof import('../../inertia/pages/admin/Dashboard.tsx'))['default']>
     'admin/Logs/List': ExtractProps<(typeof import('../../inertia/pages/admin/Logs/List.tsx'))['default']>
     'admin/MobileOperators/List': ExtractProps<(typeof import('../../inertia/pages/admin/MobileOperators/List.tsx'))['default']>
