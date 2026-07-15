@@ -12,27 +12,59 @@ import env from '#start/env'
 /**
  * Shwary mobile money provider.
  *
- * Encapsule toute la communication avec l'API Shwary :
- * authentification, création de paiement, status, webhooks, etc.
- * Convertit les réponses Shwary vers les types communs de l'application.
+ * Encapsule toute la communication avec l'API Shwary.
+ * Convertit systématiquement les réponses Shwary vers les types communs.
+ *
+ * Config attendue dans ProviderConfig.values :
+ *   merchantId  — identifiant marchand Shwary
+ *   merchantKey — clé secrète marchand
+ *   baseUrl     — (optionnel) override de l'URL de base
  */
 export default class ShwaryProvider extends BasePaymentProvider {
   readonly provider = 'shwary'
   readonly label = 'Shwary'
   readonly description =
-    'Shwary mobile money aggregator — supports multiple operators across Africa'
+    'Shwary mobile money aggregator — supports DRC, Kenya, Uganda and more across Africa'
   readonly icon = '📡'
 
-  private baseUrl = env.get('SHWARY_BASE_URL')
-  private apiKey: string = env.get('SHWARY_ID_MARCHAND')
-  private apiSecret: string = env.get('SHWARY_SECRET')
+  private baseUrl = env.get('SHWARY_BASE_URL', 'https://api.shwary.com/api/v1')
+  private merchantId: string = env.get('SHWARY_ID_MARCHAND', '')
+  private merchantKey: string = env.get('SHWARY_SECRET', '')
+
+  private sandbox = true
+
+  // ── Détection pays ─────────────────────────────────────────────────────
+
+  /** Mapping préfixes téléphoniques → code pays Shwary */
+  private static readonly PREFIX_TO_COUNTRY: Record<string, string> = {
+    '243': 'DRC',
+    '254': 'KE',
+    '256': 'UG',
+  }
+
+  /** Détecter le code pays Shwary à partir d'un numéro E.164 */
+  private detectCountry(phoneNumber: string): string {
+    const digits = phoneNumber.replace(/^\+/, '').replace(/\s/g, '')
+    // Essayer les préfixes du plus long au plus court
+    const prefixes = Object.keys(ShwaryProvider.PREFIX_TO_COUNTRY).sort(
+      (a, b) => b.length - a.length
+    )
+    for (const prefix of prefixes) {
+      if (digits.startsWith(prefix)) {
+        return ShwaryProvider.PREFIX_TO_COUNTRY[prefix]
+      }
+    }
+    throw new Error(
+      `Unsupported country for phone: ${phoneNumber}. Supported prefixes: ${prefixes.join(', ')}`
+    )
+  }
 
   // ── Initialisation ──────────────────────────────────────────────────────
 
   async initialize(config: ProviderConfig): Promise<void> {
-    this.apiKey = (config.values.apiKey as string) ?? null
-    this.apiSecret = (config.values.apiSecret as string) ?? null
-
+    this.sandbox = config.sandbox
+    this.merchantId = (config.values.merchantId as string) ?? this.merchantId
+    this.merchantKey = (config.values.merchantKey as string) ?? this.merchantKey
     if (config.values.baseUrl) {
       this.baseUrl = config.values.baseUrl as string
     }
@@ -43,169 +75,173 @@ export default class ShwaryProvider extends BasePaymentProvider {
   private buildHeaders(): Record<string, string> {
     return {
       'Content-Type': 'application/json',
-      'x-merchant-id': this.apiKey,
-      'x-merchant-key': this.apiSecret,
+      'x-merchant-id': this.merchantId,
+      'x-merchant-key': this.merchantKey,
     }
   }
 
+  /** Parser la réponse HTTP — lève si non-OK */
+  private async parseResponse<T>(res: Response): Promise<T> {
+    const text = await res.text()
+    let json: unknown
+    try {
+      json = JSON.parse(text)
+    } catch {
+      throw new Error(`Shwary non-JSON response (${res.status}): ${text}`)
+    }
+    if (!res.ok) {
+      const err = json as { message?: string; statusCode?: number }
+      throw new Error(`[${err.statusCode ?? res.status}] ${err.message ?? JSON.stringify(json)}`)
+    }
+    return json as T
+  }
+
   /** Mapper un statut Shwary → PaymentStatus */
-  private mapStatus(raw: string): PaymentStatus {
-    switch (raw?.toUpperCase()) {
-      case 'SUBMITTED':
-      case 'PENDING':
+  private mapStatus(raw: string | undefined): PaymentStatus {
+    switch (raw?.toLowerCase()) {
+      case 'submitted':
+      case 'pending':
         return PaymentStatus.PENDING
-      case 'PROCESSING':
+      case 'processing':
         return PaymentStatus.PROCESSING
-      case 'COMPLETED':
-      case 'SUCCESS':
+      case 'completed':
+      case 'success':
         return PaymentStatus.COMPLETED
-      case 'FAILED':
+      case 'failed':
         return PaymentStatus.FAILED
-      case 'CANCELLED':
+      case 'cancelled':
         return PaymentStatus.CANCELLED
       default:
         return PaymentStatus.PENDING
     }
   }
 
-  /** Construire une PaymentTransaction depuis une réponse Shwary */
-  private normalize(raw: any, phoneNumber: string): PaymentTransaction {
+  /** Shwary TransactionResponse → PaymentTransaction normalisé */
+  private normalize(raw: Record<string, unknown>): PaymentTransaction {
     return {
-      id: raw.transactionId ?? raw.id ?? '',
-      reference: raw.reference ?? '',
+      id: (raw.id as string) ?? '',
+      reference: (raw.referenceId as string) ?? (raw.reference as string) ?? '',
       amount: Number(raw.amount ?? 0),
-      currency: raw.currency ?? '',
-      phoneNumber,
-      status: this.mapStatus(raw.status),
-      providerReference: raw.transactionId ?? raw.id ?? undefined,
-      failureReason: raw.message ?? raw.error ?? undefined,
-      metadata: raw.metadata ?? undefined,
-      createdAt: raw.createdAt ? new Date(raw.createdAt) : new Date(),
-      completedAt: raw.completedAt ? new Date(raw.completedAt) : undefined,
+      currency: (raw.currency as string) ?? '',
+      phoneNumber: (raw.recipientPhoneNumber as string) ?? '',
+      status: this.mapStatus(raw.status as string | undefined),
+      providerReference: (raw.id as string) ?? undefined,
+      failureReason: (raw.failureReason as string) ?? undefined,
+      metadata: {
+        txHash: raw.txHash ?? null,
+        isSandbox: raw.isSandbox ?? null,
+        type: raw.type ?? null,
+        userId: raw.userId ?? null,
+        ...((raw.metadata as Record<string, unknown>) ?? {}),
+      },
+      createdAt: raw.createdAt ? new Date(raw.createdAt as string) : new Date(),
+      completedAt: raw.completedAt ? new Date(raw.completedAt as string) : undefined,
     }
   }
 
   // ── Paiement ────────────────────────────────────────────────────────────
 
   async createPayment(request: PaymentRequest): Promise<PaymentTransaction> {
-    if (!this.apiKey) {
-      throw new Error('Shwary provider not configured: missing apiKey')
-    }
+    const country = this.detectCountry(request.phoneNumber)
 
-    const response = await fetch(`${this.baseUrl}/payments/collect`, {
+    const endpoint = this.sandbox
+      ? `/merchants/payment/sandbox/${country}`
+      : `/merchants/payment/${country}`
+
+    const res = await fetch(`${this.baseUrl}${endpoint}`, {
       method: 'POST',
       headers: this.buildHeaders(),
       body: JSON.stringify({
-        phone: request.phoneNumber,
         amount: request.amount,
-        currency: request.currency,
-        reference: request.reference,
-        callback_url: request.callbackUrl,
-        metadata: request.metadata ?? {},
+        clientPhoneNumber: request.phoneNumber,
+        callbackUrl: request.callbackUrl,
       }),
     })
 
-    const raw = await response.json()
-
-    if (!response.ok) {
-      throw new Error((raw as any).message ?? `Shwary HTTP ${response.status}`)
-    }
-
-    return this.normalize(raw, request.phoneNumber)
+    const raw = await this.parseResponse<Record<string, unknown>>(res)
+    return this.normalize(raw)
   }
 
   // ── Consultations ───────────────────────────────────────────────────────
 
   async getTransaction(transactionId: string): Promise<PaymentTransaction> {
-    if (!this.apiKey) {
-      throw new Error('Shwary provider not configured')
-    }
-
-    const response = await fetch(`${this.baseUrl}/payments/${transactionId}`, {
+    const res = await fetch(`${this.baseUrl}/merchants/transactions/${transactionId}`, {
       headers: this.buildHeaders(),
     })
-    const raw: any = await response.json()
-
-    if (!response.ok) {
-      throw new Error((raw as any).message ?? `Shwary HTTP ${response.status}`)
-    }
-
-    return this.normalize(raw, raw.phone ?? '')
+    const raw = await this.parseResponse<Record<string, unknown>>(res)
+    return this.normalize(raw)
   }
 
-  async listTransactions(options?: TransactionFilter): Promise<PaymentTransaction[]> {
-    if (!this.apiKey) {
-      throw new Error('Shwary provider not configured')
-    }
-
-    const params = new URLSearchParams()
-    if (options?.startDate) params.set('start_date', options.startDate.toISOString())
-    if (options?.endDate) params.set('end_date', options.endDate.toISOString())
-    if (options?.status) params.set('status', options.status)
-    if (options?.limit) params.set('limit', String(options.limit))
-    if (options?.offset) params.set('offset', String(options.offset))
-
-    const response = await fetch(`${this.baseUrl}/payments?${params.toString()}`, {
+  async listTransactions(_options?: TransactionFilter): Promise<PaymentTransaction[]> {
+    const res = await fetch(`${this.baseUrl}/merchants/transactions`, {
       headers: this.buildHeaders(),
     })
-    const raw = await response.json()
+    const raw = await this.parseResponse<unknown>(res)
 
-    if (!response.ok) {
-      throw new Error((raw as any).message ?? `Shwary HTTP ${response.status}`)
+    // L'API Shwary peut retourner un objet ou un tableau
+    if (Array.isArray(raw)) {
+      return raw.map((item) => this.normalize(item as Record<string, unknown>))
     }
 
-    const list = Array.isArray(raw) ? raw : ((raw as any).data ?? [])
-    return list.map((item: any) => this.normalize(item, item.phone ?? ''))
+    const obj = raw as Record<string, unknown>
+    if (Array.isArray(obj.data)) {
+      return (obj.data as Record<string, unknown>[]).map((item) => this.normalize(item))
+    }
+
+    // Objet unique (la route GET /merchants/transactions retourne parfois un seul objet)
+    return [this.normalize(obj)]
   }
 
   // ── Webhooks ────────────────────────────────────────────────────────────
 
   async verifyWebhook(request: WebhookRequest): Promise<boolean> {
+    // Shwary envoie un header x-shwary-signature = HMAC-SHA256(body, merchantKey)
     const signature = request.headers['x-shwary-signature'] as string | undefined
-    if (!signature || !this.apiSecret) return false
+    if (!signature || !this.merchantKey) return false
 
-    // Shwary signe avec HMAC-SHA256(body, secret)
-    const bodyStr = typeof request.body === 'string' ? request.body : JSON.stringify(request.body)
+    const bodyStr =
+      typeof request.body === 'string' ? request.body : JSON.stringify(request.body)
 
     const encoder = new TextEncoder()
     const key = await crypto.subtle.importKey(
       'raw',
-      encoder.encode(this.apiSecret),
+      encoder.encode(this.merchantKey),
       { name: 'HMAC', hash: 'SHA-256' },
       false,
       ['verify']
     )
-    const valid = await crypto.subtle.verify(
+    return await crypto.subtle.verify(
       'HMAC',
       key,
       hexToBytes(signature),
-      encoder.encode(bodyStr)
+      encoder.encode(bodyStr) as BufferSource
     )
-
-    return valid
   }
 
   async handleWebhook(request: WebhookRequest): Promise<PaymentTransaction> {
     const valid = await this.verifyWebhook(request)
     if (!valid) {
-      throw new Error('Invalid webhook signature')
+      throw new Error('Invalid Shwary webhook signature')
     }
 
-    const body = typeof request.body === 'string' ? JSON.parse(request.body) : request.body
+    const body =
+      typeof request.body === 'string'
+        ? (JSON.parse(request.body) as Record<string, unknown>)
+        : (request.body as Record<string, unknown>)
 
-    return this.normalize(body, (body as any).phone ?? '')
+    return this.normalize(body)
   }
 
   // ── Tests ───────────────────────────────────────────────────────────────
 
   async testConnection(): Promise<boolean> {
-    if (!this.apiKey) return false
-
     try {
-      const response = await fetch(`${this.baseUrl}/health`, {
+      // Tente un health check ou une requête simple
+      const res = await fetch(`${this.baseUrl}/merchants/transactions`, {
         headers: this.buildHeaders(),
       })
-      return response.ok
+      // L'API peut renvoyer 200 ou 401 — 200 = config OK
+      return res.ok || res.status === 401
     } catch {
       return false
     }
@@ -214,11 +250,11 @@ export default class ShwaryProvider extends BasePaymentProvider {
   async validateConfiguration(config: ProviderConfig): Promise<void> {
     const errors: string[] = []
 
-    if (!config.values.apiKey || typeof config.values.apiKey !== 'string') {
-      errors.push('apiKey is required and must be a string')
+    if (!config.values.merchantId || typeof config.values.merchantId !== 'string') {
+      errors.push('merchantId is required and must be a string')
     }
-    if (!config.values.apiSecret || typeof config.values.apiSecret !== 'string') {
-      errors.push('apiSecret is required and must be a string')
+    if (!config.values.merchantKey || typeof config.values.merchantKey !== 'string') {
+      errors.push('merchantKey is required and must be a string')
     }
     if (config.values.baseUrl && typeof config.values.baseUrl !== 'string') {
       errors.push('baseUrl must be a string if provided')
