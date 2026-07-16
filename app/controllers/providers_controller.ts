@@ -128,7 +128,7 @@ export default class ProvidersController {
     // Check if already routed for this app
     const existing = await ProviderRoute.query()
       .where('provider_id', params.providerId)
-      .where('mobileOperator_id', mobileOperatorId)
+      .where('mobile_operator_id', mobileOperatorId)
       .first()
 
     if (existing) {
