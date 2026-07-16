@@ -30,6 +30,7 @@ export default class ProvidersController {
       .where('id', params.providerId)
       .preload('routes', (q) =>
         q
+          .where('applicationId', applicationId)
           .preload('mobileOperator')
           .orderBy('priority', 'asc')
       )
@@ -46,10 +47,12 @@ export default class ProvidersController {
       .whereNotIn('id', linkedCountryIds.length > 0 ? linkedCountryIds : [''])
       .orderBy('name', 'asc')
 
-    // Available mobile operators for this app (not yet routed)
+    // Available mobile operators: only from countries linked to this provider
+    const linkedCountryCodes = provider.countries.map((c) => c.code)
     const linkedOperatorIds = provider.routes.map((r) => r.mobileOperatorId)
     const availableOperators = await MobileOperator.query()
-      .where('application_id', applicationId)
+      .where('applicationId', applicationId)
+      .whereIn('countryCode', linkedCountryCodes.length > 0 ? linkedCountryCodes : [''])
       .whereNotIn('id', linkedOperatorIds.length > 0 ? linkedOperatorIds : [''])
       .preload('country')
       .orderBy('name', 'asc')
