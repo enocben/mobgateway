@@ -29,7 +29,6 @@ export default class ProvidersController {
       .where('id', params.providerId)
       .preload('routes', (q) =>
         q
-          .where('applicationId', applicationId)
           .preload('mobileOperator')
           .orderBy('priority', 'asc')
       )
@@ -49,7 +48,7 @@ export default class ProvidersController {
     // Available mobile operators for this app (not yet routed)
     const linkedOperatorIds = provider.routes.map((r) => r.mobileOperatorId)
     const availableOperators = await MobileOperator.query()
-      .where('applicationId', applicationId)
+      .where('application_id', applicationId)
       .whereNotIn('id', linkedOperatorIds.length > 0 ? linkedOperatorIds : [''])
       .preload('country')
       .orderBy('name', 'asc')
@@ -78,7 +77,7 @@ export default class ProvidersController {
       availableOperators: availableOperators.map((op) => ({
         id: op.id,
         name: op.name,
-        countryCode: op.country?.code ?? op.countryCode,
+        countryCode: op.country?.code,
       })),
       stats: {
         totalTransactions: totalTx,
@@ -126,14 +125,12 @@ export default class ProvidersController {
    * Attach a mobile operator to a provider via a new route (scoped to current app).
    */
   async storeProviderRoute({ params, request, response, session }: HttpContext) {
-    const applicationId = params.id
     const { mobileOperatorId, priority } = request.only(['mobileOperatorId', 'priority'])
 
     // Check if already routed for this app
     const existing = await ProviderRoute.query()
-      .where('providerId', params.providerId)
-      .where('mobileOperatorId', mobileOperatorId)
-      .where('applicationId', applicationId)
+      .where('provider_id', params.providerId)
+      .where('mobileOperator_id', mobileOperatorId)
       .first()
 
     if (existing) {
@@ -144,7 +141,6 @@ export default class ProvidersController {
     await ProviderRoute.create({
       providerId: params.providerId,
       mobileOperatorId,
-      applicationId,
       priority: priority ? Number(priority) : 99,
       isActive: true,
     })
@@ -159,7 +155,6 @@ export default class ProvidersController {
   async destroyProviderRoute({ params, response, session }: HttpContext) {
     await ProviderRoute.query()
       .where('id', params.routeId)
-      .where('applicationId', params.id)
       .delete()
 
     session.flash('success', 'Mobile operator removed from provider')

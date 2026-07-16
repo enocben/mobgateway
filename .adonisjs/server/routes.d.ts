@@ -86,6 +86,8 @@ export type ScannedRoutes = {
     'admin.providers.detail': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'providerId': ParamValue} }
     'admin.providers.countries.store': { paramsTuple: [ParamValue,ParamValue,ParamValue]; params: {'id': ParamValue,'providerId': ParamValue,'countryId': ParamValue} }
     'admin.providers.countries.destroy': { paramsTuple: [ParamValue,ParamValue,ParamValue]; params: {'id': ParamValue,'providerId': ParamValue,'countryId': ParamValue} }
+    'admin.providers.routes.store': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'providerId': ParamValue} }
+    'admin.providers.routes.destroy': { paramsTuple: [ParamValue,ParamValue,ParamValue]; params: {'id': ParamValue,'providerId': ParamValue,'routeId': ParamValue} }
     'admin.mobile-operators': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.mobile-operators.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.mobile-operators.update': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'operatorId': ParamValue} }
@@ -231,6 +233,7 @@ export type ScannedRoutes = {
     'session.store': { paramsTuple?: []; params?: {} }
     'session.destroy': { paramsTuple?: []; params?: {} }
     'admin.providers.countries.store': { paramsTuple: [ParamValue,ParamValue,ParamValue]; params: {'id': ParamValue,'providerId': ParamValue,'countryId': ParamValue} }
+    'admin.providers.routes.store': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'providerId': ParamValue} }
     'admin.mobile-operators.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.countries.create': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'iso2': ParamValue} }
   }
@@ -250,6 +253,7 @@ export type ScannedRoutes = {
     'commissions.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'users.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.providers.countries.destroy': { paramsTuple: [ParamValue,ParamValue,ParamValue]; params: {'id': ParamValue,'providerId': ParamValue,'countryId': ParamValue} }
+    'admin.providers.routes.destroy': { paramsTuple: [ParamValue,ParamValue,ParamValue]; params: {'id': ParamValue,'providerId': ParamValue,'routeId': ParamValue} }
     'admin.mobile-operators.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'operatorId': ParamValue} }
     'admin.countries.delete': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'countryId': ParamValue} }
   }

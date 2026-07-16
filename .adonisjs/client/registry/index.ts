@@ -498,6 +498,18 @@ const routes = {
     tokens: [{"old":"/admin/:id/providers/:providerId/countries/:countryId","type":0,"val":"admin","end":""},{"old":"/admin/:id/providers/:providerId/countries/:countryId","type":1,"val":"id","end":""},{"old":"/admin/:id/providers/:providerId/countries/:countryId","type":0,"val":"providers","end":""},{"old":"/admin/:id/providers/:providerId/countries/:countryId","type":1,"val":"providerId","end":""},{"old":"/admin/:id/providers/:providerId/countries/:countryId","type":0,"val":"countries","end":""},{"old":"/admin/:id/providers/:providerId/countries/:countryId","type":1,"val":"countryId","end":""}],
     types: placeholder as Registry['admin.providers.countries.destroy']['types'],
   },
+  'admin.providers.routes.store': {
+    methods: ["POST"],
+    pattern: '/admin/:id/providers/:providerId/routes',
+    tokens: [{"old":"/admin/:id/providers/:providerId/routes","type":0,"val":"admin","end":""},{"old":"/admin/:id/providers/:providerId/routes","type":1,"val":"id","end":""},{"old":"/admin/:id/providers/:providerId/routes","type":0,"val":"providers","end":""},{"old":"/admin/:id/providers/:providerId/routes","type":1,"val":"providerId","end":""},{"old":"/admin/:id/providers/:providerId/routes","type":0,"val":"routes","end":""}],
+    types: placeholder as Registry['admin.providers.routes.store']['types'],
+  },
+  'admin.providers.routes.destroy': {
+    methods: ["DELETE"],
+    pattern: '/admin/:id/providers/:providerId/routes/:routeId',
+    tokens: [{"old":"/admin/:id/providers/:providerId/routes/:routeId","type":0,"val":"admin","end":""},{"old":"/admin/:id/providers/:providerId/routes/:routeId","type":1,"val":"id","end":""},{"old":"/admin/:id/providers/:providerId/routes/:routeId","type":0,"val":"providers","end":""},{"old":"/admin/:id/providers/:providerId/routes/:routeId","type":1,"val":"providerId","end":""},{"old":"/admin/:id/providers/:providerId/routes/:routeId","type":0,"val":"routes","end":""},{"old":"/admin/:id/providers/:providerId/routes/:routeId","type":1,"val":"routeId","end":""}],
+    types: placeholder as Registry['admin.providers.routes.destroy']['types'],
+  },
   'admin.mobile-operators': {
     methods: ["GET","HEAD"],
     pattern: '/admin/:id/mobile-operators',

@@ -991,6 +991,30 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['providersDestroyCountry']>>>
     }
   }
+  'admin.providers.routes.store': {
+    methods: ["POST"]
+    pattern: '/admin/:id/providers/:providerId/routes'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue, ParamValue]
+      params: { id: ParamValue; providerId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['storeProviderRoute']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['storeProviderRoute']>>>
+    }
+  }
+  'admin.providers.routes.destroy': {
+    methods: ["DELETE"]
+    pattern: '/admin/:id/providers/:providerId/routes/:routeId'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue, ParamValue, ParamValue]
+      params: { id: ParamValue; providerId: ParamValue; routeId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['destroyProviderRoute']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['destroyProviderRoute']>>>
+    }
+  }
   'admin.mobile-operators': {
     methods: ["GET","HEAD"]
     pattern: '/admin/:id/mobile-operators'
