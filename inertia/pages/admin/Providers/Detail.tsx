@@ -30,6 +30,10 @@ export default function ProviderDetail() {
   const { provider, availableCountries, stats } = usePage<InertiaProps<Props>>().props
   const [selectedCountry, setSelectedCountry] = useState('')
 
+  if (!provider) {
+    return null
+  }
+
   return (
     <div className="flex flex-col gap-6">
       {/* Header */}

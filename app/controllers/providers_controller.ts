@@ -29,13 +29,13 @@ export default class ProvidersController {
       .preload('transactions', (q) =>
         q.preload('application').orderBy('createdAt', 'desc').limit(20)
       )
-      .preload('countries', (q) => q.wherePivot('application_id', applicationId))
+      .preload('countries', (q) => q.where('applicationId', applicationId))
       .firstOrFail()
 
     // Get countries that are NOT yet linked to this provider (for the "add" dropdown)
     const linkedCountryIds = provider.countries.map((c) => c.id)
     const availableCountries = await Country.query()
-      .where('applicationId', applicationId)
+      .where('application_id', applicationId)
       .whereNotIn('id', linkedCountryIds.length > 0 ? linkedCountryIds : [''])
       .orderBy('name', 'asc')
 
@@ -72,13 +72,12 @@ export default class ProvidersController {
    * Detach a country from a provider (scoped to current application).
    */
   async providersDestroyCountry({ params, response, session }: HttpContext) {
-    const applicationId = params.id
-    const provider = await Provider.findOrFail(params.providerId)
     const country = await Country.findOrFail(params.countryId)
+    const provider = await Provider.query()
+      .where('id', params.providerId)
+      .firstOrFail()
 
-    await provider.related('countries').query()
-      .wherePivot('application_id', applicationId)
-      .detach([country.id])
+    await provider.related('countries').detach([country.id])
 
     session.flash('success', `Country ${country.name} removed from provider`)
     return response.redirect().back()
@@ -88,20 +87,15 @@ export default class ProvidersController {
    * Attach a country to a provider (scoped to current application).
    */
   async createProvider({ params, response, session }: HttpContext) {
-    const applicationId = params.id
     const provider = await Provider.findOrFail(params.providerId)
     const country = await Country.findOrFail(params.countryId)
 
-    // Check if already linked for this application
     const existing = await provider.related('countries').query()
-      .wherePivot('application_id', applicationId)
       .where('country_id', country.id)
       .first()
 
     if (!existing) {
-      await provider.related('countries').attach({
-        [country.id]: { application_id: applicationId },
-      })
+      await provider.related('countries').attach([country.id])
       session.flash('success', `Country ${country.name} added to provider`)
     }
 
