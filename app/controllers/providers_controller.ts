@@ -1,5 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Provider from '#models/provider'
+import ProviderRoute from '#models/provider_route'
+import MobileOperator from '#models/mobile_operator'
 import db from '@adonisjs/lucid/services/db'
 import ProviderTransformer from '#transformers/provider_transformer'
 import Country from '#models/country'
@@ -25,18 +27,31 @@ export default class ProvidersController {
     const applicationId = params.id
     const provider = await Provider.query()
       .where('id', params.providerId)
-      .preload('routes', (q) => q.preload('mobileOperator').orderBy('priority', 'asc'))
+      .preload('routes', (q) =>
+        q
+          .where('applicationId', applicationId)
+          .preload('mobileOperator')
+          .orderBy('priority', 'asc')
+      )
       .preload('transactions', (q) =>
         q.preload('application').orderBy('createdAt', 'desc').limit(20)
       )
       .preload('countries', (q) => q.where('applicationId', applicationId))
       .firstOrFail()
 
-    // Get countries that are NOT yet linked to this provider (for the "add" dropdown)
+    // Available countries (not yet linked)
     const linkedCountryIds = provider.countries.map((c) => c.id)
     const availableCountries = await Country.query()
       .where('application_id', applicationId)
       .whereNotIn('id', linkedCountryIds.length > 0 ? linkedCountryIds : [''])
+      .orderBy('name', 'asc')
+
+    // Available mobile operators for this app (not yet routed)
+    const linkedOperatorIds = provider.routes.map((r) => r.mobileOperatorId)
+    const availableOperators = await MobileOperator.query()
+      .where('applicationId', applicationId)
+      .whereNotIn('id', linkedOperatorIds.length > 0 ? linkedOperatorIds : [''])
+      .preload('country')
       .orderBy('name', 'asc')
 
     const [txStats] = await Promise.all([
@@ -60,6 +75,11 @@ export default class ProvidersController {
     return inertia.render('admin/Providers/Detail', {
       provider: ProviderTransformer.transform(provider),
       availableCountries: CountryTransformer.transform(availableCountries),
+      availableOperators: availableOperators.map((op) => ({
+        id: op.id,
+        name: op.name,
+        countryCode: op.country?.code ?? op.countryCode,
+      })),
       stats: {
         totalTransactions: totalTx,
         totalVolume: Number(txStats?.volume ?? 0),
@@ -99,6 +119,50 @@ export default class ProvidersController {
       session.flash('success', `Country ${country.name} added to provider`)
     }
 
+    return response.redirect().back()
+  }
+
+  /**
+   * Attach a mobile operator to a provider via a new route (scoped to current app).
+   */
+  async storeProviderRoute({ params, request, response, session }: HttpContext) {
+    const applicationId = params.id
+    const { mobileOperatorId, priority } = request.only(['mobileOperatorId', 'priority'])
+
+    // Check if already routed for this app
+    const existing = await ProviderRoute.query()
+      .where('providerId', params.providerId)
+      .where('mobileOperatorId', mobileOperatorId)
+      .where('applicationId', applicationId)
+      .first()
+
+    if (existing) {
+      session.flash('errors', { route: 'This mobile operator is already linked to this provider' })
+      return response.redirect().back()
+    }
+
+    await ProviderRoute.create({
+      providerId: params.providerId,
+      mobileOperatorId,
+      applicationId,
+      priority: priority ? Number(priority) : 99,
+      isActive: true,
+    })
+
+    session.flash('success', 'Mobile operator added to provider')
+    return response.redirect().back()
+  }
+
+  /**
+   * Remove a mobile operator from a provider (delete the route).
+   */
+  async destroyProviderRoute({ params, response, session }: HttpContext) {
+    await ProviderRoute.query()
+      .where('id', params.routeId)
+      .where('applicationId', params.id)
+      .delete()
+
+    session.flash('success', 'Mobile operator removed from provider')
     return response.redirect().back()
   }
 

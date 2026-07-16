@@ -184,6 +184,12 @@ router
     router
       .delete('/providers/:providerId/countries/:countryId', [controllers.Providers, 'providersDestroyCountry'])
       .as('admin.providers.countries.destroy')
+    router
+      .post('/providers/:providerId/routes', [controllers.Providers, 'storeProviderRoute'])
+      .as('admin.providers.routes.store')
+    router
+      .delete('/providers/:providerId/routes/:routeId', [controllers.Providers, 'destroyProviderRoute'])
+      .as('admin.providers.routes.destroy')
 
     // Mobile Operators
     router

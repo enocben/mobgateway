@@ -1,10 +1,11 @@
 import { Link, usePage } from '@inertiajs/react'
 import { Form } from '@adonisjs/inertia/react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Code, Activity, Calendar, Shield, Hash, RefreshCw, Globe, Plus, Trash2 } from 'lucide-react'
+import { ArrowLeft, Code, Activity, Calendar, Shield, RefreshCw, Globe, Plus, Trash2, Route } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
+import { Input } from '~/components/ui/input'
 import { Separator } from '~/components/ui/separator'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/ui/table'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select'
@@ -18,6 +19,7 @@ import { useState } from 'react'
 type Props = {
   provider: Data.Provider
   availableCountries: { id: string; code: string; name: string }[]
+  availableOperators: { id: string; name: string; countryCode: string }[]
   stats: {
     totalTransactions: number
     totalVolume: number
@@ -27,8 +29,10 @@ type Props = {
 
 export default function ProviderDetail() {
   const applicationId = useApplicationStore((a) => a.applicationId)
-  const { provider, availableCountries, stats } = usePage<InertiaProps<Props>>().props
+  const { provider, availableCountries, availableOperators, stats } = usePage<InertiaProps<Props>>().props
   const [selectedCountry, setSelectedCountry] = useState('')
+  const [selectedOperator, setSelectedOperator] = useState('')
+  const [routePriority, setRoutePriority] = useState('99')
 
   if (!provider) {
     return null
@@ -191,34 +195,74 @@ export default function ProviderDetail() {
 
           {/* Routes */}
           <Card>
-            <CardHeader><CardTitle>Routes</CardTitle></CardHeader>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>Routes</CardTitle>
+                {availableOperators.length > 0 && (
+                  <div className="flex items-center gap-2">
+                    <Select onValueChange={setSelectedOperator} value={selectedOperator}>
+                      <SelectTrigger className="w-44 h-8 text-xs">
+                        <SelectValue placeholder="Add operator..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          {availableOperators.map((op) => (
+                            <SelectItem key={op.id} value={op.id}>
+                              {op.name} ({op.countryCode})
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <Input
+                      type="number"
+                      placeholder="Pri."
+                      className="w-14 h-8 text-xs"
+                      value={routePriority}
+                      onChange={(e) => setRoutePriority(e.target.value)}
+                      min="1"
+                      max="999"
+                    />
+                    <Form
+                      route="admin.providers.routes.store"
+                      routeParams={{ id: applicationId!, providerId: provider.id }}
+                      onSubmit={() => { setSelectedOperator(''); setRoutePriority('99'); }}
+                    >
+                      <input type="hidden" name="mobileOperatorId" value={selectedOperator} />
+                      <input type="hidden" name="priority" value={routePriority} />
+                      <Button type="submit" size="sm" variant="outline" disabled={!selectedOperator}>
+                        <Plus className="size-3 mr-1" /> Add
+                      </Button>
+                    </Form>
+                  </div>
+                )}
+              </div>
+            </CardHeader>
             <CardContent>
               {provider.routes && provider.routes.length > 0 ? (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Operator</TableHead>
-                      <TableHead>Priority</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {provider.routes.map((route) => (
-                      <TableRow key={route.id}>
-                        <TableCell>
-                          <span className="text-sm">
-                            {route.mobileOperator?.name ?? route.mobileOperatorId}
-                          </span>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-1.5">
-                            <Hash className="size-3 text-muted-foreground" />
-                            <span className="font-mono text-sm">{route.priority ?? '—'}</span>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                <ul className="flex flex-col gap-2">
+                  {provider.routes.map((route) => (
+                    <li key={route.id} className="flex items-center justify-between py-1.5">
+                      <div className="flex items-center gap-2">
+                        <Route className="size-4 text-muted-foreground" />
+                        <span className="text-sm">
+                          {route.mobileOperator?.name ?? route.mobileOperatorId}
+                        </span>
+                        <Badge variant="outline" className="font-mono text-xs">
+                          prio {route.priority ?? '—'}
+                        </Badge>
+                      </div>
+                      <Form
+                        route="admin.providers.routes.destroy"
+                        routeParams={{ id: applicationId!, providerId: provider.id, routeId: route.id }}
+                      >
+                        <Button variant="ghost" size="icon" type="submit" className="size-7">
+                          <Trash2 className="size-3 text-destructive" />
+                        </Button>
+                      </Form>
+                    </li>
+                  ))}
+                </ul>
               ) : (
                 <p className="text-sm text-muted-foreground py-4 text-center">
                   No routes configured for this provider
