@@ -17,7 +17,9 @@ export default class MobileOperatorTransformer extends BaseTransformer<MobileOpe
         'updatedAt',
       ]),
       country: CountryTransformer.transform(this.resource.country),
-      prefixes: OperatorPrefixTransformer.transform(this.resource.prefixes),
+      prefixes: this.resource.prefixes
+         ? OperatorPrefixTransformer.transform(this.resource.prefixes)
+          : undefined,
     }
   }
 }

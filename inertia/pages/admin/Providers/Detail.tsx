@@ -1,7 +1,7 @@
 import { Link, usePage } from '@inertiajs/react'
 import { Form } from '@adonisjs/inertia/react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Code, Activity, Calendar, Shield, RefreshCw, Globe, Plus, Trash2, Route } from 'lucide-react'
+import { ArrowLeft, Code, Activity, Calendar, Shield, RefreshCw, Globe, Trash2, Route } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
@@ -18,8 +18,8 @@ import { useState } from 'react'
 
 type Props = {
   provider: Data.Provider
-  availableCountries: { id: string; code: string; name: string }[]
-  availableOperators: { id: string; name: string; countryCode: string }[]
+  availableCountries: Data.Country[]
+  availableOperators: Data.MobileOperator[]
   stats: {
     totalTransactions: number
     totalVolume: number
@@ -156,8 +156,8 @@ export default function ProviderDetail() {
                       routeParams={{ id: applicationId!, providerId: provider.id, countryId: selectedCountry }}
                       onSubmit={() => setSelectedCountry('')}
                     >
-                      <Button type="submit" size="sm" variant="outline" disabled={!selectedCountry}>
-                        <Plus className="size-3 mr-1" /> Add
+                      <Button type="submit" size="sm" disabled={!selectedCountry}>
+                        Add
                       </Button>
                     </Form>
                   </div>
@@ -208,7 +208,7 @@ export default function ProviderDetail() {
                         <SelectGroup>
                           {availableOperators.map((op) => (
                             <SelectItem key={op.id} value={op.id}>
-                              {op.name} ({op.countryCode})
+                              {op.name} ({op.country.code})
                             </SelectItem>
                           ))}
                         </SelectGroup>
@@ -230,8 +230,8 @@ export default function ProviderDetail() {
                     >
                       <input type="hidden" name="mobileOperatorId" value={selectedOperator} />
                       <input type="hidden" name="priority" value={routePriority} />
-                      <Button type="submit" size="sm" variant="outline" disabled={!selectedOperator}>
-                        <Plus className="size-3 mr-1" /> Add
+                      <Button type="submit" size="sm" disabled={!selectedOperator}>
+                        Add
                       </Button>
                     </Form>
                   </div>

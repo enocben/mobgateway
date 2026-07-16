@@ -6,6 +6,7 @@ import db from '@adonisjs/lucid/services/db'
 import ProviderTransformer from '#transformers/provider_transformer'
 import Country from '#models/country'
 import CountryTransformer from '#transformers/country_transformer'
+import MobileOperatorTransformer from '#transformers/mobile_operator_transformer'
 
 export default class ProvidersController {
   /**
@@ -74,11 +75,7 @@ export default class ProvidersController {
     return inertia.render('admin/Providers/Detail', {
       provider: ProviderTransformer.transform(provider),
       availableCountries: CountryTransformer.transform(availableCountries),
-      availableOperators: availableOperators.map((op) => ({
-        id: op.id,
-        name: op.name,
-        countryCode: op.country?.code,
-      })),
+      availableOperators: MobileOperatorTransformer.transform(availableOperators),
       stats: {
         totalTransactions: totalTx,
         totalVolume: Number(txStats?.volume ?? 0),
