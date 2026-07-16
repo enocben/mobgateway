@@ -208,7 +208,7 @@ export default function ProviderDetail() {
                         <SelectGroup>
                           {availableOperators.map((op) => (
                             <SelectItem key={op.id} value={op.id}>
-                              {op.name} ({op.country.code})
+                              {op.name}
                             </SelectItem>
                           ))}
                         </SelectGroup>
