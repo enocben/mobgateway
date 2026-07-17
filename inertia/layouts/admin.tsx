@@ -91,6 +91,20 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const user = children.props.user
   const { setApplications, setApplication, applications, applicationId } = useApplicationStore()
 
+  // ── Flash messages ────────────────────────────────────────────────────
+  useEffect(() => {
+    toast.dismiss()
+  }, [url])
+
+  useEffect(() => {
+    if (children.props.flash.error) {
+      toast.error(children.props.flash.error)
+    }
+    if (children.props.flash.success) {
+      toast.success(children.props.flash.success)
+    }
+  })
+
   useEffect(() => {
     ;(async () => {
       const [data, error] = await client.api.admin.applications({}).safe()
