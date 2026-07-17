@@ -8,6 +8,11 @@ import CountryTransformer from '#transformers/country_transformer'
 import MobileOperatorTransformer from '#transformers/mobile_operator_transformer'
 import { inject } from '@adonisjs/core'
 import { ProviderService } from '#services/provider_service'
+import {
+  attachCountryValidator,
+  storeProviderRouteValidator,
+  updateProviderValidator,
+} from '#validators/provider'
 
 @inject()
 export default class ProvidersController {
@@ -43,7 +48,14 @@ export default class ProvidersController {
    * Detach a country from a provider (scoped to current application).
    */
   async providersDestroyCountry({ params, response, session }: HttpContext) {
-    const country = await Country.findOrFail(params.countryId)
+    const [error, data] = await attachCountryValidator.tryValidate(params)
+
+    if (error) {
+      session.flash('errors', { country: error.messages })
+      return response.redirect().back()
+    }
+
+    const country = await Country.findOrFail(data.countryId)
     const provider = await Provider.query()
       .where('id', params.providerId)
       .firstOrFail()
@@ -58,8 +70,15 @@ export default class ProvidersController {
    * Attach a country to a provider (scoped to current application).
    */
   async createProvider({ params, response, session }: HttpContext) {
+    const [error, data] = await attachCountryValidator.tryValidate(params)
+
+    if (error) {
+      session.flash('errors', { country: error.messages })
+      return response.redirect().back()
+    }
+
     const provider = await Provider.findOrFail(params.providerId)
-    const country = await Country.findOrFail(params.countryId)
+    const country = await Country.findOrFail(data.countryId)
 
     const existing = await provider.related('countries').query()
       .where('country_id', country.id)
@@ -77,12 +96,18 @@ export default class ProvidersController {
    * Attach a mobile operator to a provider via a new route (scoped to current app).
    */
   async storeProviderRoute({ params, request, response, session }: HttpContext) {
-    const { mobileOperatorId, priority } = request.only(['mobileOperatorId', 'priority'])
+    const [error, data] = await storeProviderRouteValidator.tryValidate(
+      request.only(['mobileOperatorId', 'priority'])
+    )
 
-    // Check if already routed for this app
+    if (error) {
+      session.flash('errors', { route: error.messages })
+      return response.redirect().back()
+    }
+
     const existing = await ProviderRoute.query()
       .where('provider_id', params.providerId)
-      .where('mobile_operator_id', mobileOperatorId)
+      .where('mobile_operator_id', data.mobileOperatorId)
       .first()
 
     if (existing) {
@@ -92,8 +117,8 @@ export default class ProvidersController {
 
     await ProviderRoute.create({
       providerId: params.providerId,
-      mobileOperatorId,
-      priority: priority ? Number(priority) : 99,
+      mobileOperatorId: data.mobileOperatorId,
+      priority: data.priority ?? 99,
       isActive: true,
     })
 
@@ -140,31 +165,19 @@ export default class ProvidersController {
       return response.status(404).json({ message: 'Provider not found' })
     }
 
-    const { name, status, config } = request.only(['name', 'status', 'config'])
+    const payload = request.only(['name', 'status', 'config'])
+    const [error, data] = await updateProviderValidator.tryValidate(payload)
 
-    if (name !== undefined) {
-      if (typeof name !== 'string' || name.trim().length === 0) {
-        return response.status(422).json({
-          message: 'Validation failed',
-          errors: { name: 'Name cannot be empty' },
-        })
-      }
-      provider.name = name
+    if (error) {
+      return response.status(422).json({
+        message: 'Validation failed',
+        errors: error.messages,
+      })
     }
 
-    if (status !== undefined) {
-      if (!['active', 'inactive'].includes(status)) {
-        return response.status(422).json({
-          message: 'Validation failed',
-          errors: { status: 'Status must be active or inactive' },
-        })
-      }
-      provider.status = status
-    }
-
-    if (config !== undefined) {
-      provider.config = config
-    }
+    if (data.name !== undefined) provider.name = data.name
+    if (data.status !== undefined) provider.status = data.status
+    if (data.config !== undefined) provider.config = data.config
 
     await provider.save()
     return response.status(200).json(provider)
