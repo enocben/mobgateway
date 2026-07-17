@@ -1,14 +1,18 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Provider from '#models/provider'
 import ProviderRoute from '#models/provider_route'
-import MobileOperator from '#models/mobile_operator'
 import db from '@adonisjs/lucid/services/db'
 import ProviderTransformer from '#transformers/provider_transformer'
 import Country from '#models/country'
 import CountryTransformer from '#transformers/country_transformer'
 import MobileOperatorTransformer from '#transformers/mobile_operator_transformer'
+import { inject } from '@adonisjs/core'
+import { ProviderService } from '#services/provider_service'
 
+@inject()
 export default class ProvidersController {
+  constructor(protected providerService: ProviderService) {
+  }
   /**
    * GET /admin/:id/providers — List all providers for the dashboard.
    * Providers are code-driven; creation happens via new classes, not the UI.
@@ -25,63 +29,13 @@ export default class ProvidersController {
   }
 
   async providersDetail({ params, inertia }: HttpContext) {
-    const applicationId = params.id
-    const provider = await Provider.query()
-      .where('id', params.providerId)
-      .preload('routes', (q) =>
-        q
-          .preload('mobileOperator')
-          .orderBy('priority', 'asc')
-      )
-      .preload('transactions', (q) =>
-        q.preload('application').orderBy('createdAt', 'desc').limit(20)
-      )
-      .preload('countries', (q) => q.where('applicationId', applicationId))
-      .firstOrFail()
-
-    // Available countries (not yet linked)
-    const linkedCountryIds = provider.countries.map((c) => c.id)
-    const availableCountries = await Country.query()
-      .where('application_id', applicationId)
-      .whereNotIn('id', linkedCountryIds.length > 0 ? linkedCountryIds : [''])
-      .orderBy('name', 'asc')
-
-    // Available mobile operators: only from countries linked to this provider
-    const linkedCountryCodes = provider.countries.map((c) => c.id).filter((v) => v !== null)
-
-    const availableOperators = await MobileOperator.query()
-      .where('application_id', applicationId)
-      .whereIn('country_id', linkedCountryCodes)
-      .preload('country')
-      .orderBy('name', 'asc')
-
-    const [txStats] = await Promise.all([
-      db
-        .from('transactions')
-        .where('provider_id', provider.id)
-        .select(
-          db.raw('COUNT(*)::int as total'),
-          db.raw(
-            "COALESCE(SUM(CASE WHEN status = 'completed' THEN amount ELSE 0 END), 0) as volume"
-          ),
-          db.raw("COALESCE(SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END), 0) as completed")
-        )
-        .first(),
-    ])
-
-    const totalTx = Number(txStats?.total ?? 0)
-    const completed = Number(txStats?.completed ?? 0)
-    const successRate = totalTx > 0 ? Number(((completed / totalTx) * 100).toFixed(1)) : 0
+    const data = await this.providerService.getDetail(params.id, params.providerId)
 
     return inertia.render('admin/Providers/Detail', {
-      provider: ProviderTransformer.transform(provider),
-      availableCountries: CountryTransformer.transform(availableCountries),
-      availableOperators: MobileOperatorTransformer.transform(availableOperators),
-      stats: {
-        totalTransactions: totalTx,
-        totalVolume: Number(txStats?.volume ?? 0),
-        successRate,
-      },
+      provider: ProviderTransformer.transform(data.provider),
+      availableCountries: CountryTransformer.transform(data.availableCountries),
+      availableOperators: MobileOperatorTransformer.transform(data.availableOperators),
+      stats: data.stats,
     })
   }
 
