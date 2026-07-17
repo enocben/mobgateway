@@ -80,6 +80,8 @@ export type ScannedRoutes = {
     'admin.applications.detail': { paramsTuple: [ParamValue]; params: {'appId': ParamValue} }
     'admin.settings': { paramsTuple?: []; params?: {} }
     'admin.applications.edit': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.app.settings': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.app.settings.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.users': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.users.detail': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'userId': ParamValue} }
     'admin.providers': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -143,6 +145,7 @@ export type ScannedRoutes = {
     'admin.applications.detail': { paramsTuple: [ParamValue]; params: {'appId': ParamValue} }
     'admin.settings': { paramsTuple?: []; params?: {} }
     'admin.applications.edit': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.app.settings': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.users': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.users.detail': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'userId': ParamValue} }
     'admin.providers': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -197,6 +200,7 @@ export type ScannedRoutes = {
     'admin.applications.detail': { paramsTuple: [ParamValue]; params: {'appId': ParamValue} }
     'admin.settings': { paramsTuple?: []; params?: {} }
     'admin.applications.edit': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.app.settings': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.users': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.users.detail': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'userId': ParamValue} }
     'admin.providers': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -243,6 +247,7 @@ export type ScannedRoutes = {
     'commissions.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'providers.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'users.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.app.settings.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.mobile-operators.update': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'operatorId': ParamValue} }
   }
   DELETE: {

@@ -115,6 +115,11 @@ export interface ApiDefinition {
       edit: typeof routes['admin.applications.edit']
     }
     settings: typeof routes['admin.settings']
+    app: {
+      settings: typeof routes['admin.app.settings'] & {
+        update: typeof routes['admin.app.settings.update']
+      }
+    }
     users: typeof routes['admin.users'] & {
       detail: typeof routes['admin.users.detail']
     }

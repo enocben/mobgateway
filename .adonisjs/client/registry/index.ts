@@ -462,6 +462,18 @@ const routes = {
     tokens: [{"old":"/admin/:id/edit","type":0,"val":"admin","end":""},{"old":"/admin/:id/edit","type":1,"val":"id","end":""},{"old":"/admin/:id/edit","type":0,"val":"edit","end":""}],
     types: placeholder as Registry['admin.applications.edit']['types'],
   },
+  'admin.app.settings': {
+    methods: ["GET","HEAD"],
+    pattern: '/admin/:id/settings',
+    tokens: [{"old":"/admin/:id/settings","type":0,"val":"admin","end":""},{"old":"/admin/:id/settings","type":1,"val":"id","end":""},{"old":"/admin/:id/settings","type":0,"val":"settings","end":""}],
+    types: placeholder as Registry['admin.app.settings']['types'],
+  },
+  'admin.app.settings.update': {
+    methods: ["PUT"],
+    pattern: '/admin/:id/settings',
+    tokens: [{"old":"/admin/:id/settings","type":0,"val":"admin","end":""},{"old":"/admin/:id/settings","type":1,"val":"id","end":""},{"old":"/admin/:id/settings","type":0,"val":"settings","end":""}],
+    types: placeholder as Registry['admin.app.settings.update']['types'],
+  },
   'admin.users': {
     methods: ["GET","HEAD"],
     pattern: '/admin/:id/users',

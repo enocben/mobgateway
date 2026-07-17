@@ -170,10 +170,10 @@ router
     router.get('/edit', [controllers.Admin, 'applicationsEdit']).as('admin.applications.edit')
 
     // Settings
-    router.get('/settings', [controllers.Admin, 'settings']).as('admin.settings')
+    router.get('/settings', [controllers.Admin, 'settings']).as('admin.app.settings')
     router
       .put('/settings', [controllers.Admin, 'settingsUpdate'])
-      .as('admin.settings.update')
+      .as('admin.app.settings.update')
 
     // Users
     router.get('/users', [controllers.Admin, 'users']).as('admin.users')

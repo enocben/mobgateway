@@ -29,6 +29,7 @@ import {
   Smartphone,
   Users,
   Webhook,
+  LucideColumnsSettings
 } from 'lucide-react'
 import { Data } from '@generated/data'
 import { Label } from '~/components/ui/label'
@@ -78,6 +79,7 @@ const sidebarSections: SideBarSectionsType = [
     items: [
       { label: 'Webhooks', icon: Webhook, route: 'admin.webhooks' as const },
       { label: 'API Logs', icon: FileText, route: 'admin.logs' as const },
+      {label: 'Settings', icon: LucideColumnsSettings, route: 'admin.app.settings'}
     ],
   },
 ]

@@ -919,6 +919,30 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['applicationsEdit']>>>
     }
   }
+  'admin.app.settings': {
+    methods: ["GET","HEAD"]
+    pattern: '/admin/:id/settings'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['settings']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['settings']>>>
+    }
+  }
+  'admin.app.settings.update': {
+    methods: ["PUT"]
+    pattern: '/admin/:id/settings'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['settingsUpdate']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['settingsUpdate']>>>
+    }
+  }
   'admin.users': {
     methods: ["GET","HEAD"]
     pattern: '/admin/:id/users'

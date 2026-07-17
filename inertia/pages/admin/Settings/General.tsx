@@ -22,7 +22,7 @@ export default function GeneralSettings() {
   const { application } = usePage<InertiaProps<Props>>().props
 
   return (
-    <div className="flex flex-col gap-6 max-w-2xl">
+    <div className="flex flex-col gap-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
         <p className="text-sm text-muted-foreground mt-1">
@@ -41,7 +41,7 @@ export default function GeneralSettings() {
             <div className="flex flex-col gap-2">
               <Label htmlFor="name">Application Name</Label>
               <Form
-                route="admin.settings.update"
+                route="admin.app.settings.update"
                 routeParams={{ id: applicationId! }}
               >
                 <div className="flex gap-3">
