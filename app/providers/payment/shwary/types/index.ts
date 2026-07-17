@@ -32,7 +32,7 @@ export interface ShwaryTransaction {
 }
 
 /** Wrapper Pipedream autour d'un webhook Shwary */
-export interface PipedreamWebhookWrapper {
+export interface ShwaryWebhookWrapper {
   'step.trigger': {
     event: {
       body: ShwaryTransaction

@@ -7,8 +7,8 @@ import {
   type TransactionFilter,
   type WebhookRequest,
 } from '#pro/base_payment_provider'
-import type { ShwaryTransaction, PipedreamWebhookWrapper } from './types/index.js'
 import env from '#start/env'
+import { ShwaryWebhookWrapper } from '#pro/payment/shwary/types/index'
 
 /**
  * Shwary mobile money provider.
@@ -205,7 +205,7 @@ export default class ShwaryProvider extends BasePaymentProvider {
    * Format Pipedream      : { "step.trigger": { "event": { "body": { ... } } } }
    */
   private extractBody(raw: Record<string, unknown>): Record<string, unknown> {
-    const pipedream = raw as unknown as PipedreamWebhookWrapper
+    const pipedream = raw as unknown as ShwaryWebhookWrapper
     if (pipedream['step.trigger']?.event?.body) {
       return pipedream['step.trigger'].event.body as unknown as Record<string, unknown>
     }
