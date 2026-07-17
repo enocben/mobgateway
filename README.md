@@ -2,6 +2,8 @@
 
 Plateforme unifiée de paiement mobile money — agrège plusieurs providers (Shwary, Orange Money, MTN, Airtel…) derrière une API unique et un dashboard d'administration.
 
+![Architecture](docs/architecture.svg)
+
 ## Stack technique
 
 | Couche | Technologie |
