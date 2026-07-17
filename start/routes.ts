@@ -174,6 +174,12 @@ router
     router
       .put('/settings', [controllers.Admin, 'settingsUpdate'])
       .as('admin.app.settings.update')
+    router
+      .post('/settings/api-key', [controllers.Admin, 'settingsGenerateApiKey'])
+      .as('admin.app.settings.api-key.generate')
+    router
+      .delete('/settings/api-key/:keyId', [controllers.Admin, 'settingsDestroyApiKey'])
+      .as('admin.app.settings.api-key.destroy')
 
     // Users
     router.get('/users', [controllers.Admin, 'users']).as('admin.users')

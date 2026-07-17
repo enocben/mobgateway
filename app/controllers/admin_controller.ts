@@ -1,9 +1,11 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Application from '#models/application'
 import ApplicationTransformer from '#transformers/application_transformer'
+import ApiKey from '#models/api_key'
 import User from '#models/user'
 import UserTransformer from '#transformers/user_transformer'
 import db from '@adonisjs/lucid/services/db'
+import { randomUUID } from 'node:crypto'
 
 export default class AdminController {
   async index({ response }: HttpContext) {
@@ -117,11 +119,50 @@ export default class AdminController {
   async settings({ params, inertia }: HttpContext) {
     const application = await Application.query()
       .where('id', params.id)
+      .preload('apiKeys', (q) => q.orderBy('createdAt', 'desc'))
       .firstOrFail()
 
     return inertia.render('admin/Settings/General', {
       application: ApplicationTransformer.transform(application),
+      apiKeys: application.apiKeys.map((k) => ({
+        id: k.id,
+        name: k.name,
+        keyType: k.keyType,
+        createdAt: k.createdAt?.toISO() ?? null,
+        lastUsedAt: k.lastUsedAt?.toISO() ?? null,
+        revokedAt: k.revokedAt?.toISO() ?? null,
+      })),
     })
+  }
+
+  async settingsGenerateApiKey({ params, response, session }: HttpContext) {
+    const application = await Application.query()
+      .where('id', params.id)
+      .firstOrFail()
+
+    const rawKey = `mmg_${randomUUID().replace(/-/g, '')}`
+
+    await ApiKey.create({
+      applicationId: params.id,
+      name: `default-${Date.now()}`,
+      keyHash: rawKey, // stocké en clair pour l'instant (à hasher plus tard)
+      keyType: 'secret',
+      permissions: ['read', 'write'],
+    })
+
+    session.flash('success', 'API key generated')
+    session.flash('generatedApiKey', rawKey)
+    return response.redirect().back()
+  }
+
+  async settingsDestroyApiKey({ params, response, session }: HttpContext) {
+    await ApiKey.query()
+      .where('id', params.keyId)
+      .where('applicationId', params.id)
+      .delete()
+
+    session.flash('success', 'API key deleted')
+    return response.redirect().back()
   }
 
   async settingsUpdate({ params, request, response, session }: HttpContext) {
