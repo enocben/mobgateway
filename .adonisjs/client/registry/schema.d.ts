@@ -515,12 +515,12 @@ export interface Registry {
     methods: ["PUT"]
     pattern: '/api/v1/providers/:id'
     types: {
-      body: {}
+      body: ExtractBody<InferInput<(typeof import('#validators/provider').updateProviderValidator)>>
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
-      query: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/provider').updateProviderValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['update']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'providers.test_connection': {
@@ -995,12 +995,12 @@ export interface Registry {
     methods: ["POST"]
     pattern: '/admin/:id/providers/:providerId/routes'
     types: {
-      body: {}
+      body: ExtractBody<InferInput<(typeof import('#validators/provider').storeProviderRouteValidator)>>
       paramsTuple: [ParamValue, ParamValue]
       params: { id: ParamValue; providerId: ParamValue }
-      query: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/provider').storeProviderRouteValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['storeProviderRoute']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['storeProviderRoute']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/providers_controller').default['storeProviderRoute']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'admin.providers.routes.destroy': {

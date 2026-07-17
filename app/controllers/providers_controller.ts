@@ -96,14 +96,7 @@ export default class ProvidersController {
    * Attach a mobile operator to a provider via a new route (scoped to current app).
    */
   async storeProviderRoute({ params, request, response, session }: HttpContext) {
-    const [error, data] = await storeProviderRouteValidator.tryValidate(
-      request.only(['mobileOperatorId', 'priority'])
-    )
-
-    if (error) {
-      session.flash('errors', { route: error.messages })
-      return response.redirect().back()
-    }
+    const data = await request.validateUsing(storeProviderRouteValidator)
 
     const existing = await ProviderRoute.query()
       .where('provider_id', params.providerId)
@@ -164,20 +157,11 @@ export default class ProvidersController {
     if (!provider) {
       return response.status(404).json({ message: 'Provider not found' })
     }
+    const data = await request.validateUsing(updateProviderValidator)
 
-    const payload = request.only(['name', 'status', 'config'])
-    const [error, data] = await updateProviderValidator.tryValidate(payload)
-
-    if (error) {
-      return response.status(422).json({
-        message: 'Validation failed',
-        errors: error.messages,
-      })
-    }
-
-    if (data.name !== undefined) provider.name = data.name
-    if (data.status !== undefined) provider.status = data.status
-    if (data.config !== undefined) provider.config = data.config
+    if (data.name) provider.name = data.name
+    if (data.status) provider.status = data.status
+    if (data.config) provider.config = data.config
 
     await provider.save()
     return response.status(200).json(provider)
