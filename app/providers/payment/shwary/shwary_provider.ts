@@ -7,8 +7,8 @@ import {
   type TransactionFilter,
   type WebhookRequest,
 } from '#pro/base_payment_provider'
+import type { ShwaryTransaction, PipedreamWebhookWrapper } from './types/index.js'
 import env from '#start/env'
-import BufferSource = NodeJS.BufferSource
 
 /**
  * Shwary mobile money provider.
@@ -120,19 +120,23 @@ export default class ShwaryProvider extends BasePaymentProvider {
   /** Shwary TransactionResponse → PaymentTransaction normalisé */
   private normalize(raw: Record<string, unknown>): PaymentTransaction {
     return {
-      id: (raw.id as string) ?? '',
+      id: (raw.pretiumTransactionId as string) ?? (raw.id as string) ?? '',
       reference: (raw.referenceId as string) ?? (raw.reference as string) ?? '',
       amount: Number(raw.amount ?? 0),
       currency: (raw.currency as string) ?? '',
       phoneNumber: (raw.recipientPhoneNumber as string) ?? '',
       status: this.mapStatus(raw.status as string | undefined),
-      providerReference: (raw.id as string) ?? undefined,
+      providerReference: (raw.pretiumTransactionId as string) ?? (raw.id as string) ?? undefined,
       failureReason: (raw.failureReason as string) ?? undefined,
       metadata: {
         txHash: raw.txHash ?? null,
         isSandbox: raw.isSandbox ?? null,
         type: raw.type ?? null,
         userId: raw.userId ?? null,
+        fees: raw.fees ?? null,
+        isReleased: raw.isReleased ?? null,
+        description: raw.description ?? null,
+        payoutProviderTransactionId: raw.payoutProviderTransactionId ?? null,
         ...((raw.metadata as Record<string, unknown>) ?? {}),
       },
       createdAt: raw.createdAt ? new Date(raw.createdAt as string) : new Date(),
@@ -195,42 +199,41 @@ export default class ShwaryProvider extends BasePaymentProvider {
 
   // ── Webhooks ────────────────────────────────────────────────────────────
 
+  /**
+   * Extraire le corps de transaction du webhook, en gérant l'éventuel wrapper Pipedream.
+   * Format direct Shwary : { id, amount, ... }
+   * Format Pipedream      : { "step.trigger": { "event": { "body": { ... } } } }
+   */
+  private extractBody(raw: Record<string, unknown>): Record<string, unknown> {
+    const pipedream = raw as unknown as PipedreamWebhookWrapper
+    if (pipedream['step.trigger']?.event?.body) {
+      return pipedream['step.trigger'].event.body as unknown as Record<string, unknown>
+    }
+    return raw
+  }
+
   async verifyWebhook(request: WebhookRequest): Promise<boolean> {
-    // Shwary envoie un header x-shwary-signature = HMAC-SHA256(body, merchantKey)
-    const signature = request.headers['x-shwary-signature'] as string | undefined
-    if (!signature || !this.merchantKey) return false
-
-    const bodyStr =
-      typeof request.body === 'string' ? request.body : JSON.stringify(request.body)
-
-    const encoder = new TextEncoder()
-    const key = await crypto.subtle.importKey(
-      'raw',
-      encoder.encode(this.merchantKey),
-      { name: 'HMAC', hash: 'SHA-256' },
-      false,
-      ['verify']
-    )
-    return await crypto.subtle.verify(
-      'HMAC',
-      key,
-      // @ts-ignore
-      hexToBytes(signature),
-      encoder.encode(bodyStr) as BufferSource
-    )
+    // Shwary authentifie ses webhooks via un header x-api-key partagé
+    const apiKey = request.headers['x-api-key'] as string | undefined
+    if (!apiKey || !this.merchantKey) {
+      // Fallback : pas de clé configurée = pas de vérification possible
+      return !this.merchantKey || apiKey === this.merchantKey
+    }
+    return apiKey === this.merchantKey
   }
 
   async handleWebhook(request: WebhookRequest): Promise<PaymentTransaction> {
     const valid = await this.verifyWebhook(request)
     if (!valid) {
-      throw new Error('Invalid Shwary webhook signature')
+      throw new Error('Invalid Shwary webhook: x-api-key mismatch')
     }
 
-    const body =
+    const rawBody =
       typeof request.body === 'string'
         ? (JSON.parse(request.body) as Record<string, unknown>)
         : (request.body as Record<string, unknown>)
 
+    const body = this.extractBody(rawBody)
     return this.normalize(body)
   }
 
@@ -266,14 +269,4 @@ export default class ShwaryProvider extends BasePaymentProvider {
       throw new Error(`Shwary configuration invalid: ${errors.join('; ')}`)
     }
   }
-}
-
-// ── Utilitaire ─────────────────────────────────────────────────────────────
-
-function hexToBytes(hex: string): Uint8Array {
-  const bytes = new Uint8Array(hex.length / 2)
-  for (let i = 0; i < bytes.length; i++) {
-    bytes[i] = parseInt(hex.substring(i * 2, i * 2 + 2), 16)
-  }
-  return bytes
 }
