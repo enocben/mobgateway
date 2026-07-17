@@ -1,15 +1,18 @@
-import { usePage } from '@inertiajs/react'
+import { router, usePage } from '@inertiajs/react'
 import { Form } from '@adonisjs/inertia/react'
 import { motion } from 'framer-motion'
-import { Save, Building2, Calendar, Hash, Shield, Key, Plus, Trash2, Copy, Eye, EyeOff } from 'lucide-react'
+import { Save, Building2, Calendar, Hash, Shield, Key, Copy, Eye, EyeOff } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '~/components/ui/card'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import { Separator } from '~/components/ui/separator'
 import { Badge } from '~/components/ui/badge'
+import { AlertDialogDelete } from '~/components/AlertDialogDelete'
+import { DialogApiKey } from '~/components/dialog_api_key'
 import { formatDate } from '~/lib/utils'
 import { useApplicationStore } from '~/context/application_context'
+import { urlFor } from '~/client'
 import { Data } from '@generated/data'
 import { type InertiaProps } from '~/types'
 import { useState } from 'react'
@@ -155,14 +158,7 @@ export default function GeneralSettings() {
                 <CardTitle>API Keys</CardTitle>
                 <CardDescription>Manage API keys for this application</CardDescription>
               </div>
-              <Form
-                route="admin.app.settings.api-key.generate"
-                routeParams={{ id: applicationId! }}
-              >
-                <Button type="submit" size="sm">
-                  <Plus className="size-4 mr-1" /> Generate Key
-                </Button>
-              </Form>
+              <DialogApiKey />
             </div>
           </CardHeader>
           <CardContent>
@@ -194,14 +190,17 @@ export default function GeneralSettings() {
                       ) : (
                         <Badge variant="secondary" className="text-xs">Never used</Badge>
                       )}
-                      <Form
-                        route="admin.app.settings.api-key.destroy"
-                        routeParams={{ id: applicationId!, keyId: key.id }}
-                      >
-                        <Button variant="ghost" size="icon" type="submit" className="size-7">
-                          <Trash2 className="size-3 text-destructive" />
-                        </Button>
-                      </Form>
+                      <AlertDialogDelete
+                        title="Delete API Key"
+                        description={`Are you sure you want to delete the key "${key.name}"? This action cannot be undone.`}
+                        confirmationText={key.name}
+                        onConfirm={() => {
+                          router.delete(urlFor('admin.app.settings.api-key.destroy', {
+                            id: applicationId!,
+                            keyId: key.id,
+                          }))
+                        }}
+                      />
                     </div>
                   </div>
                 ))}

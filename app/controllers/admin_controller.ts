@@ -136,10 +136,6 @@ export default class AdminController {
   }
 
   async settingsGenerateApiKey({ params, response, session }: HttpContext) {
-    const application = await Application.query()
-      .where('id', params.id)
-      .firstOrFail()
-
     const rawKey = `mmg_${randomUUID().replace(/-/g, '')}`
 
     await ApiKey.create({
@@ -173,7 +169,7 @@ export default class AdminController {
     const { name } = request.only(['name'])
 
     if (!name || typeof name !== 'string' || name.trim().length === 0) {
-      session.flash('errors', { name: 'Application name cannot be empty' })
+      session.flash('errors', 'Application name cannot be empty' )
       return response.redirect().back()
     }
 

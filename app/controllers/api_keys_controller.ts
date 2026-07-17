@@ -1,5 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import ApiKey from '#models/api_key'
+import { randomUUID } from 'node:crypto'
+import { createApiKeyValidator } from '#validators/api_key'
 
 export default class ApiKeysController {
   async index({ params, request, response }: HttpContext) {
@@ -15,30 +17,21 @@ export default class ApiKeysController {
     return response.status(200).json(keys)
   }
 
-  async store({ params, request, response }: HttpContext) {
-    const applicationId = Number(params.application_id)
-    const { name, permissions, ipRestrictions, expiresAt } = request.only([
-      'name', 'permissions', 'ipRestrictions', 'expiresAt',
-    ])
+  async generateApiKey({ params, response, request, session }: HttpContext) {
+    const { name } = await request.validateUsing(createApiKeyValidator)
+    const rawKey = `mmg_${randomUUID().replace(/-/g, '')}`
 
-    if (!name) {
-      return response.status(422).json({
-        message: 'Validation failed',
-        errors: { name: 'Name is required' },
-      })
-    }
-
-    const apiKey = await ApiKey.create({
-      applicationId,
-      key: ApiKey.generateKey(),
+    await ApiKey.create({
+      applicationId: params.id,
       name,
-      permissions: permissions || ['read'],
-      ipRestrictions: ipRestrictions || null,
-      expiresAt: expiresAt || null,
-      lastUsedAt: null,
+      keyHash: ApiKey.generateKey(), // stocké en clair pour l'instant (à hasher plus tard)
+      keyType: 'secret',
+      permissions: JSON.stringify(['read', 'write']),
     })
 
-    return response.status(201).json(apiKey)
+    session.flash('success', 'API key generated')
+    session.flash('generatedApiKey', rawKey)
+    return response.redirect().back()
   }
 
   async show({ params, response }: HttpContext) {
@@ -69,7 +62,7 @@ export default class ApiKeysController {
       return response.status(404).json({ message: 'API key not found' })
     }
 
-    const { name, permissions, ipRestrictions, expiresAt } = request.only([
+    const { name, permissions, expiresAt } = request.only([
       'name', 'permissions', 'ipRestrictions', 'expiresAt',
     ])
 
@@ -84,7 +77,6 @@ export default class ApiKeysController {
     }
 
     if (permissions !== undefined) apiKey.permissions = permissions
-    if (ipRestrictions !== undefined) apiKey.ipRestrictions = ipRestrictions
     if (expiresAt !== undefined) apiKey.expiresAt = expiresAt
 
     await apiKey.save()
