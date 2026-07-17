@@ -62,7 +62,7 @@ export default class ProvidersController {
 
     await provider.related('countries').detach([country.id])
 
-    session.flash('success', `Country ${country.name} removed from provider`)
+    session.flash('success', `Country ${country.name} removed from ${provider.name}`)
     return response.redirect().back()
   }
 
