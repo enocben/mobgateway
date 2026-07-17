@@ -169,6 +169,12 @@ router
     // Applications
     router.get('/edit', [controllers.Admin, 'applicationsEdit']).as('admin.applications.edit')
 
+    // Settings
+    router.get('/settings', [controllers.Admin, 'settings']).as('admin.settings')
+    router
+      .put('/settings', [controllers.Admin, 'settingsUpdate'])
+      .as('admin.settings.update')
+
     // Users
     router.get('/users', [controllers.Admin, 'users']).as('admin.users')
     router.get('/users/:userId', [controllers.Admin, 'usersDetail']).as('admin.users.detail')

@@ -6,6 +6,7 @@ export default class ApplicationTransformer extends BaseTransformer<Application>
     return this.pick(this.resource, [
       'id',
       'name',
+      'slug',
       'status',
       'createdAt',
     ])

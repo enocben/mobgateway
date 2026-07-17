@@ -114,7 +114,32 @@ export default class AdminController {
     return inertia.render('admin/Monitoring/Dashboard', {})
   }
 
-  async settings({ inertia }: HttpContext) {
-    return inertia.render('admin/Settings/General', {})
+  async settings({ params, inertia }: HttpContext) {
+    const application = await Application.query()
+      .where('id', params.id)
+      .firstOrFail()
+
+    return inertia.render('admin/Settings/General', {
+      application: ApplicationTransformer.transform(application),
+    })
+  }
+
+  async settingsUpdate({ params, request, response, session }: HttpContext) {
+    const application = await Application.query()
+      .where('id', params.id)
+      .firstOrFail()
+
+    const { name } = request.only(['name'])
+
+    if (!name || typeof name !== 'string' || name.trim().length === 0) {
+      session.flash('errors', { name: 'Application name cannot be empty' })
+      return response.redirect().back()
+    }
+
+    application.name = name.trim()
+    await application.save()
+
+    session.flash('success', 'Application settings updated')
+    return response.redirect().back()
   }
 }

@@ -140,7 +140,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   const sidebarHref = (route: RouteName) => {
     // Routes in the top-level /admin group don't need an application id
-    if (route === 'admin.dashboard' || route === 'admin.settings') {
+    if (route === 'admin.dashboard') {
       return urlFor(route)
     }
     return urlFor(route, { id: applicationId! })
