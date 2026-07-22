@@ -29,10 +29,9 @@ import {
   Smartphone,
   Users,
   Webhook,
-  LucideColumnsSettings
+  ChevronDown,
+  LogOut,
 } from 'lucide-react'
-import { Data } from '@generated/data'
-import { Label } from '~/components/ui/label'
 import { client, urlFor } from '~/client'
 import { ScrollArea } from '~/components/ui/scroll-area'
 import { Avatar, AvatarFallback } from '~/components/ui/avatar'
@@ -46,10 +45,18 @@ import {
   SelectValue,
 } from '~/components/ui/select'
 import { Spinner } from '~/components/ui/spinner'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '~/components/ui/dropdown-menu'
 
 type SideBarSectionsType = {
-  section: string;
-  items: {label: string; icon: any, route: Parameters<typeof urlFor>[0]}[]
+  section: string
+  items: { label: string; icon: any; route: Parameters<typeof urlFor>[0] }[]
 }[]
 
 const sidebarSections: SideBarSectionsType = [
@@ -79,13 +86,56 @@ const sidebarSections: SideBarSectionsType = [
     items: [
       { label: 'Webhooks', icon: Webhook, route: 'admin.webhooks' as const },
       { label: 'API Logs', icon: FileText, route: 'admin.logs' as const },
-      {label: 'Settings', icon: LucideColumnsSettings, route: 'admin.app.settings'}
+      { label: 'Settings', icon: Settings, route: 'admin.app.settings' as const },
     ],
   },
 ]
 
 interface AdminLayoutProps {
-  children: ReactElement<Data.SharedProps>
+  children: ReactElement<{ flash?: { error?: string; success?: string }; user?: { name: string; email: string } }>
+}
+
+function UserMenu({ user }: { user?: { name: string; email: string } }) {
+  if (!user) return null
+
+  const initials = user.name
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2)
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 -mr-2 hover:bg-muted/60 transition-colors outline-none">
+        <Avatar className="size-8 ring-2 ring-sidebar-ring/20">
+          <AvatarFallback className="text-xs bg-primary/10 text-primary font-semibold">
+            {initials || 'AD'}
+          </AvatarFallback>
+        </Avatar>
+        <ChevronDown className="size-3.5 text-muted-foreground hidden sm:block" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" sideOffset={8} className="w-56">
+        <DropdownMenuLabel className="font-normal">
+          <p className="text-sm font-medium">{user.name}</p>
+          <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href={urlFor('admin.settings')} className="cursor-pointer">
+            <Settings className="size-4" />
+            <span>Settings</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href={urlFor('session.destroy')} method="post" as="button" className="cursor-pointer w-full justify-start">
+            <LogOut className="size-4" />
+            <span>Sign out</span>
+          </Link>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
 }
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
@@ -99,10 +149,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }, [url])
 
   useEffect(() => {
-    if (children.props.flash.error) {
+    if (children.props.flash?.error) {
       toast.error(children.props.flash.error)
     }
-    if (children.props.flash.success) {
+    if (children.props.flash?.success) {
       toast.success(children.props.flash.success)
     }
   })
@@ -115,19 +165,19 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         return
       }
       if (data.applications.length !== 0) {
-        setApplications(data.applications as unknown as Data.Application[])
+        setApplications(data.applications as unknown as Array<{ id: string; name: string }>)
       }
     })()
   }, [])
 
   const application = useMemo(
-    () => applications.find((a) => a.id === applicationId),
+    () => applications.find((a: { id: string; name: string }) => a.id === applicationId),
     [applications, applicationId]
   )
 
   const apps = useCallback(
     () =>
-      applications.map((app) => ({
+      applications.map((app: { id: string; name: string }) => ({
         value: app.id,
         label: app.name,
       })),
@@ -141,7 +191,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   const sidebarHref = (route: RouteName) => {
-    // Routes in the top-level /admin group don't need an application id
     if (route === 'admin.dashboard') {
       return urlFor(route)
     }
@@ -150,20 +199,20 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <SidebarProvider>
-      <Sidebar collapsible="icon">
-        <SidebarHeader className="flex h-16 items-center border-b px-4">
+      <Sidebar collapsible="icon" className="border-sidebar-border/30">
+        {/* ── Sidebar Header: App selector ── */}
+        <SidebarHeader className="flex h-14 items-center border-b border-sidebar-border/30 px-3">
           <Select
             value={application?.id}
             onValueChange={setApplication}
             disabled={applications.length === 0}
           >
-            <SelectTrigger className="w-full max-w-48">
-              <SelectValue />
+            <SelectTrigger className="w-full bg-sidebar-accent/50 border-sidebar-border/50 text-sidebar-foreground hover:bg-sidebar-accent transition-colors">
+              <SelectValue placeholder="Select app" />
             </SelectTrigger>
-
             <SelectContent>
               <SelectGroup>
-                {apps().map((item) => (
+                {apps().map((item: { value: string; label: string }) => (
                   <SelectItem key={item.value} value={item.value}>
                     {item.label}
                   </SelectItem>
@@ -173,12 +222,15 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </Select>
         </SidebarHeader>
 
+        {/* ── Sidebar Nav ── */}
         <SidebarContent>
           {application ? (
-            <ScrollArea className="flex-1">
+            <ScrollArea className="flex-1 px-1.5">
               {sidebarSections.map((section) => (
-                <SidebarGroup key={section.section}>
-                  <SidebarGroupLabel>{section.section}</SidebarGroupLabel>
+                <SidebarGroup key={section.section} className="px-1">
+                  <SidebarGroupLabel className="text-sidebar-foreground/50 text-[11px] tracking-wider uppercase font-semibold">
+                    {section.section}
+                  </SidebarGroupLabel>
                   <SidebarMenu>
                     {section.items.map((item) => (
                       <SidebarMenuItem key={item.route}>
@@ -186,10 +238,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                           asChild
                           isActive={isActive(item.route)}
                           tooltip={item.label}
+                          className="transition-all duration-200"
                         >
                           <Link href={sidebarHref(item.route)}>
-                            <item.icon className="size-5" />
-                            <span>{item.label}</span>
+                            <item.icon className="size-[18px]" />
+                            <span className="text-[13px]">{item.label}</span>
                           </Link>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
@@ -200,57 +253,73 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </ScrollArea>
           ) : (
             <div className="flex h-full items-center justify-center">
-              <Spinner className="size-2/6" />
+              <Spinner className="size-8" />
             </div>
           )}
         </SidebarContent>
 
-        <SidebarSeparator />
-        <SidebarFooter>
-          <div className="flex items-center gap-3 px-2">
-            <Avatar className="size-8">
-              <AvatarFallback className="text-xs bg-primary/10 text-primary">AD</AvatarFallback>
-            </Avatar>
-            {user && (
+        {/* ── Sidebar Footer: User ── */}
+        <SidebarSeparator className="bg-sidebar-border/30" />
+        <SidebarFooter className="p-3">
+          {user && (
+            <div className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center">
+              <Avatar className="size-8 shrink-0 ring-2 ring-sidebar-ring/20">
+                <AvatarFallback className="text-[11px] bg-sidebar-primary/15 text-sidebar-primary font-semibold">
+                  {user.name
+                    .split(' ')
+                    .map((n) => n[0])
+                    .join('')
+                    .toUpperCase()
+                    .slice(0, 2) || 'AD'}
+                </AvatarFallback>
+              </Avatar>
               <div className="flex-1 min-w-0 group-data-[collapsible=icon]:hidden">
-                <p className="text-sm font-medium truncate">{user.name}</p>
-                <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                <p className="text-[13px] font-medium truncate text-sidebar-foreground">{user.name}</p>
+                <p className="text-[11px] text-sidebar-foreground/50 truncate">{user.email}</p>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </SidebarFooter>
       </Sidebar>
 
+      {/* ── Main Content Area ── */}
       <SidebarInset>
-        <header className="top-0 z-30 flex h-16 items-center gap-4 border-b px-6">
-          <div>
-            <SidebarTrigger />
+        {/* ── Top Header Bar ── */}
+        <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b bg-background/80 backdrop-blur-sm px-3 sm:px-6">
+          <SidebarTrigger className="shrink-0" />
+
+          {/* App breadcrumb on desktop */}
+          <div className="hidden sm:flex items-center gap-2 min-w-0">
+            <div className="h-4 w-px bg-border" />
+            {application && (
+              <span className="text-sm font-medium text-muted-foreground truncate">
+                {application.name}
+              </span>
+            )}
           </div>
+
           <div className="flex-1" />
-          {user && (
-            <>
-              <Label>{user.name}</Label>
-              <Link href={urlFor('admin.settings')}>
-                <Settings />
-              </Link>
-            </>
-          )}
+
+          {/* User dropdown (desktop) / simple avatar (mobile handled by sidebar) */}
+          <div className="hidden sm:block">
+            <UserMenu user={user} />
+          </div>
         </header>
 
-        <main className="p-6 h-full">
+        {/* ── Page Content ── */}
+        <main className="flex-1 p-4 sm:p-6 lg:p-8">
           <AnimatePresence mode="wait">
             <motion.div
               key={url}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-              className="h-full"
+              transition={{ duration: 0.25, ease: 'easeOut' }}
             >
               {application ? (
                 children
               ) : (
-                <div className="flex h-full items-center justify-center">
-                  <Spinner className="size-2/6" />
+                <div className="flex h-[60vh] items-center justify-center">
+                  <Spinner className="size-10" />
                 </div>
               )}
             </motion.div>
@@ -258,7 +327,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </main>
       </SidebarInset>
 
-      <Toaster position="top-right" richColors />
+      <Toaster
+        position="top-right"
+        richColors
+        toastOptions={{
+          className: 'text-sm',
+        }}
+      />
     </SidebarProvider>
   )
 }
