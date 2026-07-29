@@ -8,7 +8,7 @@ import {
   Building2,
   ArrowUpRight,
 } from 'lucide-react'
-import { Card } from '~/components/ui/card'
+import { Card, CardContent } from '~/components/ui/card'
 import { formatCurrency } from '~/lib/utils'
 import { Link } from '@inertiajs/react'
 import { urlFor } from '~/client'
@@ -34,13 +34,11 @@ interface StatCardConfig {
   value: string | number
   subtitle?: string
   icon: React.ElementType
-  accent: string // Tailwind border color class
-  bg: string // Tailwind bg class for icon
-  textColor: string // Tailwind text class for icon
+  color: string // CSS var or oklch for dot + icon
 }
 
 function StatCard({ config, index }: { config: StatCardConfig; index: number }) {
-  const { title, value, subtitle, icon: Icon, accent, bg, textColor } = config
+  const { title, value, subtitle, icon: Icon, color } = config
 
   return (
     <motion.div
@@ -48,30 +46,26 @@ function StatCard({ config, index }: { config: StatCardConfig; index: number }) 
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.06, ease: 'easeOut' }}
     >
-      <Card className="group relative overflow-hidden border-0 shadow-sm hover:shadow-md transition-shadow duration-300">
-        {/* Left accent bar */}
-        <div className={`absolute inset-y-0 left-0 w-1 ${accent} rounded-l-xl`} />
-
-        <div className="p-5 sm:p-6">
+      <Card size="sm" className="group relative">
+        <CardContent className="py-0">
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">
-              <p className="text-xs sm:text-sm font-medium text-muted-foreground tracking-wide uppercase">
-                {title}
-              </p>
-              <p className="mt-1.5 text-2xl sm:text-3xl font-bold tracking-tight text-foreground tabular-nums">
+              <p className="aether-eyebrow">{title}</p>
+              <p className="mt-1.5 font-heading text-xl font-semibold tracking-tight text-foreground tabular-nums">
                 {value}
               </p>
               {subtitle && (
-                <p className="mt-1 text-xs text-muted-foreground">{subtitle}</p>
+                <p className="mt-0.5 text-[11px] text-muted-foreground">{subtitle}</p>
               )}
             </div>
             <div
-              className={`shrink-0 rounded-2xl p-3 ${bg} transition-transform duration-300 group-hover:scale-110`}
+              className="shrink-0 rounded-xl p-2.5 transition-transform duration-300 group-hover:scale-110"
+              style={{ backgroundColor: `${color}15` }}
             >
-              <Icon className={`size-5 sm:size-6 ${textColor}`} />
+              <Icon className="size-5" style={{ color }} />
             </div>
           </div>
-        </div>
+        </CardContent>
       </Card>
     </motion.div>
   )
@@ -94,12 +88,15 @@ function QuickAction({ action, index }: { action: QuickAction; index: number }) 
     >
       <Link
         href={action.route}
-        className={`flex items-center gap-3 rounded-xl border bg-card p-4 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]`}
+        className="flex items-center gap-3 rounded-lg border border-black/[0.10] dark:border-white/[0.08] bg-white/55 dark:bg-[oklch(0.12_0.025_265/0.60)] backdrop-blur-md p-4 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]"
       >
-        <div className={`rounded-xl p-2.5 ${action.color}`}>
-          <action.icon className="size-4 sm:size-5 text-white" />
+        <div
+          className="rounded-lg p-2.5"
+          style={{ backgroundColor: `${action.color}20` }}
+        >
+          <action.icon className="size-4" style={{ color: action.color }} />
         </div>
-        <span className="text-sm font-medium">{action.label}</span>
+        <span className="text-[13px] font-medium">{action.label}</span>
         <ArrowUpRight className="size-3.5 text-muted-foreground ml-auto shrink-0" />
       </Link>
     </motion.div>
@@ -114,36 +111,28 @@ export default function Dashboard({ stats }: Props) {
       title: 'Applications',
       value: stats.totalApplications,
       icon: Wallet,
-      accent: 'bg-accent-blue',
-      bg: 'bg-accent-blue/10',
-      textColor: 'text-accent-blue',
+      color: 'var(--chart-1)',
     },
     {
       key: 'users',
       title: 'Users',
       value: stats.totalUsers.toLocaleString(),
       icon: Users,
-      accent: 'bg-accent-purple',
-      bg: 'bg-accent-purple/10',
-      textColor: 'text-accent-purple',
+      color: 'var(--chart-3)',
     },
     {
       key: 'transactions',
       title: 'Transactions',
       value: stats.totalTransactions.toLocaleString(),
       icon: ArrowLeftRight,
-      accent: 'bg-accent-teal',
-      bg: 'bg-accent-teal/10',
-      textColor: 'text-accent-teal',
+      color: 'var(--chart-2)',
     },
     {
       key: 'revenue',
       title: 'Revenue',
       value: formatCurrency(stats.totalRevenue),
       icon: DollarSign,
-      accent: 'bg-accent-green',
-      bg: 'bg-accent-green/10',
-      textColor: 'text-accent-green',
+      color: 'var(--chart-2)',
     },
     {
       key: 'successRate',
@@ -151,18 +140,14 @@ export default function Dashboard({ stats }: Props) {
       value: `${stats.successRate}%`,
       subtitle: 'Completed / total',
       icon: TrendingUp,
-      accent: 'bg-accent-amber',
-      bg: 'bg-accent-amber/10',
-      textColor: 'text-accent-amber',
+      color: 'var(--chart-4)',
     },
     {
       key: 'providers',
       title: 'Active Providers',
       value: stats.activeProviders,
       icon: Building2,
-      accent: 'bg-accent-rose',
-      bg: 'bg-accent-rose/10',
-      textColor: 'text-accent-rose',
+      color: 'var(--chart-5)',
     },
   ]
 
@@ -173,19 +158,19 @@ export default function Dashboard({ stats }: Props) {
       label: 'Manage Providers',
       icon: Building2,
       route: urlFor('admin.providers', { id: applicationId! }),
-      color: 'bg-accent-blue',
+      color: 'var(--chart-1)',
     },
     {
       label: 'View Transactions',
       icon: ArrowLeftRight,
       route: urlFor('admin.transactions', { id: applicationId! }),
-      color: 'bg-accent-teal',
+      color: 'var(--chart-2)',
     },
     {
       label: 'Manage Users',
       icon: Users,
       route: urlFor('admin.users', { id: applicationId! }),
-      color: 'bg-accent-purple',
+      color: 'var(--chart-3)',
     },
   ]
 
@@ -199,7 +184,9 @@ export default function Dashboard({ stats }: Props) {
         className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
       >
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Dashboard</h1>
+          <h1 className="font-heading text-xl font-semibold tracking-tight">
+            Dashboard
+          </h1>
           <p className="text-sm text-muted-foreground mt-0.5">
             Overview of your mobile money gateway
           </p>
@@ -226,9 +213,7 @@ export default function Dashboard({ stats }: Props) {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4, delay: 0.3 }}
       >
-        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-          Quick Actions
-        </h2>
+        <h2 className="aether-eyebrow mb-3">Quick Actions</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
           {quickActions.map((action, i) => (
             <QuickAction key={action.label} action={action} index={i} />
