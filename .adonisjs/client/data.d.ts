@@ -15,6 +15,7 @@ import type ProviderRouteTransformer from '#transformers/provider_route_transfor
 import type ProviderTransformer from '#transformers/provider_transformer'
 import type TransactionTransformer from '#transformers/transaction_transformer'
 import type UserTransformer from '#transformers/user_transformer'
+import type CommissionTransformer from '#transformers/commission_transformer'
 import type InertiaMiddleware from '#middleware/inertia_middleware'
 
 export namespace Data {
@@ -53,6 +54,10 @@ export namespace Data {
   export type User = InferData<UserTransformer>
   export namespace User {
     export type Variants = InferVariants<UserTransformer>
+  }
+  export type Commission = InferData<CommissionTransformer>
+  export namespace Commission {
+    export type Variants = InferVariants<CommissionTransformer>
   }
   export type SharedProps = InferSharedProps<InertiaMiddleware>
 }

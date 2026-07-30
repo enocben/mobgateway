@@ -41,7 +41,6 @@ export type ScannedRoutes = {
     'admin.countries.delete': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'countryId': ParamValue} }
     'admin.transactions': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.webhooks': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'admin.commissions': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.routing': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.logs': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
@@ -65,7 +64,6 @@ export type ScannedRoutes = {
     'admin.countries': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.transactions': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.webhooks': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'admin.commissions': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.routing': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.logs': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
@@ -89,7 +87,6 @@ export type ScannedRoutes = {
     'admin.countries': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.transactions': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.webhooks': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'admin.commissions': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.routing': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.logs': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }

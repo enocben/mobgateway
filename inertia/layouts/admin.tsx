@@ -9,7 +9,6 @@ import {
   FileText,
   Globe,
   Menu,
-  Percent,
   Route,
   Settings,
   Smartphone,
@@ -63,7 +62,6 @@ const navSections: NavSection[] = [
       { label: 'Mobile Operators', icon: Smartphone, route: 'admin.mobile-operators' as const },
       { label: 'Countries', icon: Globe, route: 'admin.countries' as const },
       { label: 'Routing', icon: Route, route: 'admin.routing' as const },
-      { label: 'Commissions', icon: Percent, route: 'admin.commissions' as const },
     ],
   },
   {

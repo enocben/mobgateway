@@ -17,7 +17,6 @@ declare module '@adonisjs/inertia/types' {
     'admin/Applications/Detail': ExtractProps<(typeof import('../../inertia/pages/admin/Applications/Detail.tsx'))['default']>
     'admin/Applications/Edit': ExtractProps<(typeof import('../../inertia/pages/admin/Applications/Edit.tsx'))['default']>
     'admin/Applications/List': ExtractProps<(typeof import('../../inertia/pages/admin/Applications/List.tsx'))['default']>
-    'admin/Commissions/List': ExtractProps<(typeof import('../../inertia/pages/admin/Commissions/List.tsx'))['default']>
     'admin/Countries/Create': ExtractProps<(typeof import('../../inertia/pages/admin/Countries/Create.tsx'))['default']>
     'admin/Countries/List': ExtractProps<(typeof import('../../inertia/pages/admin/Countries/List.tsx'))['default']>
     'admin/Dashboard': ExtractProps<(typeof import('../../inertia/pages/admin/Dashboard.tsx'))['default']>

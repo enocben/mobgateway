@@ -451,18 +451,6 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['webhooks']>>>
     }
   }
-  'admin.commissions': {
-    methods: ["GET","HEAD"]
-    pattern: '/admin/:id/commissions'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['commissions']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['commissions']>>>
-    }
-  }
   'admin.routing': {
     methods: ["GET","HEAD"]
     pattern: '/admin/:id/routing'

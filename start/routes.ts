@@ -140,9 +140,6 @@ router
     // Webhooks
     router.get('/webhooks', [controllers.Admin, 'webhooks']).as('admin.webhooks')
 
-    // Commissions
-    router.get('/commissions', [controllers.Admin, 'commissions']).as('admin.commissions')
-
     // Routing
     router.get('/routing', [controllers.Admin, 'routing']).as('admin.routing')
 

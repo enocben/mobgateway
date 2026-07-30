@@ -104,10 +104,6 @@ export default class AdminController {
     return inertia.render('admin/Webhooks/List', {})
   }
 
-  async commissions({ inertia }: HttpContext) {
-    return inertia.render('admin/Commissions/List', {})
-  }
-
   async routing({ inertia }: HttpContext) {
     return inertia.render('admin/Routing/Config', {})
   }

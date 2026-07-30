@@ -59,7 +59,6 @@ export interface ApiDefinition {
     }
     transactions: typeof routes['admin.transactions']
     webhooks: typeof routes['admin.webhooks']
-    commissions: typeof routes['admin.commissions']
     routing: typeof routes['admin.routing']
     logs: typeof routes['admin.logs']
   }

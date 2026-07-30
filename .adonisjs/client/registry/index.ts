@@ -228,12 +228,6 @@ const routes = {
     tokens: [{"old":"/admin/:id/webhooks","type":0,"val":"admin","end":""},{"old":"/admin/:id/webhooks","type":1,"val":"id","end":""},{"old":"/admin/:id/webhooks","type":0,"val":"webhooks","end":""}],
     types: placeholder as Registry['admin.webhooks']['types'],
   },
-  'admin.commissions': {
-    methods: ["GET","HEAD"],
-    pattern: '/admin/:id/commissions',
-    tokens: [{"old":"/admin/:id/commissions","type":0,"val":"admin","end":""},{"old":"/admin/:id/commissions","type":1,"val":"id","end":""},{"old":"/admin/:id/commissions","type":0,"val":"commissions","end":""}],
-    types: placeholder as Registry['admin.commissions']['types'],
-  },
   'admin.routing': {
     methods: ["GET","HEAD"],
     pattern: '/admin/:id/routing',
