@@ -88,8 +88,12 @@ export default class AdminController {
     })
   }
 
-  async usersDetail({ inertia }: HttpContext) {
-    return inertia.render('admin/Users/Detail', {})
+  async usersDetail({ inertia, params }: HttpContext) {
+    const userId = params.userId
+    const user = await User.findOrFail(userId)
+    return inertia.render('admin/Users/Detail', {
+      user: UserTransformer.transform(user)
+    })
   }
 
   async transactions({ inertia }: HttpContext) {

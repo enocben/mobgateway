@@ -8,8 +8,6 @@ import {
   Building2,
   FileText,
   Globe,
-  LayoutDashboard,
-  LogOut,
   Menu,
   Percent,
   Route,
@@ -19,15 +17,6 @@ import {
   Webhook,
 } from 'lucide-react'
 import { client, urlFor } from '~/client'
-import { Avatar, AvatarFallback } from '~/components/ui/avatar'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '~/components/ui/dropdown-menu'
 import {
   Select,
   SelectContent,
@@ -39,6 +28,8 @@ import {
 import { Spinner } from '~/components/ui/spinner'
 import { useApplicationStore } from '~/context/application_context'
 import { cn } from '~/lib/utils'
+import { Data } from '@generated/data'
+import { UserMenu } from '~/components/userMenu'
 
 type NavItem = {
   label: string
@@ -50,6 +41,8 @@ type NavSection = {
   label: string
   items: NavItem[]
 }
+
+type RouteName = Parameters<typeof urlFor>[0]
 
 const navSections: NavSection[] = [
   {
@@ -90,54 +83,6 @@ interface AdminLayoutProps {
   }>
 }
 
-function UserMenu({ collapsed, user }: { collapsed: boolean; user?: { name: string; email: string } }) {
-  if (!user) return null
-
-  const initial = (user.name || '?').charAt(0).toUpperCase()
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        aria-label={user.name}
-        className={cn(
-          'flex items-center gap-2.5 rounded-md hover:bg-accent transition-colors cursor-pointer outline-none',
-          collapsed ? 'p-1' : 'flex-1 min-w-0 p-1 -m-1'
-        )}
-      >
-        <div className="flex items-center justify-center h-7 w-7 rounded-full bg-gradient-to-br from-primary to-violet-500 text-white font-mono text-[11px] font-semibold shrink-0">
-          {initial}
-        </div>
-        {!collapsed && (
-          <div className="flex-1 min-w-0 text-left leading-tight">
-            <div className="text-[12px] font-medium truncate">{user.name}</div>
-            <div className="font-mono text-[9.5px] text-muted-foreground/80 tracking-[0.06em] truncate">
-              {user.email}
-            </div>
-          </div>
-        )}
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" side="top" className="w-48">
-        <DropdownMenuLabel className="font-normal">
-          <p className="text-sm font-medium">{user.name}</p>
-          <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link
-            href={urlFor('session.destroy')}
-            method="post"
-            as="button"
-            className="cursor-pointer w-full"
-          >
-            <LogOut className="h-4 w-4 mr-2" />
-            Sign out
-          </Link>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
-
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const { url } = usePage()
   const user = children.props.user
@@ -157,10 +102,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     if (children.props.flash?.success) {
       toast.success(children.props.flash.success)
     }
-  })
+  }, [])
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       const [data, error] = await client.api.admin.applications({}).safe()
       if (error) {
         toast.error(error.message)
@@ -168,7 +113,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       }
       if (data.applications.length !== 0) {
         setApplications(
-          data.applications as unknown as Array<{ id: string; name: string }>
+          data.applications as unknown as Data.Application[]
         )
       }
     })()
@@ -191,7 +136,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     [applications]
   )
 
-  type RouteName = Parameters<typeof urlFor>[0]
+
 
   const isActive = (route: RouteName) => {
     return url.startsWith(urlFor(route, { id: applicationId! }))
@@ -199,12 +144,15 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   const sidebarHref = (route: RouteName) => {
     if (route === 'admin.dashboard') {
-      return urlFor(route)
+      return urlFor(route, {id: applicationId})
     }
     return urlFor(route, { id: applicationId! })
   }
 
   const hasApp = !!application
+
+  if (!applicationId)
+    return <Spinner />
 
   return (
     <div className="flex h-screen overflow-hidden bg-background prism-grid-bg">
@@ -212,19 +160,19 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       <div className="p-4 pr-0 flex">
         <aside
           className={cn(
-            'flex flex-col rounded-lg border border-black/[0.10] dark:border-white/[0.08] bg-white/70 dark:bg-[oklch(0.10_0.025_265/0.65)] backdrop-blur-xl backdrop-saturate-[1.3] shadow-[0_6px_18px_-8px_rgb(0_0_0/0.10),inset_0_0_0_1px_rgb(0_0_0/0.04)] dark:shadow-[0_6px_18px_-8px_rgb(0_0_0/0.7),inset_0_0_0_1px_rgb(255_255_255/0.04)] h-full overflow-hidden transition-all duration-200',
+            'flex flex-col rounded-lg border border-black/10 dark:border-white/8 bg-white/70 dark:bg-[oklch(0.10_0.025_265/0.65)] backdrop-blur-xl backdrop-saturate-[1.3] shadow-[0_6px_18px_-8px_rgb(0_0_0/0.10),inset_0_0_0_1px_rgb(0_0_0/0.04)] dark:shadow-[0_6px_18px_-8px_rgb(0_0_0/0.7),inset_0_0_0_1px_rgb(255_255_255/0.04)] h-full overflow-hidden transition-all duration-200',
             collapsed ? 'w-16' : 'w-56'
           )}
         >
           {/* Logo area */}
-          <div className="flex items-center px-4 h-14 border-b border-black/[0.10] dark:border-white/[0.08]">
+          <div className="flex items-center px-4 h-14 border-b border-black/10 dark:border-white/8">
             {collapsed ? (
               <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-primary/10 text-primary font-bold text-sm">
                 MM
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-violet-500 text-white font-mono text-[11px] font-bold">
+                <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-linear-to-br from-primary to-violet-500 text-white font-mono text-[11px] font-bold">
                   MG
                 </div>
                 <span className="font-heading text-base font-semibold tracking-tight text-foreground">
@@ -236,7 +184,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
           {/* App selector */}
           {!collapsed && (
-            <div className="px-3 py-3 border-b border-black/[0.05] dark:border-white/[0.05]">
+            <div className="px-3 py-3 border-b border-black/5 dark:border-white/5">
               <Select
                 value={application?.id}
                 onValueChange={setApplication}
@@ -282,7 +230,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                         )}
                       >
                         {active && (
-                          <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-5 bg-primary" />
+                          <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-primary" />
                         )}
                         <item.icon className="h-4 w-4 shrink-0" />
                         {!collapsed && <span>{item.label}</span>}
@@ -297,7 +245,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           {/* Footer — user */}
           <div
             className={cn(
-              'border-t border-black/[0.10] dark:border-white/[0.08] flex items-center gap-2',
+              'border-t border-black/10 dark:border-white/8 flex items-center gap-2',
               collapsed ? 'p-2 flex-col' : 'p-3'
             )}
           >
@@ -310,7 +258,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
         <header className="px-4 pt-4 pb-3">
-          <div className="flex items-center gap-3 h-12 px-3 rounded-lg border border-black/[0.10] dark:border-white/[0.08] bg-white/70 dark:bg-[oklch(0.10_0.025_265/0.65)] backdrop-blur-xl backdrop-saturate-[1.3] shadow-[0_6px_18px_-8px_rgb(0_0_0/0.10),inset_0_0_0_1px_rgb(0_0_0/0.04)] dark:shadow-[0_6px_18px_-8px_rgb(0_0_0/0.7),inset_0_0_0_1px_rgb(255_255_255/0.04)]">
+          <div className="flex items-center gap-3 h-12 px-3 rounded-lg border border-black/10 dark:border-white/8 bg-white/70 dark:bg-[oklch(0.10_0.025_265/0.65)] backdrop-blur-xl backdrop-saturate-[1.3] shadow-[0_6px_18px_-8px_rgb(0_0_0/0.10),inset_0_0_0_1px_rgb(0_0_0/0.04)] dark:shadow-[0_6px_18px_-8px_rgb(0_0_0/0.7),inset_0_0_0_1px_rgb(255_255_255/0.04)]">
             <button
               type="button"
               onClick={() => setCollapsed(!collapsed)}
@@ -319,7 +267,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             >
               <Menu className="h-4 w-4" />
             </button>
-            <div className="font-mono text-[11px] uppercase tracking-[0.10em] text-muted-foreground/80 truncate">
+            <div className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground/80 truncate">
               MobGateway{' '}
               <span className="opacity-60 mx-1">/</span>{' '}
               {application ? (
