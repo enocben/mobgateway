@@ -215,10 +215,10 @@ export default function ProviderDetail() {
                       </SelectContent>
                     </Select>
                     <Input
-                      type="number"
                       placeholder="Pri."
                       className="w-14 h-8 text-xs"
                       value={routePriority}
+                      type="hidden"
                       onChange={(e) => setRoutePriority(e.target.value)}
                       min="1"
                       max="999"
