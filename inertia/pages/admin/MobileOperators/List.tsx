@@ -12,7 +12,8 @@ import {
   TableHeader,
   TableRow,
 } from '~/components/ui/table'
-import { Data } from '@generated/data'
+import type { Data } from '@generated/data'
+import type Country from '#models/country'
 import { DialogMobileOperator } from '~/components/mobile_operator/dialog_mobile_operator'
 import { useApplicationStore } from '~/context/application_context'
 import { AlertDialogDelete } from '~/components/AlertDialogDelete'
@@ -20,9 +21,10 @@ import { client } from '~/client'
 
 type Props = {
   mobileOperators: Data.MobileOperator[] | undefined
+  countries: Country[]
 }
 
-export default function MobileOperatorsList({ mobileOperators: operators }: Props) {
+export default function MobileOperatorsList({ mobileOperators: operators, countries }: Props) {
   const applicationId = useApplicationStore((a) => a.applicationId)
   const [search, setSearch] = useState('')
 
@@ -30,7 +32,6 @@ export default function MobileOperatorsList({ mobileOperators: operators }: Prop
     operators?.filter(
       (op) =>
         op.name.toLowerCase().includes(search.toLowerCase()) ||
-        // op.country?.code.toLowerCase().includes(search.toLowerCase()) ||
         op.prefixes?.some((p) => p.prefix.includes(search))
     ) ?? []
 
@@ -40,7 +41,7 @@ export default function MobileOperatorsList({ mobileOperators: operators }: Prop
         <h1 className="text-2xl font-bold tracking-tight">Mobile Operators</h1>
         <div className="flex justify-between items-center">
           <p className="text-sm text-muted-foreground mt-1">Mobile network operators by country</p>
-          <DialogMobileOperator />
+          <DialogMobileOperator countries={countries} />
         </div>
       </div>
 
@@ -115,7 +116,7 @@ export default function MobileOperatorsList({ mobileOperators: operators }: Prop
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <DialogMobileOperator operator={op} />
+                      <DialogMobileOperator operator={op} countries={countries} />
                     </TableCell>
                     <TableCell>
                       <AlertDialogDelete

@@ -17,8 +17,13 @@ export default class MobileOperatorsController {
       .preload('country')
       .preload('prefixes')
 
+    const countries = await Country.query()
+      .where('applicationId', applicationId)
+      .orderBy('name')
+
     return inertia.render('admin/MobileOperators/List', {
       mobileOperators: MobileOperatorTransformer.transform(mobileOperators),
+      countries,
     })
   }
 
