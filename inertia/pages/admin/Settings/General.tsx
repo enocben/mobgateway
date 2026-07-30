@@ -19,22 +19,11 @@ import { useState } from 'react'
 
 type Props = {
   application: Data.Application
-  apiKeys: {
-    id: string
-    name: string
-    keyType: string
-    createdAt: string | null
-    lastUsedAt: string | null
-    revokedAt: string | null
-  }[]
-  flash?: {
-    generatedApiKey?: string
-  }
 }
 
-export default function GeneralSettings() {
+export default function GeneralSettings({ application }: Props) {
   const applicationId = useApplicationStore((a) => a.applicationId)
-  const { application, apiKeys } = usePage<InertiaProps<Props>>().props
+  const keys = application.apiKeys ?? []
   const generatedKey = (usePage<InertiaProps<Props>>().props.flash as any)?.generatedApiKey
   const [showKey, setShowKey] = useState(true)
 
@@ -162,13 +151,13 @@ export default function GeneralSettings() {
             </div>
           </CardHeader>
           <CardContent>
-            {apiKeys.length === 0 ? (
+            {keys.length === 0 ? (
               <p className="text-sm text-muted-foreground py-4 text-center">
                 No API keys yet. Generate one to get started.
               </p>
             ) : (
               <div className="flex flex-col gap-2">
-                {apiKeys.map((key) => (
+                {keys.map((key) => (
                   <div
                     key={key.id}
                     className="flex items-center justify-between py-2.5"

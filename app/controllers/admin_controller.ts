@@ -124,14 +124,6 @@ export default class AdminController {
 
     return inertia.render('admin/Settings/General', {
       application: ApplicationTransformer.transform(application),
-      apiKeys: application.apiKeys.map((k) => ({
-        id: k.id,
-        name: k.name,
-        keyType: k.keyType,
-        createdAt: k.createdAt?.toISO() ?? null,
-        lastUsedAt: k.lastUsedAt?.toISO() ?? null,
-        revokedAt: k.revokedAt?.toISO() ?? null,
-      })),
     })
   }
 
