@@ -18,6 +18,11 @@ try {
   } else {
     console.log('[provider-sync] No changes — providers up to date')
   }
-} catch (err) {
-  console.error('[provider-sync] Failed to sync providers:', err)
+} catch (err: any) {
+  // Table "providers" n'existe pas encore (premier boot, migrations pas exécutées)
+  if (err?.code === '42P01' || err?.message?.includes('relation') && err?.message?.includes('does not exist')) {
+    console.log('[provider-sync] Skipped — providers table not yet created (run migrations first)')
+  } else {
+    console.error('[provider-sync] Failed to sync providers:', err)
+  }
 }
