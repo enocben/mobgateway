@@ -1,5 +1,10 @@
 FROM oven/bun:1 AS base
 
+RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
 # ----------------------------
 # Stage 1: Install all dependencies
 # ----------------------------
