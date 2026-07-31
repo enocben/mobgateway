@@ -4,32 +4,43 @@ export default class extends BaseSchema {
   protected tableName = 'countries'
 
   async up() {
-    // 1. Supprimer d'abord les FK qui dépendent de l'unicité du `code`
-    this.schema.alterTable('commissions', (table) => {
-      table.dropForeign('country_code')
-    })
+    // Récupère les vrais noms des FK depuis pg_constraint
+    const fkResult = await this.db.rawQuery(`
+      SELECT conname, conrelid::regclass::text AS table_name
+      FROM pg_constraint
+      WHERE confrelid = 'countries'::regclass
+        AND contype = 'f'
+        AND conkey @> (
+          SELECT array_agg(attnum) FROM pg_attribute
+          WHERE attrelid = 'countries'::regclass AND attname = 'code'
+        )
+    `)
 
-    this.schema.alterTable('mobile_operators', (table) => {
-      table.dropForeign('country_code')
-    })
+    interface FkRow {
+      conname: string
+      table_name: string
+    }
 
-    this.schema.alterTable('application_countries', (table) => {
-      table.dropForeign('country_code')
-    })
+    const fkRows: FkRow[] = fkResult.rows ?? []
 
-    // 2. Supprimer la contrainte unique maintenant qu'elle n'a plus de dépendances
+    // Supprime chaque FK depuis sa table propriétaire
+    for (const row of fkRows) {
+      await this.db.rawQuery(
+        `ALTER TABLE "${row.table_name}" DROP CONSTRAINT IF EXISTS "${row.conname}"`
+      )
+    }
+
+    // Supprime la contrainte unique (safe maintenant)
     this.schema.alterTable(this.tableName, (table) => {
       table.dropUnique('code')
     })
   }
 
   async down() {
-    // Restaurer la contrainte unique
     this.schema.alterTable(this.tableName, (table) => {
       table.unique('code')
     })
 
-    // Restaurer les FK
     this.schema.alterTable('commissions', (table) => {
       table.foreign('country_code').references('code').inTable('countries').onDelete('SET NULL')
     })
