@@ -39,10 +39,10 @@ export default class TestPayment extends BaseCommand {
 
     const connected = await instance.testConnection()
     if (!connected) {
-      spinner.fail('Connexion échouée — vérifie SHWARY_ID_MARCHAND / SHWARY_SECRET dans .env')
+      this.logger.error('Connexion échouée — vérifie SHWARY_ID_MARCHAND / SHWARY_SECRET dans .env')
       return
     }
-    spinner.succeed('Connexion OK')
+    this.logger.success('Connexion OK')
 
     // ── Paiement ─────────────────────────────────────────────────────────
     const spinner2 = this.logger.await('Envoi du paiement...')
@@ -57,7 +57,7 @@ export default class TestPayment extends BaseCommand {
         callbackUrl: `${process.env.APP_URL ?? 'http://localhost:3333'}/api/v1/webhooks/shwary`,
       })
 
-      spinner2.succeed('Paiement envoyé')
+      this.logger.success('Paiement envoyé')
 
       // ── Résultat ───────────────────────────────────────────────────────
       console.log('\n' + '─'.repeat(50))
@@ -74,7 +74,7 @@ export default class TestPayment extends BaseCommand {
       }
       console.log('─'.repeat(50))
     } catch (err) {
-      spinner2.fail('Paiement échoué')
+      this.logger.error('Paiement échoué')
       console.log(`\n❌ ${err instanceof Error ? err.message : String(err)}`)
     }
   }
