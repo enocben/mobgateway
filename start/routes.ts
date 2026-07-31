@@ -16,6 +16,9 @@ router.on('/').renderInertia('home', {}).as('home')
 // Health check
 router.get('/health', async () => ({ status: 'ok', timestamp: new Date().toISOString() }))
 
+// Shwary webhook (called by Shwary API, no auth required)
+router.post('/api/v1/webhooks/shwary', [controllers.ShwaryWebhook, 'handle'])
+
 // API routes for external clients
 router
   .group(() => {
@@ -28,7 +31,12 @@ router
 
 // Authenticated API routes
 router
-  .group(() => {})
+  .group(() => {
+    // Merchant payment routes
+    router.post('/merchants/payment', [controllers.Payment, 'create'])
+    router.get('/merchants/transactions', [controllers.Payment, 'index'])
+    router.get('/merchants/transactions/:id', [controllers.Payment, 'show'])
+  })
   .prefix('/api/v1')
   .use(middleware.auth())
 

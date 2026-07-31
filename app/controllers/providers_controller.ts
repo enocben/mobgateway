@@ -8,6 +8,7 @@ import CountryTransformer from '#transformers/country_transformer'
 import MobileOperatorTransformer from '#transformers/mobile_operator_transformer'
 import { inject } from '@adonisjs/core'
 import { ProviderService } from '#services/provider_service'
+import { providerRegistry } from '#pro/provider_registry'
 import {
   attachCountryValidator,
   storeProviderRouteValidator,
@@ -176,10 +177,32 @@ export default class ProvidersController {
       return response.status(404).json({ message: 'Provider not found' })
     }
 
-    return response.status(200).json({
-      ok: true,
-      message: `Connection to ${provider.name} successful (mock)`,
+    const instance = await providerRegistry.getInstance(provider.code, {
+      sandbox: true,
+      values: (provider.config as Record<string, unknown>) ?? {},
     })
+
+    if (!instance) {
+      return response.status(500).json({
+        ok: false,
+        message: `Provider ${provider.code} has no registered class`,
+      })
+    }
+
+    try {
+      const ok = await instance.testConnection()
+      return response.status(200).json({
+        ok,
+        message: ok
+          ? `Connection to ${provider.name} successful`
+          : `Connection to ${provider.name} failed`,
+      })
+    } catch (err) {
+      return response.status(200).json({
+        ok: false,
+        message: err instanceof Error ? err.message : 'Connection test failed',
+      })
+    }
   }
 
   /**
