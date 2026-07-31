@@ -28,7 +28,7 @@ export default class CountriesController {
 
     if (findCountry){
       session.flash({error: 'Country already exist'})
-      return response.abort("Country already exist", 403)
+      return response.redirect().back()
     }
 
     await Country.create({
