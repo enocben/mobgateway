@@ -25,7 +25,7 @@ export default defineConfig({
 
   server: {
     host: '0.0.0.0',
-    allowedHosts: ['paie.benenoc.com', 'localhost', '.benenoc.com'],
+    allowedHosts: ['pay.benenoc.com', 'localhost', '*.benenoc.com'],
     watch: {
       ignored: ['**/storage/**', '**/tmp/**'],
     },
