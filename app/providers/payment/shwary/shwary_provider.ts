@@ -39,6 +39,7 @@ export default class ShwaryProvider extends BasePaymentProvider {
   private password: number = env.get('SHWARY_PASSWORD', 0)
   private accessToken?: string
   private accessTokenExpiresAt?: DateTime
+  private webhookUrl = `${env.get('APP_URL')}/api/v1/webhooks/shwary`
 
   private sandbox = true
 
@@ -158,12 +159,12 @@ export default class ShwaryProvider extends BasePaymentProvider {
   private normalize(raw: Record<string, unknown>): PaymentTransaction {
     return {
       id: (raw.pretiumTransactionId as string) ?? (raw.id as string) ?? '',
-      reference: (raw.id as string) ?? (raw.referenceId as string),
+      reference: (raw.referenceId as string) ?? (raw.reference as string) ?? '',
       amount: Number(raw.amount ?? 0),
       currency: (raw.currency as string) ?? '',
       phoneNumber: (raw.recipientPhoneNumber as string) ?? '',
       status: this.mapStatus(raw.status as string | undefined),
-      providerReference: (raw.pretiumTransactionId as string) ?? (raw.id as string) ?? undefined,
+      providerReference: (raw.id as string) ?? undefined,
       failureReason: (raw.failureReason as string) ?? undefined,
       metadata: {
         txHash: raw.txHash ?? null,
@@ -196,7 +197,7 @@ export default class ShwaryProvider extends BasePaymentProvider {
       body: JSON.stringify({
         amount: request.amount,
         clientPhoneNumber: request.phoneNumber,
-        callbackUrl: request.callbackUrl,
+        callbackUrl: this.sandbox ? undefined : this.webhookUrl,
       }),
     })
 
