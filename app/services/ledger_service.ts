@@ -7,7 +7,7 @@ export default class LedgerService {
   /**
    * Ensure accounts exist for a given application/currency combination
    */
-  async ensureAccounts(applicationId: number, currency: string) {
+  async ensureAccounts(applicationId: string, currency: string) {
     const accountTypes: Array<'app_balance' | 'operator_suspense' | 'platform_revenue'> = [
       'app_balance',
       'operator_suspense',
@@ -28,7 +28,7 @@ export default class LedgerService {
           applicationId,
           accountType,
           currency,
-          balanceCached: 0,
+          balanceCached: "0",
         })
       }
 
@@ -71,13 +71,13 @@ export default class LedgerService {
         }, { client: trx })
         entries.push(debit)
 
-        const netAmount = transaction.amount - commissionAmount
+        const netAmount = Number(transaction.amount) - commissionAmount
 
         const credit = await LedgerEntry.create({
           transactionId: transaction.id,
           accountId: accounts.app_balance.id,
           direction: 'credit',
-          amount: netAmount,
+          amount: netAmount.toString(),
           currency: transaction.currency,
         }, { client: trx })
         entries.push(credit)
@@ -88,7 +88,7 @@ export default class LedgerService {
             transactionId: transaction.id,
             accountId: accounts.platform_revenue.id,
             direction: 'credit',
-            amount: commissionAmount,
+            amount: commissionAmount.toString(),
             currency: transaction.currency,
           }, { client: trx })
           entries.push(commissionEntry)
@@ -97,7 +97,7 @@ export default class LedgerService {
         // Update cached balances
         await Account.query({ client: trx })
           .where('id', accounts.operator_suspense.id)
-          .increment('balance_cached', transaction.amount)
+          .increment('balance_cached', Number(transaction.amount))
 
         await Account.query({ client: trx })
           .where('id', accounts.app_balance.id)
@@ -134,7 +134,7 @@ export default class LedgerService {
             transactionId: transaction.id,
             accountId: accounts.platform_revenue.id,
             direction: 'credit',
-            amount: commissionAmount,
+            amount: commissionAmount.toString(),
             currency: transaction.currency,
           }, { client: trx })
           entries.push(commissionEntry)
@@ -143,11 +143,11 @@ export default class LedgerService {
         // Update cached balances
         await Account.query({ client: trx })
           .where('id', accounts.app_balance.id)
-          .decrement('balance_cached', transaction.amount)
+          .decrement('balance_cached', Number(transaction.amount))
 
         await Account.query({ client: trx })
           .where('id', accounts.operator_suspense.id)
-          .increment('balance_cached', transaction.amount)
+          .increment('balance_cached', Number(transaction.amount))
 
         if (commissionAmount > 0) {
           await Account.query({ client: trx })
@@ -170,6 +170,6 @@ export default class LedgerService {
       .where('currency', currency)
       .first()
 
-    return account?.balanceCached ?? 0
+    return Number(account?.balanceCached ?? '0')
   }
 }

@@ -17,7 +17,7 @@ export default class ProviderRouteTransformer extends BaseTransformer<ProviderRo
         ? {
             id: this.resource.mobileOperator.id,
             name: this.resource.mobileOperator.name,
-            countryCode: this.resource.mobileOperator.countryCode,
+            countryCode: this.resource.mobileOperator.country?.code,
           }
         : null,
     }

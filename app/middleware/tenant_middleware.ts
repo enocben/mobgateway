@@ -29,7 +29,6 @@ export default class TenantMiddleware {
       })
     }
 
-    ctx.application = application
     await next()
   }
 }

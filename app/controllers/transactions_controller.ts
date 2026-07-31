@@ -1,7 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Transaction from '#models/transaction'
 import TransactionEvent from '#models/transaction_event'
-import db from '@adonisjs/lucid/services/db'
 import { randomUUID } from 'node:crypto'
 
 export default class TransactionsController {
@@ -9,23 +8,28 @@ export default class TransactionsController {
     const page = request.input('page', 1)
     const limit = request.input('limit', 20)
     const { status, txType, applicationId, providerId, currency, dateFrom, dateTo } = request.only([
-      'status', 'txType', 'applicationId', 'providerId', 'currency', 'dateFrom', 'dateTo',
+      'status',
+      'txType',
+      'applicationId',
+      'providerId',
+      'currency',
+      'dateFrom',
+      'dateTo',
     ])
 
     const query = Transaction.query()
+      .where('status', status ?? '')
+      .where('tx_type', txType ?? '')
+      .where('applicationId', applicationId ?? '')
+      .where('providerId', providerId ?? '')
+      .where('currency', currency ?? '')
+      .where('createdAt', '>=', dateFrom)
+      .where('createdAt', '<=', dateTo)
       .preload('application')
       .preload('provider')
       .preload('mobileOperator')
       .preload('events')
 
-    if (status) query.where('status', status)
-    if (txType) query.where('tx_type', txType)
-    if (applicationId) query.where('application_id', Number(applicationId))
-    if (providerId) query.where('provider_id', Number(providerId))
-    if (currency) query.where('currency', currency)
-
-    if (dateFrom) query.where('created_at', '>=', dateFrom)
-    if (dateTo) query.where('created_at', '<=', dateTo)
 
     const transactions = await query.orderBy('created_at', 'desc').paginate(page, limit)
     return response.status(200).json(transactions)
@@ -33,8 +37,14 @@ export default class TransactionsController {
 
   async store({ request, response }: HttpContext) {
     const data = request.only([
-      'applicationId', 'txType', 'msisdn', 'amount', 'currency',
-      'idempotencyKey', 'mobileOperatorId', 'metadata',
+      'applicationId',
+      'txType',
+      'msisdn',
+      'amount',
+      'currency',
+      'idempotencyKey',
+      'mobileOperatorId',
+      'metadata',
     ])
 
     if (!data.applicationId || !data.txType || !data.msisdn || !data.amount || !data.currency) {
@@ -71,15 +81,15 @@ export default class TransactionsController {
     const reference = `TXN-${randomUUID().slice(0, 12).toUpperCase()}`
 
     const transaction = await Transaction.create({
-      applicationId: Number(data.applicationId),
-      mobileOperatorId: data.mobileOperatorId ? Number(data.mobileOperatorId) : null,
+      applicationId: data.applicationId,
+      mobileOperatorId: data.mobileOperatorId ?data.mobileOperatorId : null,
       idempotencyKey,
       txType: data.txType,
       msisdn: data.msisdn,
       reference,
-      amount: Number(data.amount),
+      amount: data.amount,
       currency: data.currency,
-      fxRate: 1.0,
+      fxRate: 1.0.toString(),
       status: 'pending',
       metadata: data.metadata || {},
     })
@@ -120,7 +130,9 @@ export default class TransactionsController {
     }
 
     if (!['failed', 'cancelled'].includes(transaction.status)) {
-      return response.status(400).json({ message: `Cannot retry transaction with status: ${transaction.status}` })
+      return response
+        .status(400)
+        .json({ message: `Cannot retry transaction with status: ${transaction.status}` })
     }
 
     const oldStatus = transaction.status
@@ -146,7 +158,9 @@ export default class TransactionsController {
     }
 
     if (!['pending', 'processing'].includes(transaction.status)) {
-      return response.status(400).json({ message: `Cannot cancel transaction with status: ${transaction.status}` })
+      return response
+        .status(400)
+        .json({ message: `Cannot cancel transaction with status: ${transaction.status}` })
     }
 
     const oldStatus = transaction.status
@@ -165,7 +179,13 @@ export default class TransactionsController {
 
   async exportCsv({ request, response }: HttpContext) {
     const { status, txType, applicationId, providerId, currency, dateFrom, dateTo } = request.only([
-      'status', 'txType', 'applicationId', 'providerId', 'currency', 'dateFrom', 'dateTo',
+      'status',
+      'txType',
+      'applicationId',
+      'providerId',
+      'currency',
+      'dateFrom',
+      'dateTo',
     ])
 
     const query = Transaction.query()
@@ -183,21 +203,24 @@ export default class TransactionsController {
 
     const transactions = await query.orderBy('created_at', 'desc')
 
-    const header = 'ID,Reference,Type,Status,Amount,Currency,MSISDN,Provider,Application,CreatedAt\n'
-    const rows = transactions.map((t) =>
-      [
-        t.id,
-        t.reference,
-        t.txType,
-        t.status,
-        t.amount,
-        t.currency,
-        t.msisdn,
-        t.provider?.name || '',
-        t.application?.name || '',
-        t.createdAt?.toISO() || '',
-      ].join(',')
-    ).join('\n')
+    const header =
+      'ID,Reference,Type,Status,Amount,Currency,MSISDN,Provider,Application,CreatedAt\n'
+    const rows = transactions
+      .map((t) =>
+        [
+          t.id,
+          t.reference,
+          t.txType,
+          t.status,
+          t.amount,
+          t.currency,
+          t.msisdn,
+          t.provider?.name || '',
+          t.application?.name || '',
+          t.createdAt?.toISO() || '',
+        ].join(',')
+      )
+      .join('\n')
 
     return response
       .header('Content-Type', 'text/csv')

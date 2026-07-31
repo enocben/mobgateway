@@ -16,7 +16,6 @@ export default class OperatorPrefixesController {
   }
 
   async store({ params, request, response }: HttpContext) {
-    const mobileOperatorId = Number(params.mobile_operator_id)
     const { prefix } = request.only(['prefix'])
 
     if (!prefix) {
@@ -27,7 +26,7 @@ export default class OperatorPrefixesController {
     }
 
     const operatorPrefix = await OperatorPrefix.create({
-      mobileOperatorId,
+      mobileOperatorId: params.mobile_operator_id,
       prefix: prefix.trim(),
     })
 

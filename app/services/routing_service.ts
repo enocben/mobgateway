@@ -1,5 +1,4 @@
 import MobileOperator from '#models/mobile_operator'
-import OperatorPrefix from '#models/operator_prefix'
 import ProviderRoute from '#models/provider_route'
 import Country from '#models/country'
 
@@ -18,7 +17,7 @@ export default class RoutingService {
       const prefix = country.phonePrefix.replace('+', '')
       if (normalized.startsWith(prefix)) {
         const nationalNumber = normalized.slice(prefix.length)
-        return { countryCode: country.code, nationalNumber }
+        return { countryCode: country.code as string, nationalNumber }
       }
     }
 
@@ -40,7 +39,7 @@ export default class RoutingService {
       const sortedPrefixes = operator.prefixes.sort((a, b) => b.prefix.length - a.prefix.length)
       for (const prefix of sortedPrefixes) {
         if (nationalNumber.startsWith(prefix.prefix)) {
-          return operator.id
+          return Number(operator.id)
         }
       }
     }

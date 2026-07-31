@@ -1,6 +1,5 @@
 import ReconciliationEntry from '#models/reconciliation_entry'
 import Transaction from '#models/transaction'
-import db from '@adonisjs/lucid/services/db'
 import { DateTime } from 'luxon'
 
 export default class ReconciliationService {
@@ -65,7 +64,7 @@ export default class ReconciliationService {
           .where('currency', entry.currency)
           .where('created_at', '>=', entry.createdAt.minus({ days: 1 }).toSQL()!)
           .where('created_at', '<=', entry.createdAt.plus({ days: 1 }).toSQL()!)
-          .whereBetween('amount', [entry.amount * 0.95, entry.amount * 1.05])
+          .whereBetween('amount', [Number(entry.amount )* 0.95, Number(entry.amount) * 1.05])
           .first()
 
         if (closeMatch) {

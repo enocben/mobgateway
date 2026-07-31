@@ -24,9 +24,9 @@ export default class WebhookService {
   /**
    * Deliver webhook event to all active webhooks for an application
    */
-  async deliverToApplication(applicationId: number, event: string, payload: Record<string, any>): Promise<void> {
+  async deliverToApplication(applicationId: string, event: string, payload: Record<string, any>): Promise<void> {
     const webhooks = await Webhook.query()
-      .where('application_id', applicationId)
+      .where('applicationId', applicationId)
       .where('status', 'active')
 
     for (const webhook of webhooks) {
@@ -126,7 +126,6 @@ export default class WebhookService {
    * Process an incoming webhook from a provider
    */
   async processIncoming(
-    providerId: number,
     payload: Record<string, any>,
     signature?: string
   ): Promise<void> {
@@ -145,7 +144,6 @@ export default class WebhookService {
 
     if (transaction) {
       // Update transaction status
-      const oldStatus = transaction.status
       transaction.status = status as any
       transaction.metadata = {
         ...transaction.metadata,

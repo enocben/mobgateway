@@ -37,7 +37,7 @@ export default class WebhooksController {
     const secretHash = WebhookService.hashSecret(secret)
 
     const webhook = await Webhook.create({
-      applicationId: Number(applicationId),
+      applicationId: applicationId,
       url,
       secretHash,
       status: 'active',

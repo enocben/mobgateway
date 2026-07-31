@@ -45,7 +45,7 @@ export default class ReconciliationController {
       const result = await service.processStatement(file)
       return response.status(200).json(result)
     } catch (error) {
-      return response.status(500).json({ message: 'Failed to process statement', error: error.message })
+      return response.status(500).json({ message: 'Failed to process statement', error: error?.toString() })
     }
   }
 
@@ -64,10 +64,10 @@ export default class ReconciliationController {
 
     try {
       const service = new ReconciliationService()
-      const result = await service.manualMatch(Number(reconciliationEntryId), Number(transactionId))
+      const result = await service.manualMatch(reconciliationEntryId, transactionId)
       return response.status(200).json(result)
     } catch (error) {
-      return response.status(500).json({ message: 'Failed to match entries', error: error.message })
+      return response.status(500).json({ message: 'Failed to match entries', error: "Error" })
     }
   }
 
@@ -79,7 +79,7 @@ export default class ReconciliationController {
       const result = await service.runAutoReconciliation(dateFrom, dateTo)
       return response.status(200).json(result)
     } catch (error) {
-      return response.status(500).json({ message: 'Reconciliation failed', error: error.message })
+      return response.status(500).json({ message: 'Reconciliation failed', error: "Error" })
     }
   }
 }

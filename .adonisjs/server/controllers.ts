@@ -10,7 +10,6 @@ export const controllers = {
   Applications: () => import('#controllers/applications_controller'),
   AuditLogs: () => import('#controllers/audit_logs_controller'),
   Auth: () => import('#controllers/auth_controller'),
-  Commissions: () => import('#controllers/commissions_controller'),
   Countries: () => import('#controllers/countries_controller'),
   Dashboard: () => import('#controllers/dashboard_controller'),
   LedgerEntries: () => import('#controllers/ledger_entries_controller'),

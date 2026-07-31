@@ -1,7 +1,7 @@
-import AuditLog from '#models/audit_log'
+// import AuditLog from '#models/audit_log'
 
 export default class AuditService {
-  static async log(params: {
+  static async log(_: {
     action: string
     entityType: string
     entityId: number
@@ -11,10 +11,10 @@ export default class AuditService {
     applicationId?: number | null
     ctx?: any
   }) {
-    const ipAddress = params.ctx?.request?.ip() || '127.0.0.1'
-    const userAgent = params.ctx?.request?.header('User-Agent') || null
+    //const ipAddress = params.ctx?.request?.ip() || '127.0.0.1'
+    // const userAgent = params.ctx?.request?.header('User-Agent') || null
 
-    await AuditLog.create({
+    /*await AuditLog.create({
       userId: params.userId || null,
       applicationId: params.applicationId || null,
       action: params.action,
@@ -24,6 +24,6 @@ export default class AuditService {
       newValue: params.newValue || null,
       ipAddress,
       userAgent,
-    })
+    })*/
   }
 }
