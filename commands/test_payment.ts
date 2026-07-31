@@ -1,6 +1,8 @@
 import { BaseCommand } from '@adonisjs/core/ace'
 import type { CommandOptions } from '@adonisjs/core/types/ace'
 import { providerRegistry } from '#pro/provider_registry'
+import env from '#start/env'
+import { DateTime } from 'luxon'
 
 export default class TestPayment extends BaseCommand {
   static commandName = 'test:payment'
@@ -53,8 +55,8 @@ export default class TestPayment extends BaseCommand {
         amount,
         currency,
         phoneNumber: msisdn,
-        reference: `TEST-${Date.now()}`,
-        callbackUrl: `${process.env.APP_URL ?? 'http://localhost:3333'}/api/v1/webhooks/shwary`,
+        reference: `TEST-${DateTime.now()}`,
+        callbackUrl: `${env.get('APP_URL')?? 'http://localhost:3333'}/api/v1/webhooks/shwary`,
       })
 
       this.logger.success('Paiement envoyé')
