@@ -54,29 +54,20 @@ export interface ShwaryTransaction {
   description: string | null
   recipientPhoneNumber: string
   referenceId: string
-  metadata: Record<string, unknown> | null
+  metadata?: Record<string, unknown> | null
   failureReason: string | null
   pretiumTransactionId: string
   payoutProviderTransactionId: string | null
   fees: number
   isReleased: boolean
-  isSandbox: boolean
-  redirectUrl: string | null
+  isSandbox?: boolean
+  redirectUrl?: string | null
   completedAt: string | null
   txHash: string | null
   gelatoTaskId: string | null
-  sponsoredGasWei: string | null
-  sponsoredGasChainId: string | null
+  sponsoredGasWei?: string | null
+  sponsoredGasChainId?: string | null
   callbackUrl: string | null
-  createdAt: string
-  updatedAt: string
-}
-
-/** Wrapper Pipedream autour d'un webhook Shwary */
-export interface ShwaryWebhookWrapper {
-  'step.trigger': {
-    event: {
-      body: ShwaryTransaction
-    }
-  }
+  createdAt?: string
+  updatedAt?: string
 }

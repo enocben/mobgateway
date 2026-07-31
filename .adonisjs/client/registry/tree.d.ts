@@ -3,10 +3,16 @@ import type { routes } from './index.ts'
 
 export interface ApiDefinition {
   home: typeof routes['home']
+  shwaryWebhook: typeof routes['shwary_webhook']
   auth: {
     register: typeof routes['auth.register']
     login: typeof routes['auth.login']
     refresh: typeof routes['auth.refresh']
+  }
+  payment: {
+    create: typeof routes['payment.create']
+    index: typeof routes['payment.index']
+    show: typeof routes['payment.show']
   }
   newAccount: {
     create: typeof routes['new_account.create']

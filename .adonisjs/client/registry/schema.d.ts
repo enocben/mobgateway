@@ -19,6 +19,18 @@ export interface Registry {
       errorResponse: unknown
     }
   }
+  'shwary_webhook': {
+    methods: ["POST"]
+    pattern: '/api/v1/webhooks/shwary'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/shwary_webhook_controller').default['handle']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/shwary_webhook_controller').default['handle']>>>
+    }
+  }
   'auth.register': {
     methods: ["POST"]
     pattern: '/api/v1/auth/register'
@@ -53,6 +65,42 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['refresh']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['refresh']>>>
+    }
+  }
+  'payment.create': {
+    methods: ["POST"]
+    pattern: '/api/v1/merchants/payment'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/payment_controller').default['create']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/payment_controller').default['create']>>>
+    }
+  }
+  'payment.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/merchants/transactions'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/payment_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/payment_controller').default['index']>>>
+    }
+  }
+  'payment.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/merchants/transactions/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/payment_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/payment_controller').default['show']>>>
     }
   }
   'new_account.create': {

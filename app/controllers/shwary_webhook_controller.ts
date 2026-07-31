@@ -14,7 +14,7 @@ export default class ShwaryWebhookController {
   async handle({ request, response }: HttpContext) {
     const provider = await Provider.findBy('code', 'shwary')
     if (!provider) {
-      return response.status(404).json({ message: 'Provider shwary not found' })
+      return response.status(404).json({ message: 'Provider not found' })
     }
 
     const webhookRequest = {

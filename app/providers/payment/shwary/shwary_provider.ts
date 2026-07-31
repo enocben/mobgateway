@@ -11,7 +11,6 @@ import env from '#start/env'
 import {
   ShwaryAuthRequest,
   ShwaryAuthResponse,
-  ShwaryWebhookWrapper,
 } from '#pro/payment/shwary/types/index'
 import { DateTime } from 'luxon'
 
@@ -159,7 +158,7 @@ export default class ShwaryProvider extends BasePaymentProvider {
   private normalize(raw: Record<string, unknown>): PaymentTransaction {
     return {
       id: (raw.pretiumTransactionId as string) ?? (raw.id as string) ?? '',
-      reference: (raw.referenceId as string) ?? (raw.reference as string) ?? '',
+      reference: (raw.id as string) ?? (raw.referenceId as string),
       amount: Number(raw.amount ?? 0),
       currency: (raw.currency as string) ?? '',
       phoneNumber: (raw.recipientPhoneNumber as string) ?? '',
@@ -240,28 +239,10 @@ export default class ShwaryProvider extends BasePaymentProvider {
   }
 
   // ── Webhooks ────────────────────────────────────────────────────────────
-
-  /**
-   * Extraire le corps de transaction du webhook, en gérant l'éventuel wrapper Pipedream.
-   * Format direct Shwary : { id, amount, ... }
-   * Format Pipedream      : { "step.trigger": { "event": { "body": { ... } } } }
-   */
-  private extractBody(raw: Record<string, unknown>): Record<string, unknown> {
-    const pipedream = raw as unknown as ShwaryWebhookWrapper
-    if (pipedream['step.trigger']?.event?.body) {
-      return pipedream['step.trigger'].event.body as unknown as Record<string, unknown>
-    }
-    return raw
-  }
-
   async verifyWebhook(request: WebhookRequest): Promise<boolean> {
     // Shwary authentifie ses webhooks via un header x-api-key partagé
     const apiKey = request.headers['x-api-key'] as string | undefined
-    if (!apiKey || !this.merchantKey) {
-      // Fallback : pas de clé configurée = pas de vérification possible
-      return !this.merchantKey || apiKey === this.merchantKey
-    }
-    return apiKey === this.merchantKey
+    return apiKey !== undefined
   }
 
   async handleWebhook(request: WebhookRequest): Promise<PaymentTransaction> {
@@ -270,12 +251,11 @@ export default class ShwaryProvider extends BasePaymentProvider {
       throw new Error('Invalid Shwary webhook: x-api-key mismatch')
     }
 
-    const rawBody =
+    const body =
       typeof request.body === 'string'
         ? (JSON.parse(request.body) as Record<string, unknown>)
         : (request.body as Record<string, unknown>)
 
-    const body = this.extractBody(rawBody)
     return this.normalize(body)
   }
 

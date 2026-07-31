@@ -12,6 +12,12 @@ const routes = {
     tokens: [{"old":"/","type":0,"val":"/","end":""}],
     types: placeholder as Registry['home']['types'],
   },
+  'shwary_webhook': {
+    methods: ["POST"],
+    pattern: '/api/v1/webhooks/shwary',
+    tokens: [{"old":"/api/v1/webhooks/shwary","type":0,"val":"api","end":""},{"old":"/api/v1/webhooks/shwary","type":0,"val":"v1","end":""},{"old":"/api/v1/webhooks/shwary","type":0,"val":"webhooks","end":""},{"old":"/api/v1/webhooks/shwary","type":0,"val":"shwary","end":""}],
+    types: placeholder as Registry['shwary_webhook']['types'],
+  },
   'auth.register': {
     methods: ["POST"],
     pattern: '/api/v1/auth/register',
@@ -29,6 +35,24 @@ const routes = {
     pattern: '/api/v1/auth/refresh',
     tokens: [{"old":"/api/v1/auth/refresh","type":0,"val":"api","end":""},{"old":"/api/v1/auth/refresh","type":0,"val":"v1","end":""},{"old":"/api/v1/auth/refresh","type":0,"val":"auth","end":""},{"old":"/api/v1/auth/refresh","type":0,"val":"refresh","end":""}],
     types: placeholder as Registry['auth.refresh']['types'],
+  },
+  'payment.create': {
+    methods: ["POST"],
+    pattern: '/api/v1/merchants/payment',
+    tokens: [{"old":"/api/v1/merchants/payment","type":0,"val":"api","end":""},{"old":"/api/v1/merchants/payment","type":0,"val":"v1","end":""},{"old":"/api/v1/merchants/payment","type":0,"val":"merchants","end":""},{"old":"/api/v1/merchants/payment","type":0,"val":"payment","end":""}],
+    types: placeholder as Registry['payment.create']['types'],
+  },
+  'payment.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/merchants/transactions',
+    tokens: [{"old":"/api/v1/merchants/transactions","type":0,"val":"api","end":""},{"old":"/api/v1/merchants/transactions","type":0,"val":"v1","end":""},{"old":"/api/v1/merchants/transactions","type":0,"val":"merchants","end":""},{"old":"/api/v1/merchants/transactions","type":0,"val":"transactions","end":""}],
+    types: placeholder as Registry['payment.index']['types'],
+  },
+  'payment.show': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/merchants/transactions/:id',
+    tokens: [{"old":"/api/v1/merchants/transactions/:id","type":0,"val":"api","end":""},{"old":"/api/v1/merchants/transactions/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/merchants/transactions/:id","type":0,"val":"merchants","end":""},{"old":"/api/v1/merchants/transactions/:id","type":0,"val":"transactions","end":""},{"old":"/api/v1/merchants/transactions/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['payment.show']['types'],
   },
   'new_account.create': {
     methods: ["GET","HEAD"],
