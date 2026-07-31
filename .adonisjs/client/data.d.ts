@@ -8,6 +8,7 @@ import type { InferData, InferVariants } from '@adonisjs/core/types/transformers
 import type { InferSharedProps } from '@adonisjs/inertia/types'
 import type ApiKeyTransformer from '#transformers/api_key_transformer'
 import type ApplicationTransformer from '#transformers/application_transformer'
+import type CommissionTransformer from '#transformers/commission_transformer'
 import type CountryTransformer from '#transformers/country_transformer'
 import type MobileOperatorTransformer from '#transformers/mobile_operator_transformer'
 import type OperatorPrefixTransformer from '#transformers/operator_prefix_transformer'
@@ -15,7 +16,6 @@ import type ProviderRouteTransformer from '#transformers/provider_route_transfor
 import type ProviderTransformer from '#transformers/provider_transformer'
 import type TransactionTransformer from '#transformers/transaction_transformer'
 import type UserTransformer from '#transformers/user_transformer'
-import type CommissionTransformer from '#transformers/commission_transformer'
 import type InertiaMiddleware from '#middleware/inertia_middleware'
 
 export namespace Data {
@@ -26,6 +26,10 @@ export namespace Data {
   export type Application = InferData<ApplicationTransformer>
   export namespace Application {
     export type Variants = InferVariants<ApplicationTransformer>
+  }
+  export type Commission = InferData<CommissionTransformer>
+  export namespace Commission {
+    export type Variants = InferVariants<CommissionTransformer>
   }
   export type Country = InferData<CountryTransformer>
   export namespace Country {
@@ -54,10 +58,6 @@ export namespace Data {
   export type User = InferData<UserTransformer>
   export namespace User {
     export type Variants = InferVariants<UserTransformer>
-  }
-  export type Commission = InferData<CommissionTransformer>
-  export namespace Commission {
-    export type Variants = InferVariants<CommissionTransformer>
   }
   export type SharedProps = InferSharedProps<InertiaMiddleware>
 }
