@@ -10,7 +10,7 @@ export default class extends BaseSchema {
       FROM pg_constraint
       WHERE confrelid = 'countries'::regclass
         AND contype = 'f'
-        AND conkey @> (
+        AND confkey @> (
           SELECT array_agg(attnum) FROM pg_attribute
           WHERE attrelid = 'countries'::regclass AND attname = 'code'
         )
@@ -32,7 +32,7 @@ export default class extends BaseSchema {
 
     // Supprime la contrainte unique (safe maintenant)
     this.schema.alterTable(this.tableName, (table) => {
-      table.dropUnique('code')
+      table.dropUnique(['code'])
     })
   }
 
