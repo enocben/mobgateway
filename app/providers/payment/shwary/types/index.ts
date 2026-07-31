@@ -2,6 +2,47 @@
  * Types pour les réponses de l'API Shwary.
  */
 
+export interface ShwaryAuthResponse {
+  token: string
+  refresh_token: string
+  expires_in: number
+  user: ShwaryUser
+}
+
+export interface ShwaryAuthRequest {
+  password: string;
+  phoneNumber: string
+}
+
+export interface ShwaryUser {
+  id: string
+  phoneNumber: string
+  email: string
+  firstName: string
+  lastName: string
+  profilePicUrl: string | null
+  language: string
+  status: UserStatus
+  emailVerified: boolean
+  phoneVerified: boolean
+  createdAt: string // ISO 8601
+  updatedAt: string // ISO 8601
+  sharedSecret: string
+  notificationToken: string | null
+  isMerchant: boolean
+  isAdmin: boolean
+  isPinProtection: boolean
+  isBiometricProtection: boolean
+  isLockedToDevice: boolean
+  isInternational: boolean
+  isStudent: boolean
+  schoolName: string | null
+  dailyDepositLimit: string
+}
+
+export type UserStatus = 'active' | 'inactive' | 'suspended' | 'blocked'
+
+
 /** Corps d'une transaction retourné par l'API Shwary (création, consultation, webhook) */
 export interface ShwaryTransaction {
   id: string

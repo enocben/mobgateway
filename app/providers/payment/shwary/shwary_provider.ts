@@ -8,7 +8,12 @@ import {
   type WebhookRequest,
 } from '#pro/base_payment_provider'
 import env from '#start/env'
-import { ShwaryWebhookWrapper } from '#pro/payment/shwary/types/index'
+import {
+  ShwaryAuthRequest,
+  ShwaryAuthResponse,
+  ShwaryWebhookWrapper,
+} from '#pro/payment/shwary/types/index'
+import { DateTime } from 'luxon'
 
 /**
  * Shwary mobile money provider.
@@ -31,6 +36,10 @@ export default class ShwaryProvider extends BasePaymentProvider {
   private baseUrl = env.get('SHWARY_BASE_URL', 'https://api.shwary.com/api/v1')
   private merchantId: string = env.get('SHWARY_ID_MARCHAND', '')
   private merchantKey: string = env.get('SHWARY_SECRET', '')
+  private phoneNumber: number = env.get('SHWARY_PHONE_NUMBER', 0)
+  private password: number = env.get('SHWARY_PASSWORD', 0)
+  private accessToken?: string
+  private accessTokenExpiresAt?: DateTime
 
   private sandbox = true
 
@@ -71,9 +80,38 @@ export default class ShwaryProvider extends BasePaymentProvider {
     }
   }
 
+  // auth
+  async #auth(body: ShwaryAuthRequest): Promise<ShwaryAuthResponse | undefined> {
+    const response = await fetch(`${this.baseUrl}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    })
+    if (response.ok) return (await response.json()) as ShwaryAuthResponse
+  }
+
+  async #getToken(): Promise<string> {
+    if (this.accessToken && this.accessTokenExpiresAt && DateTime.now() < this.accessTokenExpiresAt)
+      return this.accessToken
+
+    const auth = await this.#auth({
+      phoneNumber: `+${this.phoneNumber}`,
+      password: this.password.toString(),
+    })
+
+    if (!auth) throw new Error('Authentication error')
+
+    this.accessToken = auth.token
+    this.accessTokenExpiresAt = DateTime.now().plus({ seconds: auth.expires_in })
+    return this.accessToken
+  }
+
   // ── Helpers ─────────────────────────────────────────────────────────────
 
   private buildHeaders(): Record<string, string> {
+    if (!this.merchantId || !this.merchantKey) {
+      throw new Error('Shwary Error: Invalide merchantId or merchantKey')
+    }
     return {
       'Content-Type': 'application/json',
       'x-merchant-id': this.merchantId,
@@ -178,8 +216,12 @@ export default class ShwaryProvider extends BasePaymentProvider {
   }
 
   async listTransactions(_options?: TransactionFilter): Promise<PaymentTransaction[]> {
-    const res = await fetch(`${this.baseUrl}/merchants/transactions`, {
-      headers: this.buildHeaders(),
+    const token = await this.#getToken()
+    const res = await fetch(`${this.baseUrl}/transactions`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
     })
     const raw = await this.parseResponse<unknown>(res)
 
@@ -193,7 +235,7 @@ export default class ShwaryProvider extends BasePaymentProvider {
       return (obj.data as Record<string, unknown>[]).map((item) => this.normalize(item))
     }
 
-    // Objet unique (la route GET /merchants/transactions retourne parfois un seul objet)
+    // Objet unique (la route GET /transactions retourne parfois un seul objet)
     return [this.normalize(obj)]
   }
 
