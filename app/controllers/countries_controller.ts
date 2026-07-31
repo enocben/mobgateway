@@ -15,13 +15,20 @@ export default class CountriesController {
     })
   }
 
-  async create({ params, response }: HttpContext) {
+  async create({ params, response, session }: HttpContext) {
     const countryIso2 = params.iso2
     const appId = params.id
     const data = getCountryData(countryIso2)
 
     if (data.iso3 === undefined || !appId){
       return response.abort("Country not found", 404)
+    }
+
+    const findCountry = await Country.query().where('code', data.iso2).first()
+
+    if (findCountry){
+      session.flash({error: 'Country already exist'})
+      return response.abort("Country already exist", 403)
     }
 
     await Country.create({
