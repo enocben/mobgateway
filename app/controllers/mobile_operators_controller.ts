@@ -41,7 +41,6 @@ export default class MobileOperatorsController {
       logoUrl: data.logoUrl ?? null,
       isEnabled: true,
       applicationId,
-      countryId: country.id
     })
 
     // Créer les préfixes associés
